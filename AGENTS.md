@@ -4,6 +4,10 @@
 
 RED4ext.SDK provides C++ headers and utilities for creating Cyberpunk 2077 mods. This port adds macOS ARM64 support while maintaining Windows compatibility. The SDK is header-only with minimal compiled components.
 
+## Current Status (Canonical)
+
+See `docs/STATUS.md` for the up-to-date port status and the recommended validation commands for the address databases.
+
 ## Development Practices
 
 ### Cross-Platform Design

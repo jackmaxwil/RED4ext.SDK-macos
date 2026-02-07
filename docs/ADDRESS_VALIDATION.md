@@ -2,6 +2,8 @@
 
 This document describes how to validate the macOS address database (`cyberpunk2077_addresses.json`) for the RED4ext.SDK.
 
+For the current high-level status and “what to run” entry points, see [STATUS.md](STATUS.md).
+
 ## Overview
 
 On macOS, the SDK resolves function addresses from a JSON database instead of using the Windows Address Library. Each entry maps a 32-bit FNV1a hash to an offset within the game's `__TEXT` segment.

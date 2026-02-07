@@ -11,6 +11,8 @@ SDK for creating RED4ext plugins on **macOS Apple Silicon**.
 
 This SDK enables plugin development on macOS but **does not guarantee full parity with Windows**.
 
+For the current macOS port status and the recommended validation commands, see [docs/STATUS.md](docs/STATUS.md).
+
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Address resolution | ⚠️ Functional | 126 addresses found, not all runtime-verified |
@@ -174,6 +176,17 @@ mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(sysctl -n hw.ncpu)
 ```
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/STATUS.md](docs/STATUS.md) | Current port status + “what to run” validation entry points |
+| [docs/ADDRESS_VALIDATION.md](docs/ADDRESS_VALIDATION.md) | Address DB format + strict validation workflow |
+| [docs/INTEGRATION_CHECKLIST.md](docs/INTEGRATION_CHECKLIST.md) | End-to-end integration checklist (SDK → RED4ext → game) |
+| [MACOS_CHANGES.md](MACOS_CHANGES.md) | Technical port notes and platform differences |
 
 ---
 

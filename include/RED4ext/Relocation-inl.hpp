@@ -20,6 +20,7 @@
 #else
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
+#include <mach-o/loader.h>
 #include <limits.h>
 #include <codecvt>
 #include <locale>
@@ -52,7 +53,7 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 // ============================================================================
 // On macOS, addresses are resolved from a JSON database file instead of using
 // the Windows Address Library. The database maps FNV1a hash values to offsets
-// within the game's __TEXT segment.
+// within the game's Mach-O segments.
 //
 // Database Format (cyberpunk2077_addresses.json):
 // {
@@ -64,7 +65,10 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 //   ]
 // }
 //
-// Offset format: "segment:0xOFFSET" where segment is always 1 (__TEXT)
+// Offset format: "segment:0xOFFSET" where segment indicates the Mach-O segment:
+//   1 = __TEXT
+//   2 = __DATA_CONST
+//   3 = __DATA
 //
 // Search paths (in order):
 //   1. $RED4EXT_SDK_ADDRESS_DB environment variable
@@ -77,10 +81,20 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 // ============================================================================
 
 #if !defined(_WIN32) && !defined(_WIN64)
+    struct OffsetEntry
+    {
+        // Segment index used by the macOS address DB:
+        //  1 = __TEXT
+        //  2 = __DATA_CONST
+        //  3 = __DATA
+        std::uint32_t segment{0};
+        std::uintptr_t offset{0};
+    };
+
     struct AddressDb
     {
         std::once_flag initOnce;
-        std::unordered_map<std::uint32_t, std::uintptr_t> offsets;
+        std::unordered_map<std::uint32_t, OffsetEntry> offsets;
         bool loaded{false};
         std::filesystem::path path;
     };
@@ -95,12 +109,12 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
         return res.ec == std::errc{} && res.ptr == end;
     };
 
-    /// Parse offset string in format "segment:0xHEX" (segment must be 1 for __TEXT).
-    /// Returns false if format is invalid or segment != 1.
-    auto tryParseOffset = [&tryParseU32](std::string_view aStr, std::uintptr_t& aOut) -> bool
+    /// Parse offset string in format "segment:0xHEX".
+    /// Returns false if format is invalid or segment is unsupported.
+    auto tryParseOffset = [&tryParseU32](std::string_view aStr, OffsetEntry& aOut) -> bool
     {
-        // Format: segment:0xHEX (segment 1 is __TEXT)
-        aOut = 0;
+        // Format: segment:0xHEX
+        aOut = {};
         const auto colon = aStr.find(':');
         if (colon == std::string_view::npos)
             return false;
@@ -119,11 +133,15 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
         if (res.ec != std::errc{} || res.ptr != rest.data() + rest.size())
             return false;
 
-        // Only segment 1 (__TEXT) is supported for macOS game executables
-        if (segment != 1)
+        // Supported segment indices:
+        //  1 = __TEXT
+        //  2 = __DATA_CONST
+        //  3 = __DATA
+        if (segment < 1 || segment > 3)
             return false;
 
-        aOut = value;
+        aOut.segment = segment;
+        aOut.offset = value;
         return true;
     };
 
@@ -181,10 +199,10 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
                                        break;
 
                                    std::uint32_t hash = 0;
-                                   std::uintptr_t offset = 0;
-                                   if (tryParseU32(hashStr, hash) && tryParseOffset(offStr, offset))
+                                   OffsetEntry entry{};
+                                   if (tryParseU32(hashStr, hash) && tryParseOffset(offStr, entry))
                                    {
-                                       db.offsets.emplace(hash, offset);
+                                       db.offsets.emplace(hash, entry);
                                    }
 
                                    pos = offNext;
@@ -268,6 +286,81 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
     };
 
     const auto base = RelocBase::GetImageBase();
+
+    struct SegmentBases
+    {
+        std::uintptr_t text{0};
+        std::uintptr_t dataConst{0};
+        std::uintptr_t data{0};
+    };
+
+    auto getSegmentBases = [&]() -> const SegmentBases&
+    {
+        static SegmentBases bases;
+        static std::once_flag once;
+        std::call_once(once,
+                       [&]()
+                       {
+                           const auto* header =
+                               reinterpret_cast<const mach_header_64*>(_dyld_get_image_header(0));
+                           if (!header || header->magic != MH_MAGIC_64)
+                           {
+                               bases.text = base;
+                               return;
+                           }
+
+                           const auto slide = static_cast<std::intptr_t>(_dyld_get_image_vmaddr_slide(0));
+
+                           const auto* cmd = reinterpret_cast<const std::uint8_t*>(header) + sizeof(mach_header_64);
+                           for (std::uint32_t i = 0; i < header->ncmds; ++i)
+                           {
+                               const auto* lc = reinterpret_cast<const load_command*>(cmd);
+                               if (!lc || lc->cmdsize == 0)
+                                   break;
+
+                               if (lc->cmd == LC_SEGMENT_64 && lc->cmdsize >= sizeof(segment_command_64))
+                               {
+                                   const auto* seg = reinterpret_cast<const segment_command_64*>(cmd);
+                                   std::size_t nameLen = 0;
+                                   while (nameLen < sizeof(seg->segname) && seg->segname[nameLen] != '\0')
+                                       ++nameLen;
+                                   const std::string_view segName(seg->segname, nameLen);
+
+                                   const auto runtimeBase =
+                                       static_cast<std::uintptr_t>(static_cast<std::intptr_t>(seg->vmaddr) + slide);
+
+                                   if (segName == "__TEXT")
+                                       bases.text = runtimeBase;
+                                   else if (segName == "__DATA_CONST")
+                                       bases.dataConst = runtimeBase;
+                                   else if (segName == "__DATA")
+                                       bases.data = runtimeBase;
+                               }
+
+                               cmd += lc->cmdsize;
+                           }
+
+                           if (bases.text == 0)
+                               bases.text = base;
+                       });
+        return bases;
+    };
+
+    auto resolveEntry = [&](const OffsetEntry& aEntry) -> std::uintptr_t
+    {
+        const auto& bases = getSegmentBases();
+        switch (aEntry.segment)
+        {
+        case 1:
+            return (bases.text ? bases.text : base) + aEntry.offset;
+        case 2:
+            return bases.dataConst ? bases.dataConst + aEntry.offset : 0;
+        case 3:
+            return bases.data ? bases.data + aEntry.offset : 0;
+        default:
+            return 0;
+        }
+    };
     auto& db = loadAddressDb();
     if (db.loaded)
     {
@@ -280,9 +373,11 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
                        });
 
         const auto it = db.offsets.find(aHash);
-        if (it != db.offsets.end() && it->second != 0)
+        if (it != db.offsets.end() && it->second.offset != 0)
         {
-            return base + it->second;
+            const auto addr = resolveEntry(it->second);
+            if (addr != 0)
+                return addr;
         }
     }
 

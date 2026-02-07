@@ -1,0 +1,11 @@
+{
+  "version": "test",
+  "game_version": "any",
+  "stats": { "total": 3, "resolved": 3, "unresolved": 0 },
+  "Addresses": [
+    { "hash": "268435457", "offset": "1:0x20" },
+    { "hash": "268435458", "offset": "2:0x20" },
+    { "hash": "268435459", "offset": "3:0x20" }
+  ]
+}
+

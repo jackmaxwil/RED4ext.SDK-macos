@@ -2,6 +2,8 @@
 
 **Purpose:** Step-by-step guide for integrating the macOS SDK port into RED4ext core and validating with real mods.
 
+For the current SDK port status and quick validation entry points, see [STATUS.md](STATUS.md).
+
 **Prerequisites:**
 - macOS development machine with Xcode/Clang
 - Cyberpunk 2077 macOS installed via Steam
