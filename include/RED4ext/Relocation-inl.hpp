@@ -22,12 +22,11 @@
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
 #include <limits.h>
-#include <codecvt>
-#include <locale>
 #endif
 
 #include <RED4ext/Api/SemVer.hpp>
 #include <RED4ext/Common.hpp>
+#include <RED4ext/Detail/Utf8.hpp>
 #include <RED4ext/Detail/Memory.hpp>
 
 RED4EXT_INLINE uintptr_t RED4ext::RelocBase::GetImageBase()
@@ -35,7 +34,29 @@ RED4EXT_INLINE uintptr_t RED4ext::RelocBase::GetImageBase()
 #if defined(_WIN32) || defined(_WIN64)
     static const auto base = std::bit_cast<uintptr_t>(GetModuleHandle(nullptr));
 #else
-    static const auto base = std::bit_cast<uintptr_t>(_dyld_get_image_header(0));
+    // When injected via DYLD_INSERT_LIBRARIES, image 0 may be the injected dylib
+    // rather than the game executable. Find the image matching the process executable.
+    static const auto base = []() -> uintptr_t {
+        char exeBuf[PATH_MAX] = {};
+        uint32_t exeSize = sizeof(exeBuf);
+        if (_NSGetExecutablePath(exeBuf, &exeSize) != 0)
+        {
+            return std::bit_cast<uintptr_t>(_dyld_get_image_header(0));
+        }
+
+        const auto exeFile = std::filesystem::path(exeBuf).filename();
+        const uint32_t count = _dyld_image_count();
+        for (uint32_t i = 0; i < count; ++i)
+        {
+            const char* name = _dyld_get_image_name(i);
+            if (name && *name && std::filesystem::path(name).filename() == exeFile)
+            {
+                return std::bit_cast<uintptr_t>(_dyld_get_image_header(i));
+            }
+        }
+
+        return std::bit_cast<uintptr_t>(_dyld_get_image_header(0));
+    }();
 #endif
     return base;
 }
@@ -301,15 +322,36 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
         std::call_once(once,
                        [&]()
                        {
+                           // Find the correct game image (same logic as GetImageBase)
+                           uint32_t gameImageIdx = 0;
+                           {
+                               char exeBuf[PATH_MAX] = {};
+                               uint32_t exeSz = sizeof(exeBuf);
+                               if (_NSGetExecutablePath(exeBuf, &exeSz) == 0)
+                               {
+                                   const auto exeFile = std::filesystem::path(exeBuf).filename();
+                                   const uint32_t cnt = _dyld_image_count();
+                                   for (uint32_t j = 0; j < cnt; ++j)
+                                   {
+                                       const char* nm = _dyld_get_image_name(j);
+                                       if (nm && *nm && std::filesystem::path(nm).filename() == exeFile)
+                                       {
+                                           gameImageIdx = j;
+                                           break;
+                                       }
+                                   }
+                               }
+                           }
+
                            const auto* header =
-                               reinterpret_cast<const mach_header_64*>(_dyld_get_image_header(0));
+                               reinterpret_cast<const mach_header_64*>(_dyld_get_image_header(gameImageIdx));
                            if (!header || header->magic != MH_MAGIC_64)
                            {
                                bases.text = base;
                                return;
                            }
 
-                           const auto slide = static_cast<std::intptr_t>(_dyld_get_image_vmaddr_slide(0));
+                           const auto slide = static_cast<std::intptr_t>(_dyld_get_image_vmaddr_slide(gameImageIdx));
 
                            const auto* cmd = reinterpret_cast<const std::uint8_t*>(header) + sizeof(mach_header_64);
                            for (std::uint32_t i = 0; i < header->ncmds; ++i)
@@ -637,9 +679,8 @@ RED4EXT_INLINE void RED4ext::UniversalRelocBase::ShowErrorAndTerminateProcess(st
 #if defined(_WIN32) || defined(_WIN64)
     std::wstring pluginName = path.stem().wstring();
 #else
-    // Convert narrow string to wide string on macOS
-    auto stemStr = path.stem().string();
-    std::wstring pluginName(stemStr.begin(), stemStr.end());
+    // macOS path strings are UTF-8; preserve non-ASCII plugin names.
+    std::wstring pluginName = RED4ext::Detail::Utf8ToWide(path.stem().string());
 #endif
     std::wstring pluginVersion = L"Not available (Query was intentionally disabled)";
 
@@ -681,29 +722,8 @@ RED4EXT_INLINE void RED4ext::UniversalRelocBase::ShowErrorAndTerminateProcess(st
     MessageBoxW(nullptr, msg.str().c_str(), title.c_str(), MB_ICONERROR | MB_OK);
     TerminateProcess(GetCurrentProcess(), 1);
 #else
-    // Convert wide string to narrow string for std::cerr on macOS
-    auto msgStr = msg.str();
-    auto titleStr = title;
-    
-    // Simple UTF-16 to UTF-8 conversion
-    std::string narrowTitle, narrowMsg;
-    for (wchar_t c : titleStr)
-    {
-        if (c < 0x80)
-            narrowTitle += static_cast<char>(c);
-        else
-            narrowTitle += '?'; // Replace non-ASCII with ?
-    }
-    for (wchar_t c : msgStr)
-    {
-        if (c < 0x80)
-            narrowMsg += static_cast<char>(c);
-        else if (c == L'\n')
-            narrowMsg += '\n';
-        else
-            narrowMsg += '?';
-    }
-    
+    const auto narrowTitle = RED4ext::Detail::WideToUtf8(title);
+    const auto narrowMsg = RED4ext::Detail::WideToUtf8(msg.str());
     std::cerr << "[" << narrowTitle << "] " << narrowMsg << std::endl;
     exit(1);
 #endif

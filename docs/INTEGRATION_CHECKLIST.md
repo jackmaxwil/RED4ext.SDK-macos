@@ -163,6 +163,11 @@ file examples/libmacos_smoke_test.dylib
 # Expected: Mach-O 64-bit dynamically linked shared library arm64
 ```
 
+Smoke test logs also include:
+- TLS status
+- Critical getter addresses (`CRTTISystem_Get`, `TweakDB_Get`)
+- Type sizes for `CName`, `TweakDBID`, and `CString`
+
 ---
 
 ## Phase 4: End-to-End Runtime Validation

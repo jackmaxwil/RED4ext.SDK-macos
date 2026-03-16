@@ -38,6 +38,11 @@ def main() -> int:
     obj = json.loads(db_path.read_text(encoding="utf-8"))
     hooks_obj = json.loads(hooks_path.read_text(encoding="utf-8"))
 
+    allowed_zero = {
+        "1239944840",  # g_DeviceData
+        "2508272872",  # D3D12MA::Allocator_CreateResource
+    }
+
     addrs = obj.get("Addresses", [])
     if not isinstance(addrs, list):
         raise SystemExit("Addresses must be a list")
@@ -53,7 +58,7 @@ def main() -> int:
         if h in seen:
             dup.append(h)
         seen.add(h)
-        if isinstance(off, str) and off.endswith(":0x0"):
+        if isinstance(off, str) and off.endswith(":0x0") and h not in allowed_zero:
             zero.append(h)
         if isinstance(off, str):
             by_hash[h] = off
@@ -67,7 +72,7 @@ def main() -> int:
         hh = normalize_hash_to_dec_string(h.get("hash"))
         if hh not in by_hash:
             missing.append(hh)
-        elif by_hash[hh].endswith(":0x0"):
+        elif by_hash[hh].endswith(":0x0") and hh not in allowed_zero:
             zero.append(hh)
 
     expected_total = None

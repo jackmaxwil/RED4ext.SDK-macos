@@ -114,6 +114,7 @@ When the smoke test plugin loads, it will:
 1. Search for `cyberpunk2077_addresses.json` using standard search paths
 2. Load all hashes and attempt resolution
 3. Log missing (zero) addresses and duplicates to `/tmp/RED4ext.SDK_smoke_test.log`
+4. Log TLS status, critical getter addresses, and key type sizes (`CName`, `TweakDBID`, `CString`)
 
 **Successful run:**
 ```
@@ -121,6 +122,11 @@ When the smoke test plugin loads, it will:
 [RED4ext.SDK smoke] Loaded 126 hashes from /path/to/cyberpunk2077_addresses.json
 [RED4ext.SDK smoke] ImageBase=0x100000000
 [RED4ext.SDK smoke] Done. missing=0 dup=0
+[RED4ext.SDK smoke] sizeof(RED4ext::CName)=8 expected=8
+[RED4ext.SDK smoke] sizeof(RED4ext::TweakDBID)=8 expected=8
+[RED4ext.SDK smoke] sizeof(RED4ext::CString)=32 expected=32
+[RED4ext.SDK smoke] CRTTISystem_Get=0x... ok=1
+[RED4ext.SDK smoke] TweakDB_Get=0x... ok=1
 ```
 
 ## Address Database Search Paths

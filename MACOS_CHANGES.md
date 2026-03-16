@@ -18,6 +18,16 @@ All changes are **backwards compatible** with Windows. Platform-specific code is
 
 ## Files Modified
 
+### `examples/macos_smoke_test/Main.cpp`
+
+- Added type size logging for `CName`, `TweakDBID`, and `CString`
+- Added critical getter address checks for `CRTTISystem_Get` and `TweakDB_Get`
+- Smoke test logs now include TLS status and size validation output
+
+### `examples/STATUS.md` (NEW)
+
+- Tracks macOS build/runtime status for example targets
+
 ### `include/RED4ext/Detail/WinCompat.hpp` (NEW)
 
 macOS compatibility layer providing Windows API equivalents:

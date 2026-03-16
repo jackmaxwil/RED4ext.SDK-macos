@@ -1,6 +1,9 @@
+#include <RED4ext/CName.hpp>
+#include <RED4ext/CString.hpp>
 #include <RED4ext/RED4ext.hpp>
 #include <RED4ext/Relocation.hpp>
 #include <RED4ext/TLS.hpp>
+#include <RED4ext/TweakDB.hpp>
 
 #include <charconv>
 #include <cstdlib>
@@ -307,6 +310,21 @@ RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::
 #endif
 
     log << "[RED4ext.SDK smoke] Done. missing=" << zeroCount << " dup=" << dupCount << "\n";
+
+    // Type size verification
+    log << "[RED4ext.SDK smoke] sizeof(RED4ext::CName)=" << sizeof(RED4ext::CName) << " expected=8\n";
+    log << "[RED4ext.SDK smoke] sizeof(RED4ext::TweakDBID)=" << sizeof(RED4ext::TweakDBID) << " expected=8\n";
+    log << "[RED4ext.SDK smoke] sizeof(RED4ext::CString)=" << sizeof(RED4ext::CString) << " expected=32\n";
+
+    // Critical getter address verification (vtable layout proxy)
+    constexpr std::uint32_t kCRTTISystemGet = RED4ext::Detail::AddressHashes::CRTTISystem_Get;
+    constexpr std::uint32_t kTweakDBGet = RED4ext::Detail::AddressHashes::TweakDB_Get;
+    const auto rttiGet = RED4ext::UniversalRelocBase::Resolve(kCRTTISystemGet);
+    const auto tdbGet = RED4ext::UniversalRelocBase::Resolve(kTweakDBGet);
+    log << "[RED4ext.SDK smoke] CRTTISystem_Get=0x" << std::hex << rttiGet << " ok=" << (rttiGet != 0) << std::dec
+        << "\n";
+    log << "[RED4ext.SDK smoke] TweakDB_Get=0x" << std::hex << tdbGet << " ok=" << (tdbGet != 0) << std::dec
+        << "\n";
     return true;
 }
 

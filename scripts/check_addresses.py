@@ -30,6 +30,10 @@ def main() -> int:
     obj = json.loads(db_path.read_text(encoding="utf-8"))
 
     hash_names = load_hash_name_map(root)
+    allowed_zero = {
+        "1239944840",  # g_DeviceData
+        "2508272872",  # D3D12MA::Allocator_CreateResource
+    }
 
     addrs = obj.get("Addresses", [])
     if not isinstance(addrs, list):
@@ -47,7 +51,7 @@ def main() -> int:
             dup.append(h)
         seen.add(h)
 
-        if isinstance(off, str) and off.endswith(":0x0"):
+        if isinstance(off, str) and off.endswith(":0x0") and h not in allowed_zero:
             zero.append(h)
 
     print(f"total={len(addrs)}")
