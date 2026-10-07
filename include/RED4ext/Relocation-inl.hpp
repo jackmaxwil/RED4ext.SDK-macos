@@ -96,7 +96,7 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 //   2. <game>/red4ext/bin/x64/cyberpunk2077_addresses.json, found by walking up from the plugin,
 //      then from the game executable. This is the single canonical copy, shared with the loader.
 //
-// Validation: Run scripts/check_addresses.py --strict
+// Validation: Run scripts/validate_addresses.py
 // ============================================================================
 
 #if !defined(_WIN32) && !defined(_WIN64)

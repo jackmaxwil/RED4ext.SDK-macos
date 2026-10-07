@@ -6,7 +6,7 @@ RED4ext.SDK provides C++ headers and utilities for creating Cyberpunk 2077 mods.
 
 ## Current Status (Canonical)
 
-See `docs/STATUS.md` for the up-to-date port status and the recommended validation commands for the address databases.
+See `docs/STATUS.md` for a short summary, `docs/ADDRESS_AUDIT.md` for address evidence, and §0 of `~/Development/cyberpunk/RESUME_PLAN.md` for the authoritative progress table.
 
 ## Development Practices
 
@@ -38,7 +38,7 @@ See `docs/STATUS.md` for the up-to-date port status and the recommended validati
 ```
 include/RED4ext/
 ├── Detail/           # Internal implementation details
-│   ├── AddressHashes.hpp  # All 126 address hash constants
+│   ├── AddressHashes.hpp  # SDK address hash constants
 │   └── ...
 ├── Scripting/        # Script system types (CStack, CBaseFunction)
 ├── GameEngine.hpp    # Engine singletons
@@ -51,7 +51,7 @@ src/                  # Minimal compiled sources (reflection helpers)
 ### Key Files
 
 1. **`Relocation-inl.hpp`** - Contains `UniversalRelocBase::Resolve()` implementation with macOS JSON loading.
-2. **`AddressHashes.hpp`** - All 126 hash constants that plugins use for address resolution.
+2. **`AddressHashes.hpp`** - SDK hash constants that plugins use for address resolution.
 3. **`Common.hpp`** - Platform typedefs (`uint32_t` ↔ `DWORD`, pointer types, calling conventions).
 
 ## Code Standards
@@ -82,7 +82,7 @@ src/                  # Minimal compiled sources (reflection helpers)
 
 1. **Add hash constant.** Define in `Detail/AddressHashes.hpp` with descriptive name.
 2. **Document in JSON.** Ensure `cyberpunk2077_addresses.json` includes the hash→offset mapping.
-3. **Update count.** The SDK expects 126 addresses; update tests if count changes.
+3. **Verify before trusting.** New entries start unverified and resolve to 0. Mark an entry `"verified": true` only with evidence recorded in `docs/ADDRESS_AUDIT.md`.
 
 ### Address Hash Format
 
@@ -109,7 +109,7 @@ constexpr std::uint32_t TweakDB_CreateRecord = 0x3201127A;
 1. **Compile test.** SDK headers must compile with `-std=c++20` on Clang 15+.
 2. **Example builds.** All projects in `examples/` must build successfully.
 3. **Type sizes.** Verify `sizeof(CClass)`, `sizeof(CName)` match expected values.
-4. **Address resolution.** Test that all 126 hashes resolve to non-zero addresses.
+4. **Address resolution.** Run `scripts/validate_addresses.py`, and `scripts/plugin_requirements.py <plugin.dylib>` to list a plugin's unverified hashes.
 
 ## Common Pitfalls
 

@@ -2,7 +2,7 @@
 
 C++ SDK for building Cyberpunk 2077 mods on macOS ARM64.
 
-**Status:** Complete — 126/126 address hashes resolve, type sizes verified, TLS functional.
+**Status:** In progress. Only address DB entries marked `"verified": true` resolve, and most are not verified yet. RED4ext boots to the main menu with these headers and the SDK self-checks pass; ModMenu loads, TweakXL and ArchiveXL do not yet. See [docs/ADDRESS_AUDIT.md](docs/ADDRESS_AUDIT.md) and §0 of `~/Development/cyberpunk/RESUME_PLAN.md`.
 
 ## What it does
 
@@ -23,16 +23,17 @@ Add `include/` to your project's include path. Include the address resolver over
 | `include/RED4ext/Relocation-inl.hpp` | macOS address resolution (JSON loading) |
 | `include/RED4ext/Detail/AddressHashes.hpp` | 126 address hash constants |
 | `include/RED4ext/Common.hpp` | Platform compatibility types |
-| `cyberpunk2077_addresses.json` | Hash-to-offset mapping for v2.3.1 |
+| `cyberpunk2077_addresses.json` | Hash-to-offset mapping for v2.3.1, with a `verified` flag per entry |
 | `scripts/validate_addresses.py` | Validate address tables against the game binary (`--help`) |
-| `scripts/check_addresses.py` | Legacy duplicate/zero check |
+| `scripts/plugin_requirements.py` | List the hashes a plugin dylib needs and whether each is verified |
+| `docs/ADDRESS_AUDIT.md` | Evidence for each verified or refuted address |
 | `docs/STATUS.md` | Port status |
 
 ## Validation
 
 ```bash
 python3 scripts/validate_addresses.py   # uses the Steam binary if present, else segment checks only
-python3 scripts/check_addresses.py --strict
+python3 scripts/plugin_requirements.py <plugin.dylib>   # exit 1 if any required hash is unverified
 ```
 
 ## Related projects

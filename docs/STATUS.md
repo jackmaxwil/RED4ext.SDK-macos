@@ -1,35 +1,24 @@
-# RED4ext.SDK macOS Port — Status
+# RED4ext.SDK macOS Port: Status
 
-> **Last updated:** 2026-02-08
-> **Target game build:** Cyberpunk 2077 macOS **v2.3.1**
-> **Target arch:** Apple Silicon (arm64)
+Target: Cyberpunk 2077 macOS 2.3.1 (arm64).
 
-## Scope
+The authoritative progress table is §0 of `~/Development/cyberpunk/RESUME_PLAN.md` (a workspace file outside this repo). Per-address evidence is in [ADDRESS_AUDIT.md](ADDRESS_AUDIT.md).
 
-This repository provides a macOS ARM64-compatible fork of **RED4ext.SDK** for building Cyberpunk 2077 plugins on macOS, while maintaining Windows compatibility.
+## Current state
 
-## Current state (high signal)
+- `cyberpunk2077_addresses.json` is the single canonical DB. Only entries marked `"verified": true` resolve; every other hash resolves to 0 (fail closed). Most entries are not verified yet.
+- The memory allocator resolves through the game's exported `PoolStorageProxy<Pool>` symbols, not DB offsets.
+- RED4ext boots to the main menu with these headers and the SDK self-checks pass.
+- ModMenu's required hashes are all verified. TweakXL and ArchiveXL still need unverified hashes, so RED4ext refuses to load them.
 
-- **Address database**: `cyberpunk2077_addresses.json` contains **126 / 126** hashes for v2.3.1.
-- **Loader address database**: `cyberpunk2077_addresses.loader.json` contains **134** loader hook targets for v2.3.1.
-- **Image base resolution**: Fixed to correctly find game binary among DYLD-injected images (uses `_NSGetExecutablePath` + `_dyld_image_count` iteration instead of `_dyld_get_image_header(0)`).
-- **Runtime smoke test**: `examples/macos_smoke_test/` validates address DB loading + resolution at runtime.
-  - Result: `missing=0 dup=0`, TLS functional, type sizes correct (`CName`=8, `TweakDBID`=8, `CString`=32), `CRTTISystem_Get` and `TweakDB_Get` resolve to valid addresses.
-- **Validation tooling**: `scripts/check_addresses.py` and `scripts/check_loader_addresses.py` enforce duplicates/zeros/missing checks.
-
-## Quick validation (what to run)
-
-From repo root:
+## Checks
 
 ```bash
-python3 scripts/check_addresses.py --strict
-python3 scripts/check_loader_addresses.py --strict
+python3 scripts/validate_addresses.py                   # DB vs. game binary
+python3 scripts/plugin_requirements.py <plugin.dylib>   # a plugin's required hashes and their verified state
 ```
 
-Build + run the smoke test plugin (see `docs/ADDRESS_VALIDATION.md` for full steps).
+## Other docs
 
-## Where to look next
-
-- **Address DB validation**: `docs/ADDRESS_VALIDATION.md`
-- **End-to-end integration checklist**: `docs/INTEGRATION_CHECKLIST.md`
-- **Platform changes summary**: `MACOS_CHANGES.md`
+- [ADDRESS_AUDIT.md](ADDRESS_AUDIT.md): address evidence and remaining validator errors
+- [../MACOS_CHANGES.md](../MACOS_CHANGES.md): platform changes vs. upstream
