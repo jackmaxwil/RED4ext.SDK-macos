@@ -24,12 +24,14 @@ Add `include/` to your project's include path. Include the address resolver over
 | `include/RED4ext/Detail/AddressHashes.hpp` | 126 address hash constants |
 | `include/RED4ext/Common.hpp` | Platform compatibility types |
 | `cyberpunk2077_addresses.json` | Hash-to-offset mapping for v2.3.1 |
-| `scripts/check_addresses.py` | Validate address database integrity |
+| `scripts/validate_addresses.py` | Validate address tables against the game binary (`--help`) |
+| `scripts/check_addresses.py` | Legacy duplicate/zero check |
 | `docs/STATUS.md` | Port status |
 
 ## Validation
 
 ```bash
+python3 scripts/validate_addresses.py   # uses the Steam binary if present, else segment checks only
 python3 scripts/check_addresses.py --strict
 python3 scripts/check_loader_addresses.py --strict
 ```
