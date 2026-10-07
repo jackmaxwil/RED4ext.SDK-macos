@@ -191,3 +191,17 @@ These groups were reverse-engineered statically. The per-entry evidence (strings
     - ArchiveXL's `RawVFunc` slot offsets are MSVC offsets, and every slot after the destructor is 8 bytes later on macOS.
     - SDK structs derived from `CResource` can be laid out differently from the game. The game puts `inkWidgetLibraryResource.libraryItems` at 0x40, but the SDK puts it at 0x48.
     - Compare SDK field offsets against the game's RTTI property offsets before trusting any SDK struct on macOS.
+
+## macOS struct layouts (2026-10-06): live RTTI dump
+`data/rtti_layout_macos.json` comes from one main-menu run with `RED4EXT_DUMP_RTTI=1` (`tools/cp-run rttidump`) and is tagged with UUID A6656ADC. It lists 15,903 classes, 43,502 properties and 20,434 types. Its reads are confirmed in `docs/re/reflection_layout.md`:
+- `GetClasses` at vtable +0x70;
+- `CClass` `props` at +0x28, not the lazily built `unk118`;
+- `CProperty::valueOffset` at +0x20.
+
+A separate static scan of the registration code agrees on all 18,576 overlapping properties, with 0 disagreements.
+
+`scripts/sdk_layout_diff.py` compares this dump against the generated headers. 633 of the 8,092 SDK classes differ on macOS. A plugin's classes are gated: a size difference, a moved field or a missing field fails the check.
+- **TweakXL:** all 9 gated classes match.
+- **ArchiveXL:** 13 of 115 differ, including `inkWidgetLibraryResource`, `entIComponent`, the character-customization controllers and several world node classes. These must be fixed, for example with macOS headers generated from the dump, before ArchiveXL is enabled.
+
+Rerun the dump on patch day.
