@@ -51,3 +51,6 @@ jobs:
       # No game binary in CI: segment/section/alignment/zero/duplicate/stats checks only.
       - name: Validate
         run: python3 scripts/validate_addresses.py --verified-only --quiet
+
+      - name: Layout diff self-test
+        run: python3 scripts/sdk_layout_diff.py --self-test
