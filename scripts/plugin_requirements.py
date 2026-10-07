@@ -9,6 +9,8 @@ Usage: plugin_requirements.py PLUGIN.dylib [--db cyberpunk2077_addresses.json] [
 Exit 1 if any requirement is unverified.
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import struct

@@ -10,6 +10,8 @@ legitimately differ (Itanium tail-padding reuse, pthread_mutex_t vs CRITICAL_SEC
 The dump comes from RED4EXT_DUMP_RTTI (tools/cp-run rttidump); regenerate it on patch day.
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import re
