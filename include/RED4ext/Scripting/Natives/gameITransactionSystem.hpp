@@ -24,7 +24,7 @@ struct ITransactionSystem : IGameSystem
     virtual void sub_1C8() = 0; // 1C8
 #ifdef __APPLE__
     // macOS: the CName comes back in x0 and the ItemID is passed by value (x2:x3).
-    virtual CName GetItemAppearance(IScriptable* aOwner, ItemID aItemID) = 0;  // 1D0
+    virtual CName GetItemAppearance(IScriptable* aOwner, ItemID aItemID) = 0; // 1D0
     virtual void ResetItemAppearance(IScriptable* aOwner, ItemID aItemID) = 0; // 1D8
 #else
     virtual CName* GetItemAppearance(CName& aAppearance, IScriptable* aOwner, const ItemID& aItemID) = 0; // 1D0
