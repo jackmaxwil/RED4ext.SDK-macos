@@ -19,8 +19,8 @@ inline std::string WideToUtf8(std::wstring_view aValue)
     }
 
 #if defined(_WIN32) || defined(_WIN64)
-    const int size = WideCharToMultiByte(CP_UTF8, 0, aValue.data(), static_cast<int>(aValue.size()), nullptr, 0,
-                                         nullptr, nullptr);
+    const int size =
+        WideCharToMultiByte(CP_UTF8, 0, aValue.data(), static_cast<int>(aValue.size()), nullptr, 0, nullptr, nullptr);
     if (size <= 0)
     {
         return {};

@@ -41,7 +41,7 @@ inline void SwitchToThread()
 {
     std::this_thread::yield();
 }
-}
+} // namespace Platform
 
 // Match the Windows API surface (global SwitchToThread).
 inline void SwitchToThread()
@@ -53,30 +53,34 @@ inline void SwitchToThread()
 #define InterlockedIncrement(ptr) __atomic_add_fetch(ptr, 1, __ATOMIC_SEQ_CST)
 #define InterlockedDecrement(ptr) __atomic_sub_fetch(ptr, 1, __ATOMIC_SEQ_CST)
 #define InterlockedExchangeAdd(ptr, val) __atomic_fetch_add(ptr, val, __ATOMIC_SEQ_CST)
-#define InterlockedCompareExchange(ptr, val, comp) ({ \
-    auto _comp = comp; \
-    __atomic_compare_exchange_n(ptr, &_comp, val, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST); \
-    _comp; \
-})
+#define InterlockedCompareExchange(ptr, val, comp)                                                                     \
+    ({                                                                                                                 \
+        auto _comp = comp;                                                                                             \
+        __atomic_compare_exchange_n(ptr, &_comp, val, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);                      \
+        _comp;                                                                                                         \
+    })
 #define InterlockedExchange(ptr, val) __atomic_exchange_n(ptr, val, __ATOMIC_SEQ_CST)
 
 // 64-bit Interlocked functions
 #define InterlockedIncrement64(ptr) __atomic_add_fetch((int64_t*)(ptr), 1, __ATOMIC_SEQ_CST)
 #define InterlockedDecrement64(ptr) __atomic_sub_fetch((int64_t*)(ptr), 1, __ATOMIC_SEQ_CST)
 #define InterlockedExchangeAdd64(ptr, val) __atomic_fetch_add((int64_t*)(ptr), (int64_t)(val), __ATOMIC_SEQ_CST)
-#define InterlockedCompareExchange64(ptr, val, comp) ({ \
-    int64_t _comp64 = (int64_t)(comp); \
-    __atomic_compare_exchange_n((int64_t*)(ptr), &_comp64, (int64_t)(val), false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST); \
-    _comp64; \
-})
+#define InterlockedCompareExchange64(ptr, val, comp)                                                                   \
+    ({                                                                                                                 \
+        int64_t _comp64 = (int64_t)(comp);                                                                             \
+        __atomic_compare_exchange_n((int64_t*)(ptr), &_comp64, (int64_t)(val), false, __ATOMIC_SEQ_CST,                \
+                                    __ATOMIC_SEQ_CST);                                                                 \
+        _comp64;                                                                                                       \
+    })
 #define InterlockedExchange64(ptr, val) __atomic_exchange_n((int64_t*)(ptr), (int64_t)(val), __ATOMIC_SEQ_CST)
 
 // 8-bit Interlocked functions
-#define _InterlockedCompareExchange8(ptr, val, comp) ({ \
-    auto _comp = (int8_t)comp; \
-    __atomic_compare_exchange_n((int8_t*)ptr, &_comp, (int8_t)val, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST); \
-    _comp; \
-})
+#define _InterlockedCompareExchange8(ptr, val, comp)                                                                   \
+    ({                                                                                                                 \
+        auto _comp = (int8_t)comp;                                                                                     \
+        __atomic_compare_exchange_n((int8_t*)ptr, &_comp, (int8_t)val, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);     \
+        _comp;                                                                                                         \
+    })
 #define InterlockedExchange8(ptr, val) __atomic_exchange_n((int8_t*)ptr, (int8_t)val, __ATOMIC_SEQ_CST)
 #define _InterlockedExchangeAdd8(ptr, val) __atomic_fetch_add((int8_t*)ptr, (int8_t)val, __ATOMIC_SEQ_CST)
 
@@ -92,7 +96,7 @@ inline void SwitchToThread()
 #define RED4EXT_DECLSPEC_noinline __attribute__((noinline))
 #define RED4EXT_DECLSPEC_dllexport __attribute__((visibility("default")))
 #define RED4EXT_DECLSPEC_dllimport /* nothing */
-#define RED4EXT_DECLSPEC_novtable /* nothing */
+#define RED4EXT_DECLSPEC_novtable  /* nothing */
 
 // Main __declspec macro - concatenates with the specifier to pick the right handler
 #define __declspec(x) RED4EXT_DECLSPEC_##x

@@ -6,20 +6,20 @@
 #include <RED4ext/TweakDB.hpp>
 
 #include <charconv>
+#include <chrono>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string_view>
 #include <thread>
-#include <chrono>
 #include <unordered_map>
 #include <vector>
 
 #if defined(__APPLE__)
 #include <dlfcn.h>
-#include <mach-o/dyld.h>
 #include <limits.h>
+#include <mach-o/dyld.h>
 #endif
 
 namespace
@@ -287,15 +287,14 @@ RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::
         if (!inserted)
         {
 #if defined(__APPLE__)
-            const bool isKnownStubPair = (addr == expectedStub) &&
-                                         ((hash == kSub98 && it->second == kSubA0) ||
-                                          (hash == kSubA0 && it->second == kSub98));
+            const bool isKnownStubPair = (addr == expectedStub) && ((hash == kSub98 && it->second == kSubA0) ||
+                                                                    (hash == kSubA0 && it->second == kSub98));
             if (!isKnownStubPair)
 #endif
             {
                 ++dupCount;
-                log << "[RED4ext.SDK smoke] DUP addr=0x" << std::hex << addr << " hash=0x" << hash
-                    << " first=0x" << it->second << std::dec << "\n";
+                log << "[RED4ext.SDK smoke] DUP addr=0x" << std::hex << addr << " hash=0x" << hash << " first=0x"
+                    << it->second << std::dec << "\n";
             }
         }
     }
@@ -303,10 +302,10 @@ RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::
 #if defined(__APPLE__)
     const auto sub98 = RED4ext::UniversalRelocBase::Resolve(kSub98);
     const auto subA0 = RED4ext::UniversalRelocBase::Resolve(kSubA0);
-    log << "[RED4ext.SDK smoke] CBaseRTTIType_sub_98=0x" << std::hex << sub98
-        << " expected=0x" << expectedStub << std::dec << "\n";
-    log << "[RED4ext.SDK smoke] CBaseRTTIType_sub_A0=0x" << std::hex << subA0
-        << " expected=0x" << expectedStub << std::dec << "\n";
+    log << "[RED4ext.SDK smoke] CBaseRTTIType_sub_98=0x" << std::hex << sub98 << " expected=0x" << expectedStub
+        << std::dec << "\n";
+    log << "[RED4ext.SDK smoke] CBaseRTTIType_sub_A0=0x" << std::hex << subA0 << " expected=0x" << expectedStub
+        << std::dec << "\n";
 #endif
 
     log << "[RED4ext.SDK smoke] Done. missing=" << zeroCount << " dup=" << dupCount << "\n";
@@ -323,8 +322,7 @@ RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::
     const auto tdbGet = RED4ext::UniversalRelocBase::Resolve(kTweakDBGet);
     log << "[RED4ext.SDK smoke] CRTTISystem_Get=0x" << std::hex << rttiGet << " ok=" << (rttiGet != 0) << std::dec
         << "\n";
-    log << "[RED4ext.SDK smoke] TweakDB_Get=0x" << std::hex << tdbGet << " ok=" << (tdbGet != 0) << std::dec
-        << "\n";
+    log << "[RED4ext.SDK smoke] TweakDB_Get=0x" << std::hex << tdbGet << " ok=" << (tdbGet != 0) << std::dec << "\n";
     return true;
 }
 

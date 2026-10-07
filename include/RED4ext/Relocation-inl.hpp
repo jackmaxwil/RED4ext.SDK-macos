@@ -4,30 +4,30 @@
 #include <RED4ext/Relocation.hpp>
 #endif
 
-#include <mutex>
-#include <sstream>
-#include <iostream>
-#include <unordered_map>
-#include <fstream>
+#include <atomic>
 #include <charconv>
 #include <cstdlib>
-#include <utility>
+#include <fstream>
+#include <iostream>
+#include <mutex>
+#include <sstream>
 #include <system_error>
-#include <atomic>
+#include <unordered_map>
+#include <utility>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #else
 #include <dlfcn.h>
+#include <limits.h>
 #include <mach-o/dyld.h>
 #include <mach-o/loader.h>
-#include <limits.h>
 #endif
 
 #include <RED4ext/Api/SemVer.hpp>
 #include <RED4ext/Common.hpp>
-#include <RED4ext/Detail/Utf8.hpp>
 #include <RED4ext/Detail/Memory.hpp>
+#include <RED4ext/Detail/Utf8.hpp>
 
 RED4EXT_INLINE uintptr_t RED4ext::RelocBase::GetImageBase()
 {
@@ -36,7 +36,8 @@ RED4EXT_INLINE uintptr_t RED4ext::RelocBase::GetImageBase()
 #else
     // When injected via DYLD_INSERT_LIBRARIES, image 0 may be the injected dylib
     // rather than the game executable. Find the image matching the process executable.
-    static const auto base = []() -> uintptr_t {
+    static const auto base = []() -> uintptr_t
+    {
         char exeBuf[PATH_MAX] = {};
         uint32_t exeSize = sizeof(exeBuf);
         if (_NSGetExecutablePath(exeBuf, &exeSize) != 0)
@@ -69,35 +70,35 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
         return Detail::AddressResolverOverride<uint32_t>::Resolve(aHash);
     }
 
-// ============================================================================
-// macOS Address Resolution
-// ============================================================================
-// On macOS, addresses are resolved from a JSON database file instead of using
-// the Windows Address Library. The database maps FNV1a hash values to offsets
-// within the game's Mach-O segments.
-//
-// Database Format (cyberpunk2077_addresses.json):
-// {
-//   "version": "1.0",
-//   "game_version": "2.3.1",
-//   "stats": { "total": 126, "resolved": 126, "unresolved": 0 },
-//   "Addresses": [
-//     { "hash": "1234567890", "offset": "1:0xABCDEF00" }
-//   ]
-// }
-//
-// Offset format: "segment:0xOFFSET" where segment indicates the Mach-O segment:
-//   1 = __TEXT
-//   2 = __DATA_CONST
-//   3 = __DATA
-//
-// Search paths (in order):
-//   1. $RED4EXT_SDK_ADDRESS_DB environment variable
-//   2. <game>/red4ext/bin/x64/cyberpunk2077_addresses.json, found by walking up from the plugin,
-//      then from the game executable. This is the single canonical copy, shared with the loader.
-//
-// Validation: Run scripts/validate_addresses.py
-// ============================================================================
+    // ============================================================================
+    // macOS Address Resolution
+    // ============================================================================
+    // On macOS, addresses are resolved from a JSON database file instead of using
+    // the Windows Address Library. The database maps FNV1a hash values to offsets
+    // within the game's Mach-O segments.
+    //
+    // Database Format (cyberpunk2077_addresses.json):
+    // {
+    //   "version": "1.0",
+    //   "game_version": "2.3.1",
+    //   "stats": { "total": 126, "resolved": 126, "unresolved": 0 },
+    //   "Addresses": [
+    //     { "hash": "1234567890", "offset": "1:0xABCDEF00" }
+    //   ]
+    // }
+    //
+    // Offset format: "segment:0xOFFSET" where segment indicates the Mach-O segment:
+    //   1 = __TEXT
+    //   2 = __DATA_CONST
+    //   3 = __DATA
+    //
+    // Search paths (in order):
+    //   1. $RED4EXT_SDK_ADDRESS_DB environment variable
+    //   2. <game>/red4ext/bin/x64/cyberpunk2077_addresses.json, found by walking up from the plugin,
+    //      then from the game executable. This is the single canonical copy, shared with the loader.
+    //
+    // Validation: Run scripts/validate_addresses.py
+    // ============================================================================
 
 #if !defined(_WIN32) && !defined(_WIN64)
     struct OffsetEntry
@@ -170,8 +171,8 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
     /// Extract a quoted string value that follows a given key in JSON.
     /// Example: Given text '{"hash":"123"}' and key '"hash"', returns "123".
     /// Returns empty string_view and npos if not found or format is invalid.
-    auto extractQuotedValueAfterKey = [](std::string_view aText, std::string_view aKey, size_t aFrom) ->
-        std::pair<std::string_view, size_t>
+    auto extractQuotedValueAfterKey = [](std::string_view aText, std::string_view aKey,
+                                         size_t aFrom) -> std::pair<std::string_view, size_t>
     {
         const auto keyPos = aText.find(aKey, aFrom);
         if (keyPos == std::string_view::npos)
@@ -198,114 +199,115 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
         // Never destroyed: plugins' static Handles are released by __cxa_finalize at exit and resolve addresses
         // from their destructors, after function-local statics like this one would already be gone.
         static AddressDb& db = *new AddressDb;
-        std::call_once(db.initOnce,
-                       [&]()
-                       {
-                           auto tryLoadFromPath = [&](const std::filesystem::path& aPath) -> bool
-                           {
-                               std::ifstream file(aPath);
-                               if (!file)
-                                   return false;
+        std::call_once(
+            db.initOnce,
+            [&]()
+            {
+                auto tryLoadFromPath = [&](const std::filesystem::path& aPath) -> bool
+                {
+                    std::ifstream file(aPath);
+                    if (!file)
+                        return false;
 
-                               std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-                               if (contents.empty())
-                                   return false;
+                    std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+                    if (contents.empty())
+                        return false;
 
-                               std::string_view text(contents);
-                               size_t pos = 0;
-                               while (true)
-                               {
-                                   auto [hashStr, hashNext] = extractQuotedValueAfterKey(text, "\"hash\"", pos);
-                                   if (hashNext == std::string_view::npos)
-                                       break;
-                                   auto [offStr, offNext] = extractQuotedValueAfterKey(text, "\"offset\"", hashNext);
-                                   if (offNext == std::string_view::npos)
-                                       break;
+                    std::string_view text(contents);
+                    size_t pos = 0;
+                    while (true)
+                    {
+                        auto [hashStr, hashNext] = extractQuotedValueAfterKey(text, "\"hash\"", pos);
+                        if (hashNext == std::string_view::npos)
+                            break;
+                        auto [offStr, offNext] = extractQuotedValueAfterKey(text, "\"offset\"", hashNext);
+                        if (offNext == std::string_view::npos)
+                            break;
 
-                                   std::uint32_t hash = 0;
-                                   OffsetEntry entry{};
-                                   if (tryParseU32(hashStr, hash) && tryParseOffset(offStr, entry))
-                                   {
-                                       const auto entryEnd = text.find('}', offNext);
-                                       const auto rest = text.substr(offNext, entryEnd == std::string_view::npos
-                                                                                   ? std::string_view::npos
-                                                                                   : entryEnd - offNext);
-                                       const auto key = rest.find("\"verified\"");
-                                       entry.verified = key != std::string_view::npos &&
-                                                        rest.substr(key).find("true") < rest.substr(key).find_first_of(",}");
-                                       db.offsets.emplace(hash, entry);
-                                   }
+                        std::uint32_t hash = 0;
+                        OffsetEntry entry{};
+                        if (tryParseU32(hashStr, hash) && tryParseOffset(offStr, entry))
+                        {
+                            const auto entryEnd = text.find('}', offNext);
+                            const auto rest =
+                                text.substr(offNext, entryEnd == std::string_view::npos ? std::string_view::npos
+                                                                                        : entryEnd - offNext);
+                            const auto key = rest.find("\"verified\"");
+                            entry.verified = key != std::string_view::npos &&
+                                             rest.substr(key).find("true") < rest.substr(key).find_first_of(",}");
+                            db.offsets.emplace(hash, entry);
+                        }
 
-                                   pos = offNext;
-                               }
+                        pos = offNext;
+                    }
 
-                               if (!db.offsets.empty())
-                               {
-                                   db.loaded = true;
-                                   db.path = aPath;
-                                   return true;
-                               }
+                    if (!db.offsets.empty())
+                    {
+                        db.loaded = true;
+                        db.path = aPath;
+                        return true;
+                    }
 
-                               return false;
-                           };
+                    return false;
+                };
 
-                           const char* envPath = std::getenv("RED4EXT_SDK_ADDRESS_DB");
-                           if (envPath && *envPath)
-                           {
-                               if (tryLoadFromPath(envPath))
-                                   return;
-                           }
+                const char* envPath = std::getenv("RED4EXT_SDK_ADDRESS_DB");
+                if (envPath && *envPath)
+                {
+                    if (tryLoadFromPath(envPath))
+                        return;
+                }
 
-                           static constexpr auto fileName = "cyberpunk2077_addresses.json";
+                static constexpr auto fileName = "cyberpunk2077_addresses.json";
 
-                           auto tryLoadFromRed4extRootNear = [&](std::filesystem::path aStart) -> bool
-                           {
-                               for (int i = 0; i < 10 && !aStart.empty(); ++i)
-                               {
-                                   std::filesystem::path red4extRoot;
-                                   if (aStart.filename() == "red4ext")
-                                   {
-                                       red4extRoot = aStart;
-                                   }
-                                   else
-                                   {
-                                       auto candidate = aStart / "red4ext";
-                                       if (std::filesystem::exists(candidate) && std::filesystem::is_directory(candidate))
-                                       {
-                                           red4extRoot = candidate;
-                                       }
-                                   }
+                auto tryLoadFromRed4extRootNear = [&](std::filesystem::path aStart) -> bool
+                {
+                    for (int i = 0; i < 10 && !aStart.empty(); ++i)
+                    {
+                        std::filesystem::path red4extRoot;
+                        if (aStart.filename() == "red4ext")
+                        {
+                            red4extRoot = aStart;
+                        }
+                        else
+                        {
+                            auto candidate = aStart / "red4ext";
+                            if (std::filesystem::exists(candidate) && std::filesystem::is_directory(candidate))
+                            {
+                                red4extRoot = candidate;
+                            }
+                        }
 
-                                   if (!red4extRoot.empty())
-                                   {
-                                       if (tryLoadFromPath(red4extRoot / "bin" / "x64" / fileName))
-                                           return true;
-                                   }
+                        if (!red4extRoot.empty())
+                        {
+                            if (tryLoadFromPath(red4extRoot / "bin" / "x64" / fileName))
+                                return true;
+                        }
 
-                                   aStart = aStart.parent_path();
-                               }
-                               return false;
-                           };
+                        aStart = aStart.parent_path();
+                    }
+                    return false;
+                };
 
-                           const auto modulePath = GetCurrentModulePath();
-                           if (!modulePath.empty())
-                           {
-                               // Common layout: <game>/red4ext/plugins/<PluginName>/<plugin>.dylib
-                               if (tryLoadFromRed4extRootNear(modulePath.parent_path()))
-                                   return;
-                           }
+                const auto modulePath = GetCurrentModulePath();
+                if (!modulePath.empty())
+                {
+                    // Common layout: <game>/red4ext/plugins/<PluginName>/<plugin>.dylib
+                    if (tryLoadFromRed4extRootNear(modulePath.parent_path()))
+                        return;
+                }
 
-                           char exePathBuf[PATH_MAX] = {};
-                           std::uint32_t exeSize = sizeof(exePathBuf);
-                           if (_NSGetExecutablePath(exePathBuf, &exeSize) == 0)
-                           {
-                               const auto exeDir = std::filesystem::path(exePathBuf).parent_path();
+                char exePathBuf[PATH_MAX] = {};
+                std::uint32_t exeSize = sizeof(exePathBuf);
+                if (_NSGetExecutablePath(exePathBuf, &exeSize) == 0)
+                {
+                    const auto exeDir = std::filesystem::path(exePathBuf).parent_path();
 
-                               // Also try <game>/red4ext/... by walking up from the executable directory.
-                               if (tryLoadFromRed4extRootNear(exeDir))
-                                   return;
-                           }
-                       });
+                    // Also try <game>/red4ext/... by walking up from the executable directory.
+                    if (tryLoadFromRed4extRootNear(exeDir))
+                        return;
+                }
+            });
         return db;
     };
 
@@ -411,8 +413,7 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
     {
         static std::once_flag loadedOnce;
         std::call_once(loadedOnce,
-                       [&]()
-                       {
+                       [&]() {
                            std::cerr << "[RED4ext.SDK] Loaded " << db.offsets.size() << " address entries from "
                                      << db.path.string() << "\n";
                        });
@@ -461,13 +462,13 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
     if (address == 0)
     {
         static std::once_flag warnOnce;
-        std::call_once(warnOnce,
-                       [&]()
-                       {
-                           std::cerr
-                               << "[RED4ext.SDK] macOS address resolution returned 0 for at least one hash. "
-                                  "Ensure cyberpunk2077_addresses.json is present and matches the game version.\n";
-                       });
+        std::call_once(
+            warnOnce,
+            [&]()
+            {
+                std::cerr << "[RED4ext.SDK] macOS address resolution returned 0 for at least one hash. "
+                             "Ensure cyberpunk2077_addresses.json is present and matches the game version.\n";
+            });
     }
     return address;
 #else

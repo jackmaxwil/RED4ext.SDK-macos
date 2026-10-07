@@ -226,9 +226,9 @@ struct CGameEngine : BaseGameEngine
     // macOS: BaseGameEngine is 0x310 and the framework is stored at +0x338 by the "CGameEngine/Initialization/
     // GameFramework" job (str x8,[engine,#0x338] at 0x103F233E4). +0x308 holds a small thread wrapper instead.
     // gameServices' position is unknown on macOS, so it is not declared (docs/re/gamesystem.md).
-    uint8_t unk2F0[0x338 - 0x2F0];        // 2F0
-    CGameFramework* framework;            // 338
-    uint8_t unk340[0x380 - 0x340];        // 340 - macOS CGameEngine is 0x380 (RTTI size at 0x103F22EFC)
+    uint8_t unk2F0[0x338 - 0x2F0]; // 2F0
+    CGameFramework* framework;     // 338
+    uint8_t unk340[0x380 - 0x340]; // 340 - macOS CGameEngine is 0x380 (RTTI size at 0x103F22EFC)
 #else
     int64_t unk2F0;                       // 2F0
     int64_t unk2F8;                       // 2F8

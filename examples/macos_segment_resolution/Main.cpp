@@ -78,7 +78,7 @@ SegmentBases GetSegmentBases()
     return bases;
 }
 #endif
-}
+} // namespace
 
 RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::EMainReason aReason,
                                         const RED4ext::Sdk* aSdk)
@@ -122,8 +122,8 @@ RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::
     const bool okDataConst = expectedDataConst != 0 && addrDataConst == expectedDataConst;
     const bool okData = expectedData != 0 && addrData == expectedData;
 
-    log << "[RED4ext.SDK segment] result text=" << (okText ? "OK" : "FAIL") << " dataConst="
-        << (okDataConst ? "OK" : "FAIL") << " data=" << (okData ? "OK" : "FAIL") << "\n";
+    log << "[RED4ext.SDK segment] result text=" << (okText ? "OK" : "FAIL")
+        << " dataConst=" << (okDataConst ? "OK" : "FAIL") << " data=" << (okData ? "OK" : "FAIL") << "\n";
 #endif
 
     return true;
@@ -142,4 +142,3 @@ RED4EXT_C_EXPORT uint32_t RED4EXT_CALL Supports()
 {
     return RED4EXT_API_VERSION_LATEST;
 }
-

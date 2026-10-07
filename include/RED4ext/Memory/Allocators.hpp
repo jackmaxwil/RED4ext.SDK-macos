@@ -39,7 +39,7 @@ struct IAllocator
                                             uint32_t aAlignment) const = 0; // 16
     virtual void Free(AllocationResult& aAllocation) const = 0;             // 20
     virtual void sub_28(void* a1) const = 0;                                // 28
-    virtual uint32_t GetHandle() const = 0;                           // 30
+    virtual uint32_t GetHandle() const = 0;                                 // 30
 
     [[deprecated("Use 'GetHandle()' instead.")]] uint32_t GetId() const
     {

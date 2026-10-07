@@ -36,7 +36,8 @@ struct ResourceToken
         }
 
 #ifdef __APPLE__
-        // macOS: the game inlines this release (no ResourceToken_DestructUnk38 function exists, see docs/re/resources.md).
+        // macOS: the game inlines this release (no ResourceToken_DestructUnk38 function exists, see
+        // docs/re/resources.md).
         Detail::ReleaseUnk38(unk40);
 #else
         using DestructUnk38_t = void (*)(void**);

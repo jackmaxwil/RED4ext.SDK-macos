@@ -7,8 +7,8 @@
 #include <cstdint>
 
 #if defined(_WIN32) || defined(_WIN64)
-#include <intrin.h>
 #include <Windows.h>
+#include <intrin.h>
 #else
 #include <RED4ext/Detail/WinCompat.hpp>
 #endif

@@ -55,7 +55,7 @@ struct CBaseRTTIType
     virtual void Destruct(ScriptInstance aMemory) const = 0;  // 40
     virtual bool IsEqual(const ScriptInstance aLhs, const ScriptInstance aRhs,
                          uint32_t a3 = 0) = 0; // 48 - Not const because CClass aquire some mutex when this is
-                                              // called and a flag is modified.
+                                               // called and a flag is modified.
     virtual void Assign(ScriptInstance aLhs, const ScriptInstance aRhs) const = 0;                 // 50
     virtual void Move(ScriptInstance aLhs, ScriptInstance aRhs) const;                             // 58
     virtual bool Unserialize(BaseStream* aStream, ScriptInstance aInstance, int64_t a3) const = 0; // 60
@@ -67,13 +67,13 @@ struct CBaseRTTIType
     virtual bool sub_90(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4);            // 90
     virtual bool sub_98(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4, bool a5);   // 98
 #ifdef __APPLE__
-    virtual bool sub_A0(int64_t a1, CString& a2, bool* a3);                                         // A0
+    virtual bool sub_A0(int64_t a1, CString& a2, bool* a3); // A0
 #else
-    virtual bool sub_A0(int64_t a1, CString& a2, bool a3);                                         // A0
+    virtual bool sub_A0(int64_t a1, CString& a2, bool a3); // A0
 #endif
-    virtual bool sub_A8();                                                                         // A8
-    virtual void sub_B0(int64_t a1, int64_t a2);                                                   // B0
-    virtual Memory::IAllocator* GetAllocator() const;                                              // B8
+    virtual bool sub_A8();                            // A8
+    virtual void sub_B0(int64_t a1, int64_t a2);      // B0
+    virtual Memory::IAllocator* GetAllocator() const; // B8
 
     [[deprecated("Use 'GetName()' instead.")]]
     inline void GetName(CName& aOut) const
@@ -162,11 +162,11 @@ struct CClass : CBaseRTTIType
     bool sub_90(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4) final;          // 90
     bool sub_98(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4, bool a5) final; // 98
 #ifdef __APPLE__
-    bool sub_A0(int64_t a1, CString& a2, bool* a3) final;                                       // A0
+    bool sub_A0(int64_t a1, CString& a2, bool* a3) final; // A0
 #else
-    bool sub_A0(int64_t a1, CString& a2, bool a3) final;                                       // A0
+    bool sub_A0(int64_t a1, CString& a2, bool a3) final; // A0
 #endif
-    void sub_B0(int64_t a1, int64_t a2) final;                                                 // B0
+    void sub_B0(int64_t a1, int64_t a2) final; // B0
 
     virtual void sub_C0();                                       // C0
     virtual uint32_t GetMaxAlignment() const;                    // C8
@@ -207,20 +207,20 @@ struct CClass : CBaseRTTIType
         return CreateInstance(aZeroMemory);
     }
 
-    CClass* parent;                              // 10
-    CName name;                                  // 18
-    CName computedName;                          // 20
-    DynArray<CProperty*> props;                  // 28
+    CClass* parent;             // 10
+    CName name;                 // 18
+    CName computedName;         // 20
+    DynArray<CProperty*> props; // 28
 #ifdef __APPLE__
     // macOS: 16-byte entries, the property and a u32 (GetProperty 0x102198B40: `add x24,x23,x8,lsl #4`)
     struct OverriddenProperty
     {
-        CProperty* prop;  // 00
-        uint32_t unk08;   // 08
+        CProperty* prop; // 00
+        uint32_t unk08;  // 08
     };
     DynArray<OverriddenProperty> overriddenProps; // 38
 #else
-    DynArray<CProperty*> overriddenProps;        // 38
+    DynArray<CProperty*> overriddenProps; // 38
 #endif
     DynArray<CClassFunction*> funcs;             // 48
     DynArray<CClassStaticFunction*> staticFuncs; // 58
@@ -319,18 +319,18 @@ struct CEnum : CBaseRTTIType
 
     CEnum(CName aName, int8_t aActualSize, Flags aFlags = {});
 
-    CName GetName() const final;                                                                     // 08
-    uint32_t GetSize() const final;                                                                  // 10
-    uint32_t GetAlignment() const final;                                                             // 18
-    ERTTIType GetType() const final;                                                                 // 20
-    CName GetComputedName() const final;                                                             // 30
-    void Construct(ScriptInstance aMemory) const final;                                              // 38
-    void Destruct(ScriptInstance aMemory) const final;                                               // 40
+    CName GetName() const final;                                                               // 08
+    uint32_t GetSize() const final;                                                            // 10
+    uint32_t GetAlignment() const final;                                                       // 18
+    ERTTIType GetType() const final;                                                           // 20
+    CName GetComputedName() const final;                                                       // 30
+    void Construct(ScriptInstance aMemory) const final;                                        // 38
+    void Destruct(ScriptInstance aMemory) const final;                                         // 40
     bool IsEqual(const ScriptInstance aLhs, const ScriptInstance aRhs, uint32_t a3 = 0) final; // 48
-    void Assign(ScriptInstance aLhs, const ScriptInstance aRhs) const final;                         // 50
-    bool Unserialize(BaseStream* aStream, ScriptInstance aInstance, int64_t a3) const final;         // 60
-    bool ToString(const ScriptInstance aInstance, CString& aOut) const final;                        // 68
-    bool FromString(ScriptInstance aInstance, const CString& aString) const final;                   // 70
+    void Assign(ScriptInstance aLhs, const ScriptInstance aRhs) const final;                   // 50
+    bool Unserialize(BaseStream* aStream, ScriptInstance aInstance, int64_t a3) const final;   // 60
+    bool ToString(const ScriptInstance aInstance, CString& aOut) const final;                  // 68
+    bool FromString(ScriptInstance aInstance, const CString& aString) const final;             // 70
 
     CName name;                       // 10
     CName computedName;               // 18
@@ -362,18 +362,18 @@ struct CBitfield : CBaseRTTIType
 
     CBitfield(CName aName, int8_t aActualSize, Flags aFlags = {});
 
-    CName GetName() const final;                                                                     // 08
-    uint32_t GetSize() const final;                                                                  // 10
-    uint32_t GetAlignment() const final;                                                             // 18
-    ERTTIType GetType() const final;                                                                 // 20
-    CName GetComputedName() const final;                                                             // 30
-    void Construct(ScriptInstance aMemory) const final;                                              // 38
-    void Destruct(ScriptInstance aMemory) const final;                                               // 40
+    CName GetName() const final;                                                               // 08
+    uint32_t GetSize() const final;                                                            // 10
+    uint32_t GetAlignment() const final;                                                       // 18
+    ERTTIType GetType() const final;                                                           // 20
+    CName GetComputedName() const final;                                                       // 30
+    void Construct(ScriptInstance aMemory) const final;                                        // 38
+    void Destruct(ScriptInstance aMemory) const final;                                         // 40
     bool IsEqual(const ScriptInstance aLhs, const ScriptInstance aRhs, uint32_t a3 = 0) final; // 48
-    void Assign(ScriptInstance aLhs, const ScriptInstance aRhs) const final;                         // 50
-    bool Unserialize(BaseStream* aStream, ScriptInstance aInstance, int64_t a3) const final;         // 60
-    bool ToString(const ScriptInstance aInstance, CString& aOut) const final;                        // 68
-    bool FromString(ScriptInstance aInstance, const CString& aString) const final;                   // 70
+    void Assign(ScriptInstance aLhs, const ScriptInstance aRhs) const final;                   // 50
+    bool Unserialize(BaseStream* aStream, ScriptInstance aInstance, int64_t a3) const final;   // 60
+    bool ToString(const ScriptInstance aInstance, CString& aOut) const final;                  // 68
+    bool FromString(ScriptInstance aInstance, const CString& aString) const final;             // 70
 
     CName name;         // 10
     CName computedName; // 18
@@ -450,7 +450,7 @@ RED4EXT_ASSERT_OFFSET(CRTTIBaseArrayType, innerType, 0x10);
 
 struct CRTTIArrayType : CRTTIBaseArrayType
 {
-    CName name;            // 18
+    CName name;   // 18
 #ifndef __APPLE__ // macOS: the "array:" factory 0x1021959B8 allocates 0x20 bytes; nothing lives at 0x20 or above
     CBaseRTTIType* parent; // 20
     uintptr_t unk28;       // 28

@@ -141,7 +141,7 @@ public:
 #endif
         return m_address;
     }
-    
+
     inline bool IsValid() const
     {
 #if !defined(_WIN32) && !defined(_WIN64)
@@ -189,7 +189,8 @@ public:
             const_cast<UniversalRelocPtr*>(this)->m_address = reinterpret_cast<T*>(Resolve(m_hash));
             const_cast<UniversalRelocPtr*>(this)->m_resolved = true;
         }
-        if (!m_address) return T{};  // Return default for unresolved addresses
+        if (!m_address)
+            return T{}; // Return default for unresolved addresses
 #endif
         return *m_address;
     }

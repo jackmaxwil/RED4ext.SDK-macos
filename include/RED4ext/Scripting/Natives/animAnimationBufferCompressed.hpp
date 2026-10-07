@@ -4,10 +4,10 @@
 #include <RED4ext/Common.hpp>
 #include <RED4ext/DynArray.hpp>
 #include <RED4ext/NativeTypes.hpp>
-#include <RED4ext/Scripting/Natives/animAnimBufferState.hpp>
-#include <RED4ext/Scripting/Natives/animKeyFrames.hpp>
 #include <RED4ext/Scripting/Natives/Generated/anim/AnimDataAddress.hpp>
 #include <RED4ext/Scripting/Natives/Generated/anim/IAnimationBuffer.hpp>
+#include <RED4ext/Scripting/Natives/animAnimBufferState.hpp>
+#include <RED4ext/Scripting/Natives/animKeyFrames.hpp>
 #include <RED4ext/Span.hpp>
 #include <cstdint>
 

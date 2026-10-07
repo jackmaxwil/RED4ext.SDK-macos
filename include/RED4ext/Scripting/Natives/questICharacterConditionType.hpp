@@ -16,7 +16,7 @@ struct ICharacterConditionType : quest::IConditionType
 
     game::EntityReference objectRef; // 38
     bool isPlayer;                   // 70
-#ifndef __APPLE__ // macOS: derived classes reuse this tail padding (Itanium), as in the game
+#ifndef __APPLE__                    // macOS: derived classes reuse this tail padding (Itanium), as in the game
     uint8_t unk71[0x78 - 0x71];      // 71
 #endif
 };
