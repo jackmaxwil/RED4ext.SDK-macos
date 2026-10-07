@@ -12,6 +12,13 @@
 #include <cstdint>
 #include <type_traits>
 
+#ifdef __APPLE__
+#include <RED4ext/Memory/PoolSymbols.hpp>
+
+#include <dlfcn.h>
+#include <string>
+#endif
+
 namespace RED4ext
 {
 namespace Memory
@@ -79,6 +86,54 @@ struct Allocator : IAllocator
      * doing something else the calls will be ill-formed.
      */
 
+#ifdef __APPLE__
+    // macOS: the game exports red::memory::PoolStorageProxy<Pool>::{Allocate, Free, ...} as static functions taking
+    // and returning red::memory::Block {void*, size_t}, which has the same layout as AllocationResult.
+    virtual AllocationResult Alloc(uint64_t aSize) const override
+    {
+        static auto fn = Proxy<AllocationResult (*)(uint64_t)>("8AllocateEy");
+        return fn ? fn(aSize) : AllocationResult{};
+    }
+
+    virtual AllocationResult AllocAligned(uint64_t aSize, uint32_t aAlignment) const override
+    {
+        static auto fn = Proxy<AllocationResult (*)(uint64_t, uint32_t)>("15AllocateAlignedEyj");
+        return fn ? fn(aSize, aAlignment) : AllocationResult{};
+    }
+
+    virtual AllocationResult Realloc(AllocationResult& aAllocation, uint64_t aSize) const override
+    {
+        static auto fn = Proxy<AllocationResult (*)(AllocationResult&, uint64_t)>("10ReallocateERNS0_5BlockEy");
+        return fn ? fn(aAllocation, aSize) : AllocationResult{};
+    }
+
+    virtual AllocationResult ReallocAligned(AllocationResult& aAllocation, uint64_t aSize,
+                                            uint32_t aAlignment) const override
+    {
+        static auto fn =
+            Proxy<AllocationResult (*)(AllocationResult&, uint64_t, uint32_t)>("17ReallocateAlignedERNS0_5BlockEyj");
+        return fn ? fn(aAllocation, aSize, aAlignment) : AllocationResult{};
+    }
+
+    virtual void Free(AllocationResult& aAllocation) const override
+    {
+        static auto fn = Proxy<void (*)(AllocationResult&)>("4FreeERNS0_5BlockE");
+        if (fn)
+        {
+            fn(aAllocation);
+        }
+    }
+
+    virtual void sub_28(void*) const override
+    {
+    }
+
+    virtual uint32_t GetHandle() const override
+    {
+        static auto fn = Proxy<uint32_t (*)()>("9GetHandleEv");
+        return fn ? fn() : 0;
+    }
+#else
     virtual AllocationResult Alloc(uint64_t aSize) const override
     {
         using alloc_t = void(RED4EXT_CALL*)(Vault*, AllocationResult*, uint64_t);
@@ -178,6 +233,8 @@ struct Allocator : IAllocator
         return pool->handle;
     }
 
+#endif
+
     using IAllocator::Alloc;
     using IAllocator::Free;
 
@@ -186,6 +243,22 @@ protected:
     ~Allocator() = default;
 
 private:
+#ifdef __APPLE__
+    template<typename F>
+    static F Proxy(const char* aMethod)
+    {
+        for (const auto& pool : Detail::PoolSymbols)
+        {
+            if (pool.name == T::Name)
+            {
+                auto symbol = std::string("_ZN3red6memory16PoolStorageProxyI").append(pool.mangledArg).append("E");
+                return reinterpret_cast<F>(dlsym(RTLD_MAIN_ONLY, symbol.append(aMethod).c_str()));
+            }
+        }
+        return nullptr;
+    }
+#endif
+
     inline void OOM(uint64_t aSize, uint32_t aAlignment) const
     {
         using oom_t = AllocationResult (*)(PoolStorage*, uint64_t, uint32_t);
