@@ -158,12 +158,21 @@ RED4EXT_INLINE bool RED4ext::CBaseRTTIType::sub_98(int64_t a1, ScriptInstance aI
     return func(this, a1, aInstance, a3, a4, a5);
 }
 
+#ifdef __APPLE__
+RED4EXT_INLINE bool RED4ext::CBaseRTTIType::sub_A0(int64_t a1, CString& a2, bool* a3)
+{
+    using func_t = bool (*)(CBaseRTTIType*, int64_t, CString&, bool*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CBaseRTTIType_sub_A0);
+    return func(this, a1, a2, a3);
+}
+#else
 RED4EXT_INLINE bool RED4ext::CBaseRTTIType::sub_A0(int64_t a1, CString& a2, bool a3)
 {
     using func_t = bool (*)(CBaseRTTIType*, int64_t, CString&, bool);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CBaseRTTIType_sub_A0);
     return func(this, a1, a2, a3);
 }
+#endif
 
 RED4EXT_INLINE bool RED4ext::CBaseRTTIType::sub_A8()
 {
@@ -284,19 +293,35 @@ RED4EXT_INLINE bool RED4ext::CClass::sub_90(int64_t a1, ScriptInstance aInstance
 
 RED4EXT_INLINE bool RED4ext::CClass::sub_98(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4, bool a5)
 {
+#ifdef __APPLE__
+    // macOS has a separate sub_98 (0x1021996C0); do not alias it to sub_90.
+    using func_t = bool (*)(const CClass*, int64_t, ScriptInstance, CString&, int64_t, bool);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CClass_sub_98);
+    return func(this, a1, aInstance, a3, a4, a5);
+#else
     RED4EXT_UNUSED_PARAMETER(a5);
 
     using func_t = bool (*)(const CClass*, int64_t, ScriptInstance, CString&, int64_t);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CClass_sub_90);
     return func(this, a1, aInstance, a3, a4);
+#endif
 }
 
+#ifdef __APPLE__
+RED4EXT_INLINE bool RED4ext::CClass::sub_A0(int64_t a1, CString& a2, bool* a3)
+{
+    using func_t = bool (*)(const CClass*, int64_t, CString&, bool*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CClass_sub_A0);
+    return func(this, a1, a2, a3);
+}
+#else
 RED4EXT_INLINE bool RED4ext::CClass::sub_A0(int64_t a1, CString& a2, bool a3)
 {
     using func_t = bool (*)(const CClass*, int64_t, CString&, bool);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CClass_sub_A0);
     return func(this, a1, a2, a3);
 }
+#endif
 
 RED4EXT_INLINE void RED4ext::CClass::sub_B0(int64_t a1, int64_t a2)
 {

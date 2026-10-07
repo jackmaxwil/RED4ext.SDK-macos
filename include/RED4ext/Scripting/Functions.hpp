@@ -137,9 +137,17 @@ struct CClassFunction : CBaseFunction
             auto fullName = CNamePool::Add(aFullName);
             auto shortName = CNamePool::Add(aShortName);
 
+#ifdef __APPLE__
+            // macOS: the native function is a 16-byte member-function pointer {function in x4, adjustment 0 in x5},
+            // so the flags move to w6. A non-zero adjustment bit 0 would make the game treat it as virtual.
+            using func_t = CClassFunction* (*)(CClassFunction*, CClass*, CName, CName, void*, intptr_t, Flags);
+            static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CClassFunction_ctor);
+            func(memory, aParent, fullName, shortName, reinterpret_cast<void*>(aFunc), 0, aFlags);
+#else
             using func_t = CClassFunction* (*)(CClassFunction*, CClass*, CName, CName, ScriptingFunction_t<T>, Flags);
             static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CClassFunction_ctor);
             func(memory, aParent, fullName, shortName, aFunc, aFlags);
+#endif
         }
 
         return memory;

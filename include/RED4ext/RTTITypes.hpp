@@ -66,7 +66,11 @@ struct CBaseRTTIType
     virtual bool sub_88(int64_t a1, ScriptInstance aInstance);                                     // 88
     virtual bool sub_90(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4);            // 90
     virtual bool sub_98(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4, bool a5);   // 98
+#ifdef __APPLE__
+    virtual bool sub_A0(int64_t a1, CString& a2, bool* a3);                                         // A0
+#else
     virtual bool sub_A0(int64_t a1, CString& a2, bool a3);                                         // A0
+#endif
     virtual bool sub_A8();                                                                         // A8
     virtual void sub_B0(int64_t a1, int64_t a2);                                                   // B0
     virtual Memory::IAllocator* GetAllocator() const;                                              // B8
@@ -157,7 +161,11 @@ struct CClass : CBaseRTTIType
     bool sub_88(int64_t a1, ScriptInstance aInstance) final;                                   // 88
     bool sub_90(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4) final;          // 90
     bool sub_98(int64_t a1, ScriptInstance aInstance, CString& a3, int64_t a4, bool a5) final; // 98
+#ifdef __APPLE__
+    bool sub_A0(int64_t a1, CString& a2, bool* a3) final;                                       // A0
+#else
     bool sub_A0(int64_t a1, CString& a2, bool a3) final;                                       // A0
+#endif
     void sub_B0(int64_t a1, int64_t a2) final;                                                 // B0
 
     virtual void sub_C0();                                       // C0
