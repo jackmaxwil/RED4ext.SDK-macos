@@ -79,7 +79,12 @@ struct TweakDB
         RED4EXT_TDB_FLAT_VALUE_GETTER(Int32);
 
         virtual CStackType GetValue() = 0;
+#ifdef __APPLE__
+        // macOS: returns the name in x0 and takes no out-parameter.
+        virtual CName GetTypeName() = 0;
+#else
         virtual CName* GetTypeName(CName* aName) = 0;
+#endif
         virtual void* GetDataPtr() = 0;
 
         template<typename T>
@@ -130,11 +135,18 @@ struct TweakDB
             return {CRTTISystem::Get()->GetType(N), &data};
         }
 
+#ifdef __APPLE__
+        virtual CName GetTypeName() override
+        {
+            return N;
+        }
+#else
         virtual CName* GetTypeName(CName* aName) override
         {
             *aName = N;
             return aName;
         }
+#endif
 
         virtual void* GetDataPtr() override
         {

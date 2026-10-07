@@ -414,6 +414,8 @@ RED4EXT_INLINE void RED4ext::TweakDB::UpsizeFlatDataBuffer(uint32_t aCapacity)
     auto currentSize = static_cast<uint32_t>(flatDataBufferEnd - flatDataBuffer);
     auto* oldFlatDataBuffer = reinterpret_cast<void*>(flatDataBuffer);
     memcpy(result.memory, oldFlatDataBuffer, currentSize);
+    // Readers treat a zero word as padding; never leave stale bytes after the copied flats.
+    memset(static_cast<uint8_t*>(result.memory) + currentSize, 0, result.size - currentSize);
     SetFlatDataBuffer(result.memory, currentSize, static_cast<uint32_t>(result.size));
 
     // Race condition when freeing old buffer
