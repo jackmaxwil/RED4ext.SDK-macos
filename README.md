@@ -38,6 +38,8 @@ instead add `include/` to their include path directly, which is equivalent to he
 
 ## macOS rules for plugin authors
 
+The full procedure, with checks for each step, is in [docs/PORTING_A_PLUGIN.md](docs/PORTING_A_PLUGIN.md).
+
 - **Only verified addresses resolve.** An address hash whose DB entry is not `"verified": true` resolves to 0, and
   RED4ext refuses to load a plugin that needs one. Check your build:
   `python3 scripts/plugin_requirements.py path/to/MyPlugin.dylib` (exit 1 lists the unverified hashes).

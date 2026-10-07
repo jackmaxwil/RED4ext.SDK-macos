@@ -19,3 +19,5 @@ Evidence for the macOS address database (`../cyberpunk2077_addresses.json`) and 
 | [re/rttireg.md](re/rttireg.md) | RTTI native-type registration used by TweakXL (RedLib). |
 | [re/tweakxl_layout.md](re/tweakxl_layout.md) | Struct and container layouts that TweakXL reads or writes. |
 | [re/reflection_layout.md](re/reflection_layout.md) | Reflection object layout used by the live RTTI dumper. |
+
+- [PORTING_A_PLUGIN.md](PORTING_A_PLUGIN.md): step-by-step procedure for porting a RED4ext plugin to macOS.
