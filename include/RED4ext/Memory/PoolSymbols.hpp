@@ -7,7 +7,7 @@
 
 #include <string_view>
 
-namespace RED4ext::Memory::Detail
+namespace RED4ext::Detail
 {
 struct PoolSymbol
 {
@@ -608,4 +608,4 @@ inline constexpr PoolSymbol PoolSymbols[] = {
     {"GPUM_Buffer_Misc", "N6GpuApi16GPUM_Buffer_MiscE"},
     {"GPUM_Buffer_MorphTargets", "N6GpuApi24GPUM_Buffer_MorphTargetsE"},
 };
-} // namespace RED4ext::Memory::Detail
+} // namespace RED4ext::Detail

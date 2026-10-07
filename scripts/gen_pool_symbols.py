@@ -66,10 +66,10 @@ def main() -> int:
         "// red::memory::PoolStorageProxy<Pool> (symbol: _ZN3red6memory16PoolStorageProxyI<arg>E<method>).\n"
         f"// Pools without an exported proxy: {', '.join(missing) or 'none'}.\n\n"
         "#include <string_view>\n\n"
-        "namespace RED4ext::Memory::Detail\n{\n"
+        "namespace RED4ext::Detail\n{\n"
         "struct PoolSymbol\n{\n    std::string_view name;\n    std::string_view mangledArg;\n};\n\n"
         "inline constexpr PoolSymbol PoolSymbols[] = {\n" + "\n".join(rows) + "\n};\n"
-        "} // namespace RED4ext::Memory::Detail\n"
+        "} // namespace RED4ext::Detail\n"
     )
     print(f"{OUT.relative_to(ROOT)}: {len(rows)} pools, {len(missing)} without an exported proxy: {missing}")
     return 0
