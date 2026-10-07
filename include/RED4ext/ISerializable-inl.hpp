@@ -85,8 +85,8 @@ RED4EXT_INLINE bool RED4ext::ISerializable::sub_70()
 }
 
 #ifdef __APPLE__
-RED4EXT_INLINE RED4ext::Handle<RED4ext::ISerializable> RED4ext::ISerializable::sub_78(int64_t a2, uint8_t a3, int64_t a4,
-                                                                                      int64_t a5)
+RED4EXT_INLINE RED4ext::Handle<RED4ext::ISerializable> RED4ext::ISerializable::sub_78(int64_t a2, uint8_t a3,
+                                                                                      int64_t a4, int64_t a5)
 {
     using func_t = Handle<ISerializable> (*)(ISerializable*, int64_t, uint8_t, int64_t, int64_t);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ISerializable_sub_78);
@@ -157,6 +157,7 @@ RED4EXT_INLINE void* RED4ext::ISerializable::sub_C0(void* a1)
 {
 #ifdef __APPLE__
     // macOS: takes only `this`; a1 is not used by the game.
+    (void)a1;
     using func_t = void* (*)(ISerializable*);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ISerializable_sub_C0);
     return func(this);
