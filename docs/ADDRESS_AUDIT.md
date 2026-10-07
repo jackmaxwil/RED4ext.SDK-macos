@@ -166,3 +166,23 @@ The game's macOS lock routines are at `0x100002098` (lock shared), `0x1000020C0`
 With the Windows encoding, SDK code would let a plugin reader in while a game writer held the lock, and an SDK writer's release would erase the game's reader counts. That affects every SDK struct that embeds `SharedSpinLock`, including TweakDB, RTTISystem, ResourceLoader, ink widgets and memory pools. `SharedSpinLock-inl.hpp` now implements the macOS encoding under `__APPLE__`.
 
 `Mutex` (`CRITICAL_SECTION` on Windows, `pthread_mutex_t` here) differs in size. Any SDK struct that embeds it, such as `CRTTISystem`, is not layout-compatible on macOS and must not be accessed by field offset.
+
+## Plugin worklist pass (2026-10-06): jobs, core, appearance, character customization, resources
+
+These groups were reverse-engineered statically. The per-entry evidence (strings, call graph, vtable slots, struct fingerprints) is in `docs/re/<group>.md`. Only entries marked "confirmed" there are `"verified": true` in the database. Entries marked "likely" have their offset updated but are left unverified.
+
+- **jobs:** 11 of 11 confirmed. The SDK now returns `JobQueue::Capture` through x8 and passes `JobInternalHandle_Acquire` its name argument.
+- **core:** 25 confirmed and 1 likely (`CClass_GetProperties`).
+  - `Handle_ctor` has no out-of-line copy on macOS, so the SDK now inlines it.
+  - `ISerializable::sub_78`, `sub_B0` and `sub_C8` return through x8 on macOS.
+  - `CGameEngine` is 0x380 bytes on macOS. `ResourceDepot` has a different layout (`rootPath` at +0x48).
+- **appearance:** 20 confirmed and 7 likely.
+  - 2 are inlined on macOS: `TPPRepresentationComponent_IsAffectedSlot` and `AppearanceChanger_GetSuffixValue`.
+  - 8 were not found.
+- **charcustom:** 15 confirmed. `GetHairColor` is inlined, and `GetResource` exists but is never called.
+- **resources:** 29 confirmed and 3 likely.
+  - `ResourceLoader_OnUpdate` was not found.
+  - `ResourceToken_DestructUnk38` is inlined.
+  - The earlier ArchiveXL crash at `0x1D50D24` is in the game's input-context code (`0x101D50CE8`), not in any resource function.
+
+**`verified` covers the address only.** Many confirmed functions have arm64 signatures that differ from ArchiveXL's Windows declarations. The most common difference is a result returned through x8 that the Windows declaration passes as a hidden second argument. Each group file lists them under "signature" or "ABI". ArchiveXL must be ported to those signatures, and must drop or replace its hooks on inlined or missing functions, before it can be enabled. The loader keeps refusing it while any hash it uses is unverified.
