@@ -22,8 +22,14 @@ struct ITransactionSystem : IGameSystem
     virtual void sub_1B8() = 0;                                                                                  // 1B8
     virtual void sub_1C0() = 0;                                                                                  // 1C0
     virtual void sub_1C8() = 0;                                                                                  // 1C8
+#ifdef __APPLE__
+    // macOS: the CName comes back in x0 and the ItemID is passed by value (x2:x3).
+    virtual CName GetItemAppearance(IScriptable* aOwner, ItemID aItemID) = 0; // 1D0
+    virtual void ResetItemAppearance(IScriptable* aOwner, ItemID aItemID) = 0; // 1D8
+#else
     virtual CName* GetItemAppearance(CName& aAppearance, IScriptable* aOwner, const ItemID& aItemID) = 0;        // 1D0
     virtual void ResetItemAppearance(IScriptable* aOwner, const ItemID& aItemID) = 0;                            // 1D8
+#endif
     virtual void sub_1E0() = 0;                                                                                  // 1E0
     virtual void sub_1E8() = 0;                                                                                  // 1E8
     virtual void sub_1F0() = 0;                                                                                  // 1F0
@@ -118,9 +124,16 @@ struct ITransactionSystem : IGameSystem
     virtual void sub_4B8() = 0;                                                                                  // 4B8
     virtual void sub_4C0() = 0;                                                                                  // 4C0
     virtual void sub_4C8() = 0;                                                                                  // 4C8
+#ifdef __APPLE__
+    // macOS keeps the declaration order of these two overload-like virtuals; MSVC reverses it (the game's own
+    // "MatchVisualTag" native calls +0x4D8 and "MatchVisualTagByItemID" +0x4E0 on macOS).
+    virtual bool MatchVisualTag(const Handle<IScriptable>& aItem, CName aTag, bool aUseDefaultAppearance) = 0;
+    virtual bool MatchVisualTagByItemID(const ItemID& aItemID, const Handle<IScriptable>& aOwner, CName aTag) = 0;
+#else
     virtual bool MatchVisualTagByItemID(const ItemID& aItemID, const Handle<IScriptable>& aOwner,
                                         CName aTag) = 0;                                                       // 4D0
     virtual bool MatchVisualTag(const Handle<IScriptable>& aItem, CName aTag, bool aUseDefaultAppearance) = 0; // 4D8
+#endif
     virtual void sub_4E0() = 0;                                                                                // 4E0
     virtual void sub_4E8() = 0;                                                                                // 4E8
 };

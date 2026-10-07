@@ -222,6 +222,14 @@ struct CGameEngine : BaseGameEngine
 
     static CGameEngine* Get();
 
+#ifdef __APPLE__
+    // macOS: BaseGameEngine is 0x310 and the framework is stored at +0x338 by the "CGameEngine/Initialization/
+    // GameFramework" job (str x8,[engine,#0x338] at 0x103F233E4). +0x308 holds a small thread wrapper instead.
+    // gameServices' position is unknown on macOS, so it is not declared (docs/re/gamesystem.md).
+    uint8_t unk2F0[0x338 - 0x2F0];        // 2F0
+    CGameFramework* framework;            // 338
+    uint8_t unk340[0x380 - 0x340];        // 340 - macOS CGameEngine is 0x380 (RTTI size at 0x103F22EFC)
+#else
     int64_t unk2F0;                       // 2F0
     int64_t unk2F8;                       // 2F8
     int32_t unk300;                       // 300
@@ -235,16 +243,15 @@ struct CGameEngine : BaseGameEngine
     int64_t unk338;                       // 338
     int32_t unk340;                       // 340
     int64_t unk348;                       // 348
-#ifdef __APPLE__
-    uint8_t unk350[0x380 - 0x350];        // 350 - macOS CGameEngine is 0x380 (RTTI size at 0x103F22EFC)
 #endif
 };
 #ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CGameEngine, 0x380);
+RED4EXT_ASSERT_OFFSET(CGameEngine, framework, 0x338);
 #else
 RED4EXT_ASSERT_SIZE(CGameEngine, 0x350);
-#endif
 RED4EXT_ASSERT_OFFSET(CGameEngine, framework, 0x308);
+#endif
 } // namespace RED4ext
 
 #ifdef RED4EXT_HEADER_ONLY

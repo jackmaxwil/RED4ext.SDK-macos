@@ -217,3 +217,14 @@ A separate static scan of the registration code agrees on all 18,576 overlapping
 - **TweakXL** and **ModMenu:** all 10 gated classes match. **ArchiveXL:** all 135 gated classes match.
 
 Rerun the dump on patch day, then `gen_macos_layouts.py`.
+
+## Correction (2026-10-07): CGameEngine::framework is at +0x338 on macOS
+`docs/re/core.md` said `framework` is at 0x308. That is wrong: on macOS, +0x308 holds a 16-byte thread wrapper. The framework is stored at +0x338 by the "CGameEngine/Initialization/GameFramework" job (`str x8,[engine,#0x338]` at 0x103F233E4).
+
+ArchiveXL's first in-game run crashed in `GetGameSystem` because it read the wrong slot.
+
+Two TransactionSystem virtuals also differ on macOS:
+- MatchVisualTag and MatchVisualTagByItemID are in swapped slots (+0x4D8 and +0x4E0).
+- GetItemAppearance and ResetItemAppearance take the ItemID by value.
+
+Evidence: `docs/re/gamesystem.md`.
