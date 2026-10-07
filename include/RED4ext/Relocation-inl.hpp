@@ -195,7 +195,9 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 
     auto loadAddressDb = [&]() -> AddressDb&
     {
-        static AddressDb db;
+        // Never destroyed: plugins' static Handles are released by __cxa_finalize at exit and resolve addresses
+        // from their destructors, after function-local statics like this one would already be gone.
+        static AddressDb& db = *new AddressDb;
         std::call_once(db.initOnce,
                        [&]()
                        {
@@ -455,7 +457,7 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 
     // Fallback: ask RED4ext for the address if the runtime provides a resolver.
     const auto resolveFunc = GetAddressResolverFunction();
-    const auto address = resolveFunc(aHash);
+    const auto address = resolveFunc ? resolveFunc(aHash) : 0;
     if (address == 0)
     {
         static std::once_flag warnOnce;
