@@ -60,6 +60,27 @@ struct TweakDB
         // GetValueOffset sets 3 bytes offset to the data
         // Those **ARE NOT** TweakDBID::tdbOffsetBE that point to this class and not the date
 
+#ifdef __APPLE__
+// macOS slots 2..27 are the exact reverse of the Windows order: Int32 (2), array:Int32 (3), Float (4), ...,
+// TweakDBID (26), array:TweakDBID (27). Vtable 0x1070D5AF0, docs/re/tweakxl_layout.md section 2.
+#define RED4EXT_TDB_FLAT_VALUE_GETTER(N)                                                                               \
+    virtual bool GetValueOffset_##N(TweakDBID* aFlat) const = 0;                                                       \
+    virtual bool GetValueOffset_array_##N(TweakDBID* aFlat) const = 0;
+
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Int32);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Float);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(String);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Bool);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(CName);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(raRefCResource);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(gamedataLocKeyWrapper);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Color);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Vector2);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Vector3);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(EulerAngles);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(Quaternion);
+        RED4EXT_TDB_FLAT_VALUE_GETTER(TweakDBID);
+#else
 #define RED4EXT_TDB_FLAT_VALUE_GETTER(N)                                                                               \
     virtual bool GetValueOffset_array_##N(TweakDBID* aFlat) const = 0;                                                 \
     virtual bool GetValueOffset_##N(TweakDBID* aFlat) const = 0;
@@ -77,6 +98,7 @@ struct TweakDB
         RED4EXT_TDB_FLAT_VALUE_GETTER(String);
         RED4EXT_TDB_FLAT_VALUE_GETTER(Float);
         RED4EXT_TDB_FLAT_VALUE_GETTER(Int32);
+#endif
 
         virtual CStackType GetValue() = 0;
 #ifdef __APPLE__

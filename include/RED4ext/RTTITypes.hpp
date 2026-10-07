@@ -211,7 +211,17 @@ struct CClass : CBaseRTTIType
     CName name;                                  // 18
     CName computedName;                          // 20
     DynArray<CProperty*> props;                  // 28
+#ifdef __APPLE__
+    // macOS: 16-byte entries, the property and a u32 (GetProperty 0x102198B40: `add x24,x23,x8,lsl #4`)
+    struct OverriddenProperty
+    {
+        CProperty* prop;  // 00
+        uint32_t unk08;   // 08
+    };
+    DynArray<OverriddenProperty> overriddenProps; // 38
+#else
     DynArray<CProperty*> overriddenProps;        // 38
+#endif
     DynArray<CClassFunction*> funcs;             // 48
     DynArray<CClassStaticFunction*> staticFuncs; // 58
     uint32_t size;                               // 68
@@ -441,13 +451,19 @@ RED4EXT_ASSERT_OFFSET(CRTTIBaseArrayType, innerType, 0x10);
 struct CRTTIArrayType : CRTTIBaseArrayType
 {
     CName name;            // 18
+#ifndef __APPLE__ // macOS: the "array:" factory 0x1021959B8 allocates 0x20 bytes; nothing lives at 0x20 or above
     CBaseRTTIType* parent; // 20
     uintptr_t unk28;       // 28
     uintptr_t unk30;       // 30
     uintptr_t unk38;       // 38
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CRTTIArrayType, 0x20);
+#else
 RED4EXT_ASSERT_SIZE(CRTTIArrayType, 0x40);
 RED4EXT_ASSERT_OFFSET(CRTTIArrayType, parent, 0x20);
+#endif
 
 struct CRTTIStaticArrayType : CRTTIBaseArrayType
 {
