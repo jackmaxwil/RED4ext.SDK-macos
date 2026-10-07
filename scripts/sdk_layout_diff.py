@@ -21,16 +21,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 GENERATED = ROOT / "include/RED4ext/Scripting/Natives/Generated"
 
-STRUCT = re.compile(r"^struct (\w+)(?:\s*:\s*[\w:<>, ]+)?\s*$", re.M)
+STRUCT = re.compile(r"^struct (?:__declspec\(align\(0x[0-9A-Fa-f]+\)\) )?(\w+)(?:\s*:\s*[\w:<>, ]+)?\s*$", re.M)
 NAME = re.compile(r'static constexpr const char\* NAME = "([^"]+)";')
-FIELD = re.compile(r"^\s+[\w:<>, *]+?\s+(\w+)(?:\[[^\]]*\])?;\s*//\s*([0-9A-Fa-f]+)\b", re.M)
-SIZE = re.compile(r"RED4EXT_ASSERT_SIZE\((\w+),\s*(0x[0-9A-Fa-f]+)\)")
+FIELD = re.compile(r"^\s+(?:alignas\(\d+\) )?.+?\s+(\w+)(?:\[[^\]]*\])?;\s*//\s*([0-9A-Fa-f]+)\b(?: -- (.+))?$", re.M)
+APPLE = re.compile(r"^#ifdef __APPLE__\n(.*?)^#else\n.*?^#endif\n", re.S | re.M)
+SIZE = re.compile(r"RED4EXT_ASSERT_SIZE\(([\w:]+),\s*(0x[0-9A-Fa-f]+)\)")
 NAMESPACE = re.compile(r"^namespace ([\w:]+)\s*$", re.M)
 ALIAS = re.compile(r"^using (\w+) = ([\w:]+);", re.M)
 
 
 def parse_header(text: str) -> dict | None:
-    """One generated header -> {rtti, cpp names, size, fields{name: offset}} (unkXX padding is skipped)."""
+    """One generated header -> {rtti, cpp names, size, fields{name: offset}} (unkXX padding is skipped).
+
+    Where the header has an `#ifdef __APPLE__` block (scripts/gen_macos_layouts.py), the macOS side is read."""
+    text = APPLE.sub(lambda m: m.group(1), text)
     name = NAME.search(text)
     struct = STRUCT.search(text)
     if not name or not struct:
@@ -40,7 +44,10 @@ def parse_header(text: str) -> dict | None:
     cpp = {struct.group(1), "::".join([*ns[-1:], struct.group(1)]) if ns else struct.group(1)}
     cpp |= {m.group(1) for m in ALIAS.finditer(text)}
     body = text[struct.end() : size.start() if size else len(text)]
-    fields = {m.group(1): int(m.group(2), 16) for m in FIELD.finditer(body) if not m.group(1).startswith("unk")}
+    fields = {m.group(3) or m.group(1): int(m.group(2), 16) for m in FIELD.finditer(body)
+              if not m.group(1).startswith("unk")}
+    if "\n/*\n" in text:  # redirect to a hand-written class: the commented-out struct is not compiled, check the size
+        fields = {}
     return {"rtti": name.group(1), "cpp": cpp, "size": int(size.group(2), 16) if size else None, "fields": fields}
 
 
@@ -53,7 +60,9 @@ def load_sdk() -> dict[str, dict]:
     return out
 
 
-def diff_class(sdk: dict, mac: dict | None) -> list[str]:
+def diff_class(sdk: dict, mac: dict | None, inherited: dict[str, set[int]] | None = None) -> list[str]:
+    """`inherited`: name -> offsets at which derived classes register a property of this class's (2.3.1 moved some
+    registrations, e.g. questPuppetNodeType::puppetRef, onto every derived class)."""
     if mac is None:
         return ["class not found in the macOS dump"]
     problems = []
@@ -61,6 +70,8 @@ def diff_class(sdk: dict, mac: dict | None) -> list[str]:
         problems.append(f"size {sdk['size']:#x} (SDK) vs {mac['size']:#x} (macOS)")
     props = {p["name"]: p["offset"] for p in mac["props"]}
     for field, offset in sdk["fields"].items():
+        if field not in props and (inherited or {}).get(field) == {offset}:
+            continue
         if field not in props:
             problems.append(f"{field}: SDK {offset:#x}, not a macOS property")
         elif props[field] != offset:
@@ -76,16 +87,20 @@ def used_by(sources: list[Path], sdk: dict[str, dict]) -> set[str]:
 
 
 def self_test() -> int:
-    sdk = load_sdk()
-    wlr = sdk["inkWidgetLibraryResource"]
+    win = {"size": 0xA8, "fields": {"rootResolution": 0x40, "rootDefinitionIndex": 0x44, "libraryItems": 0x48,
+                                    "version": 0xA0}}
     mac = {"size": 0xA0, "props": [{"name": n, "offset": o} for n, o in
-           [("rootResolution", 0x39), ("rootDefinitionIndex", 0x3C), ("libraryItems", 0x40), ("externalLibraries", 0x50)]]}
-    problems = diff_class(wlr, mac)
+           [("rootResolution", 0x39), ("rootDefinitionIndex", 0x3C), ("libraryItems", 0x40)]]}
+    problems = diff_class(win, mac)
     assert any(p.startswith("rootResolution: SDK 0x40, macOS 0x39") for p in problems), problems
     assert any(p.startswith("libraryItems: SDK 0x48, macOS 0x40") for p in problems), problems
     assert any(p.startswith("version:") and "not a macOS property" in p for p in problems), problems
     assert any(p.startswith("size 0xa8") for p in problems), problems
     assert diff_class({"size": 8, "fields": {"a": 0}}, {"size": 8, "props": [{"name": "a", "offset": 0}]}) == []
+    assert diff_class({"size": 8, "fields": {"a": 0}}, {"size": 8, "props": []}, {"a": {0}}) == []
+    assert diff_class({"size": 8, "fields": {"a": 0}}, {"size": 8, "props": []}, {"a": {0, 4}}) != []
+    hdr = parse_header((GENERATED / "ink/WidgetLibraryResource.hpp").read_text())
+    assert hdr["size"] == 0xA0 and hdr["fields"]["rootResolution"] == 0x39, hdr  # the macOS block is read
     print("self-test ok")
     return 0
 
@@ -106,7 +121,23 @@ def main() -> int:
     sdk = load_sdk()
     gated = set(args.classes) | used_by(args.plugin_sources, sdk)
 
-    differing = {name: problems for name, s in sdk.items() if (problems := diff_class(s, mac.get(name)))}
+    children: dict[str, list[str]] = {}
+    for name, cls in mac.items():
+        children.setdefault(cls["parent"], []).append(name)
+
+    def inherited(name: str) -> dict[str, set[int]]:
+        out: dict[str, set[int]] = {}
+        todo = list(children.get(name, []))
+        while todo:
+            child = todo.pop()
+            todo += children.get(child, [])
+            for p in mac[child]["props"]:
+                if p["offset"] < mac[name]["size"]:
+                    out.setdefault(p["name"], set()).add(p["offset"])
+        return out
+
+    differing = {name: problems for name, s in sdk.items()
+                 if (problems := diff_class(s, mac.get(name), inherited(name) if name in mac else None))}
     print(f"dump {dump.get('uuid')}: {len(sdk)} SDK classes, {len(sdk) - len(differing)} match macOS, "
           f"{len(differing)} differ")
     failed = sorted(gated & differing.keys())
