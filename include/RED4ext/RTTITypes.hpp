@@ -9,8 +9,8 @@
 #include <RED4ext/HashMap.hpp>
 #include <RED4ext/InstanceType.hpp>
 #include <RED4ext/Map.hpp>
-#include <RED4ext/Utils.hpp>
 #include <RED4ext/RTTI/IType.hpp>
+#include <RED4ext/Utils.hpp>
 
 namespace RED4ext
 {
