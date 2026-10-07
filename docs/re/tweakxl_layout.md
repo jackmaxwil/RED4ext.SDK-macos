@@ -166,3 +166,11 @@ This is why the SDK `UpdateRecord` "fake TweakDB" trick works on macOS. The game
 - **`FlatValueImpl` always returns true.** Every `GetValueOffset_*` in the SDK returns true, while the game's return true only for their own type. The game's type check (`0x100A27368` → fallback to the default) therefore accepts any SDK-created flat.
 - **Upsized buffer padding.** The SDK `UpsizeFlatDataBuffer` does not zero the new tail. The game bzeroes its buffer. TweakXL's `SyncBufferData` treats a zero qword as Quaternion padding. A non-zero garbage pad before an SDK-created Quaternion would be dispatched as a vtable. This is safe only if the 16 MB pool block comes back zeroed, which is likely for a fresh large allocation but not guaranteed. Fix: `memset` the tail after the `memcpy`.
 - **MetadataImporter overflow.** It reads `propNameLen` (up to 255) into `char propName[254]`, so a crafted file can cause a 1-byte stack overflow.
+
+## Addendum (2026-10-07): flag bits confirmed live
+The live RTTI dump confirms the `CClass` flags at `+0x70`:
+- **Bit 0 is `isAbstract`.** It is set on ScriptableTweak, TweakXL, ISerializable and CResource, which are declared abstract. It is clear on gameObject, entEntity and PlayerPuppet.
+- **Bit 1 is `isNative`.** It is clear on the scripted PlayerPuppet.
+
+`hasUndefinedBody` (`+0xA8` bit 5) is not in the dump. TweakXL's scriptable-tweak path selects `OnApply` by that bit and ran correctly in game: `tweakxl_scriptable_tweak` passed in `runs/20261007-090912-tweakxl`.
+The function-order guard in `CollectRecordInfo` logged no errors in that run.
