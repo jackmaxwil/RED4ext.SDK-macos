@@ -36,10 +36,18 @@ RED4EXT_INLINE bool RED4ext::PackageReader::IsEmpty() const
 
 RED4EXT_INLINE void RED4ext::PackageReader::ReadHeader(RED4ext::PackageHeader& aOut)
 {
+#ifdef __APPLE__
+    // macOS: PackageHeader(x8 out 0x58; reader x0).
+    using func_t = PackageHeader (*)(PackageReader*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::BasePackageReader_ReadHeader);
+
+    aOut = func(this);
+#else
     using func_t = void (*)(PackageReader*, PackageHeader&);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::BasePackageReader_ReadHeader);
 
     func(this, aOut);
+#endif
 }
 
 RED4EXT_INLINE RED4ext::ObjectPackageHeader::ObjectPackageHeader()
@@ -62,18 +70,23 @@ RED4EXT_INLINE void RED4ext::ObjectPackageReader::OnReadHeader(uint64_t a1, uint
 
 RED4EXT_INLINE void RED4ext::ObjectPackageReader::ReadHeader()
 {
-    using func_t = void (*)(ObjectPackageReader*, ObjectPackageHeader&);
-    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ObjectPackageReader_ReadHeader);
-
-    func(this, header);
+    ReadHeader(header);
 }
 
 RED4EXT_INLINE void RED4ext::ObjectPackageReader::ReadHeader(RED4ext::ObjectPackageHeader& aOut)
 {
+#ifdef __APPLE__
+    // macOS: ObjectPackageHeader(x8 out 0x70; reader x0).
+    using func_t = ObjectPackageHeader (*)(ObjectPackageReader*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ObjectPackageReader_ReadHeader);
+
+    aOut = func(this);
+#else
     using func_t = void (*)(ObjectPackageReader*, ObjectPackageHeader&);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ObjectPackageReader_ReadHeader);
 
     func(this, aOut);
+#endif
 }
 
 RED4EXT_INLINE RED4ext::ObjectPackageExtractorParams::ObjectPackageExtractorParams(
@@ -127,6 +140,15 @@ RED4EXT_INLINE void RED4ext::ObjectPackageExtractor::ExtractSync()
 
 RED4EXT_INLINE RED4ext::JobHandle RED4ext::ObjectPackageExtractor::ExtractAsync()
 {
+#ifdef __APPLE__
+    // macOS: 16-byte result through x8 with the JobHandle at +8 (x0 = extractor).
+    using func_t = JobHandleResult (*)(ObjectPackageExtractor*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ObjectPackageExtractor_ExtractAsync);
+
+    JobHandleResult result = func(this);
+
+    return std::move(result.job);
+#else
     using func_t = void (*)(ObjectPackageExtractor*, JobHandle&);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ObjectPackageExtractor_ExtractAsync);
 
@@ -134,4 +156,5 @@ RED4EXT_INLINE RED4ext::JobHandle RED4ext::ObjectPackageExtractor::ExtractAsync(
     func(this, job);
 
     return job;
+#endif
 }

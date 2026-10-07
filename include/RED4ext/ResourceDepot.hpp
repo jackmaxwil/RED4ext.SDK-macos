@@ -47,16 +47,35 @@ struct ResourceDepot
 
     static ResourceDepot* Get();
 
+#ifdef __APPLE__
+    // macOS (ResourceGameDepot ctor 0x103ED9578, dtor 0x103ED9A00; see docs/re/core.md).
+    void* vtbl2;                   // 08 - second vptr
+    DynArray<ArchiveGroup> groups; // 10
+    uint32_t groupFlags;           // 20 - bit 0: groups need sorting
+    DynArray<CString> unk28;       // 28
+    DynArray<CString> unk38;       // 38
+    CString rootPath;              // 48
+    DynArray<void*> unk68;         // 68 - 0x140-byte entries
+    uint8_t lock;                  // 78
+#else
     uint64_t unk08;                // 08
     DynArray<ArchiveGroup> groups; // 10
     DynArray<void*> unk20;         // 20
     CString rootPath;              // 30
     bool hasModArchives;           // 50
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ResourceDepot, 0x80);
+RED4EXT_ASSERT_OFFSET(ResourceDepot, groups, 0x10);
+RED4EXT_ASSERT_OFFSET(ResourceDepot, rootPath, 0x48);
+RED4EXT_ASSERT_OFFSET(ResourceDepot, lock, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(ResourceDepot, 0x58);
 RED4EXT_ASSERT_OFFSET(ResourceDepot, groups, 0x10);
 RED4EXT_ASSERT_OFFSET(ResourceDepot, rootPath, 0x30);
 RED4EXT_ASSERT_OFFSET(ResourceDepot, hasModArchives, 0x50);
+#endif
 } // namespace RED4ext
 
 #ifdef RED4EXT_HEADER_ONLY

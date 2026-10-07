@@ -35,9 +35,14 @@ struct ResourceToken
             CancelUnk38(unk38);
         }
 
+#ifdef __APPLE__
+        // macOS: the game inlines this release (no ResourceToken_DestructUnk38 function exists, see docs/re/resources.md).
+        Detail::ReleaseUnk38(unk40);
+#else
         using DestructUnk38_t = void (*)(void**);
         static UniversalRelocFunc<DestructUnk38_t> DestructUnk38(Detail::AddressHashes::ResourceToken_DestructUnk38);
         DestructUnk38(&unk38);
+#endif
     }
 
     /**
@@ -47,11 +52,19 @@ struct ResourceToken
      */
     void OnLoaded(LoadedCallback&& aCallback)
     {
+#ifdef __APPLE__
+        // macOS: JobHandle(x8 out; token x0, LoadedCallback* x1).
+        using OnLoaded_t = JobHandle (*)(ResourceToken*, LoadedCallback*);
+        static UniversalRelocFunc<OnLoaded_t> func(Detail::AddressHashes::ResourceToken_OnLoaded);
+
+        JobHandle handle = func(this, &aCallback);
+#else
         using OnLoaded_t = JobHandle* (*)(ResourceToken*, JobHandle*, LoadedCallback*);
         static UniversalRelocFunc<OnLoaded_t> func(Detail::AddressHashes::ResourceToken_OnLoaded);
 
         JobHandle handle{};
         func(this, &handle, &aCallback);
+#endif
     }
 
     /**
@@ -147,6 +160,13 @@ struct ResourceLoader
     template<typename T = CResource>
     SharedPtr<ResourceToken<T>> LoadAsync(ResourcePath aPath)
     {
+#ifdef __APPLE__
+        // macOS: SharedPtr<Token>(x8 out; loader x0, ResourcePath x1).
+        using LoadAsync_t = SharedPtr<ResourceToken<T>> (*)(ResourceLoader*, ResourcePath);
+        static UniversalRelocFunc<LoadAsync_t> func(Detail::AddressHashes::ResourceLoader_IssueLoadingRequestByPath);
+
+        return func(this, aPath);
+#else
         using LoadAsync_t = uintptr_t (*)(ResourceLoader*, SharedPtr<ResourceToken<T>>&, ResourcePath);
         static UniversalRelocFunc<LoadAsync_t> func(Detail::AddressHashes::ResourceLoader_IssueLoadingRequestByPath);
 
@@ -154,11 +174,19 @@ struct ResourceLoader
         func(this, token, aPath);
 
         return token;
+#endif
     }
 
     template<typename T = CResource>
     SharedPtr<ResourceToken<T>> LoadAsync(const ResourceRequest& aRequest)
     {
+#ifdef __APPLE__
+        // macOS: SharedPtr<Token>(x8 out; loader x0, const ResourceRequest* x1).
+        using LoadAsync_t = SharedPtr<ResourceToken<T>> (*)(ResourceLoader*, const ResourceRequest&);
+        static UniversalRelocFunc<LoadAsync_t> func(Detail::AddressHashes::ResourceLoader_IssueLoadingRequest);
+
+        return func(this, aRequest);
+#else
         using LoadAsync_t = uintptr_t (*)(ResourceLoader*, SharedPtr<ResourceToken<T>>&, const ResourceRequest&);
         static UniversalRelocFunc<LoadAsync_t> func(Detail::AddressHashes::ResourceLoader_IssueLoadingRequest);
 
@@ -166,11 +194,21 @@ struct ResourceLoader
         func(this, token, aRequest);
 
         return token;
+#endif
     }
 
     template<typename T = CResource>
     SharedPtr<ResourceToken<T>> FindToken(ResourcePath aPath)
     {
+#ifdef __APPLE__
+        // macOS: SharedPtr<Token>(x8 out; loader x0, ResourcePath x1).
+        using FindToken_t = SharedPtr<ResourceToken<T>> (*)(ResourceLoader*, ResourcePath);
+        static UniversalRelocFunc<FindToken_t> func(Detail::AddressHashes::ResourceLoader_FindTokenFast);
+
+        std::shared_lock<SharedSpinLock> _(tokenLock);
+
+        return func(this, aPath);
+#else
         using FindToken_t = uintptr_t (*)(ResourceLoader*, SharedPtr<ResourceToken<T>>*, ResourcePath);
         static UniversalRelocFunc<FindToken_t> func(Detail::AddressHashes::ResourceLoader_FindTokenFast);
 
@@ -180,6 +218,7 @@ struct ResourceLoader
         func(this, &token, aPath);
 
         return token;
+#endif
     }
 
     HashMap<ResourcePath, WeakPtr<ResourceToken<>>> tokens; // 00

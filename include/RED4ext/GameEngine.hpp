@@ -235,8 +235,15 @@ struct CGameEngine : BaseGameEngine
     int64_t unk338;                       // 338
     int32_t unk340;                       // 340
     int64_t unk348;                       // 348
+#ifdef __APPLE__
+    uint8_t unk350[0x380 - 0x350];        // 350 - macOS CGameEngine is 0x380 (RTTI size at 0x103F22EFC)
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CGameEngine, 0x380);
+#else
 RED4EXT_ASSERT_SIZE(CGameEngine, 0x350);
+#endif
 RED4EXT_ASSERT_OFFSET(CGameEngine, framework, 0x308);
 } // namespace RED4ext
 

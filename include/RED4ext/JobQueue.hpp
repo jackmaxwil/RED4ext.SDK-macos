@@ -98,6 +98,20 @@ private:
 };
 RED4EXT_ASSERT_SIZE(JobHandle, 0x8);
 
+#ifdef __APPLE__
+/**
+ * @brief macOS: the 16-byte result that some engine functions return through x8 (ObjectPackageExtractor::ExtractAsync,
+ * DeferredDataBuffer::LoadAsync). The callee writes only the JobHandle at +8; +0 is left as the caller's storage.
+ * JobHandle has a destructor, so clang passes the result address in x8, as the game does.
+ */
+struct JobHandleResult
+{
+    uint64_t unk00; // 00 - not written by the callee
+    JobHandle job;  // 08
+};
+RED4EXT_ASSERT_SIZE(JobHandleResult, 0x10);
+#endif
+
 /**
  * @brief A group that joins several job queues together.
  * A group is considered completed when all queues in the group have completed.

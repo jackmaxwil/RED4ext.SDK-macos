@@ -402,4 +402,34 @@ inline SharedPtr<T> MakeShared(Args&&... args)
 
     return instance;
 }
+
+#ifdef __APPLE__
+namespace Detail
+{
+/**
+ * @brief macOS: drop one strong reference of the SharedPtr<Unk38> held by a resource token (refcount pointer at +0x40,
+ * or +0x30 in DeferredDataBufferCopyToken).
+ *
+ * The game destroys Unk38 inline in its token destructors (0x1021C4A14): when the last strong reference goes, it frees
+ * the refcount block, runs two type-erased functors inside Unk38 and frees it with an unverified pool call. None of that
+ * is resolvable here, so the last reference is deliberately kept (the holder leaks) instead of guessing; every other
+ * reference is released exactly as the game does.
+ */
+inline void ReleaseUnk38(void* aRefCount) noexcept
+{
+    if (!aRefCount)
+        return;
+
+    auto* strongRefs = reinterpret_cast<volatile uint32_t*>(aRefCount);
+    uint32_t uses = *strongRefs;
+    while (uses > 1)
+    {
+        const uint32_t oldUses = InterlockedCompareExchange(strongRefs, uses - 1, uses);
+        if (oldUses == uses)
+            return;
+        uses = oldUses;
+    }
+}
+} // namespace Detail
+#endif
 } // namespace RED4ext
