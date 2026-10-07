@@ -12,8 +12,8 @@ C++20 headers for RED4ext plugins, targeting Cyberpunk 2077 2.3.1 on macOS arm64
 2. **Never delete RE evidence.** `docs/ADDRESS_AUDIT.md` and `docs/re/*.md` justify every verified address.
 3. **macOS first.** Fix things for the macOS build. Guard platform differences with `#ifdef __APPLE__` /
    `#if defined(_WIN32)` and leave the Windows path unchanged.
-4. **No Frida.** Static analysis (`xcrun llvm-objdump`, `dyld_info`, the scripts here) and the RED4ext loader are the
-   tools.
+4. **Static analysis and the loader only.** Static analysis (`xcrun llvm-objdump`, `dyld_info`, the scripts here) and
+   the RED4ext loader are the tools; no external instrumentation frameworks.
 5. **Do not launch the game or Steam** from tooling. Validation reads the binary from disk only.
 6. Do not hand-edit `data/rtti_layout_macos.json` or the `#ifdef __APPLE__` blocks in
    `include/RED4ext/Scripting/Natives/Generated/`. Regenerate them (`scripts/gen_macos_layouts.py`).
