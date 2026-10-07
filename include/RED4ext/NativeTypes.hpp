@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <limits>
+#include <optional>
 #include <string_view>
 
 #include <RED4ext/Buffer.hpp>
@@ -13,13 +14,22 @@
 #include <RED4ext/Hashing/CRC.hpp>
 #include <RED4ext/InstanceType.hpp>
 #include <RED4ext/NodeRef.hpp>
+#include <RED4ext/RTTISystem.hpp>
+#include <RED4ext/RTTITypes.hpp>
 #include <RED4ext/ResourceReference.hpp>
 #include <RED4ext/Scripting/Natives/Generated/curve/EInterpolationType.hpp>
 #include <RED4ext/Scripting/Natives/Generated/curve/ESegmentsLinkType.hpp>
+#include <RED4ext/Scripting/Natives/Quaternion.hpp>
+#include <RED4ext/Scripting/Natives/Vector2.hpp>
+#include <RED4ext/Scripting/Natives/Vector3.hpp>
+#include <RED4ext/Scripting/Natives/Vector4.hpp>
 
 namespace RED4ext
 {
-struct CBaseRTTIType;
+namespace rtti
+{
+struct IType;
+}
 
 struct CDateTime
 {
@@ -147,10 +157,16 @@ struct Variant
     static constexpr uintptr_t TypeMask = ~InlineFlag;
 
     Variant() noexcept = default;
-    Variant(const CBaseRTTIType* aType);
-    Variant(const CBaseRTTIType* aType, const ScriptInstance aData);
+    Variant(const rtti::IType* aType);
+    Variant(const rtti::IType* aType, const void* aData);
     Variant(CName aTypeName);
-    Variant(CName aTypeName, const ScriptInstance aData);
+    Variant(CName aTypeName, const void* aData);
+    template<typename T>
+    requires(!std::derived_from<std::remove_pointer_t<std::decay_t<T>>, rtti::IType>)
+    Variant(const T& acValue)
+        : Variant(GetTypeName<T>(), std::addressof(acValue))
+    {
+    }
     Variant(const Variant& aOther);
     Variant(Variant&& aOther) noexcept;
     ~Variant();
@@ -161,24 +177,144 @@ struct Variant
     bool IsEmpty() const noexcept;
     bool IsInlined() const noexcept;
 
-    CBaseRTTIType* GetType() const noexcept;
-    ScriptInstance GetDataPtr() const noexcept;
+    rtti::IType* GetType() const noexcept;
+    void* GetDataPtr() const noexcept;
 
-    bool Init(const CBaseRTTIType* aType);
-    bool Fill(const CBaseRTTIType* aType, const ScriptInstance aData);
-    bool Extract(ScriptInstance aBuffer);
+    bool Init(const rtti::IType* aType);
+    bool Fill(const rtti::IType* aType, const void* aData);
+    bool Extract(void* aBuffer) const;
     void Free();
 
-    static bool CanBeInlined(const CBaseRTTIType* aType) noexcept;
+    template<typename T>
+    bool Set(const T& acValue)
+    {
+        const auto valueType = CRTTISystem::Get()->GetType(GetTypeName<T>());
+        return Fill(valueType, std::addressof(acValue));
+    }
 
-    const CBaseRTTIType* type{nullptr};
+    template<typename T>
+    [[nodiscard]] std::optional<T> Get() const
+    {
+        const auto valueType = GetType();
+        if (!valueType || valueType->GetName() != GetTypeName<T>())
+        {
+            return std::nullopt;
+        }
+
+        T value;
+        if (!Extract(std::addressof(value)))
+        {
+            return std::nullopt;
+        }
+        return value;
+    }
+
+    static bool CanBeInlined(const rtti::IType* aType) noexcept;
+
+    template<typename T>
+    static consteval CName GetTypeName()
+    {
+        if constexpr (std::is_same_v<T, bool>)
+        {
+            return "Bool";
+        }
+        else if constexpr (std::is_same_v<T, int8_t>)
+        {
+            return "Int8";
+        }
+        else if constexpr (std::is_same_v<T, int16_t>)
+        {
+            return "Int16";
+        }
+        else if constexpr (std::is_same_v<T, int32_t>)
+        {
+            return "Int32";
+        }
+        else if constexpr (std::is_same_v<T, int64_t>)
+        {
+            return "Int64";
+        }
+        else if constexpr (std::is_same_v<T, uint8_t>)
+        {
+            return "Uint8";
+        }
+        else if constexpr (std::is_same_v<T, uint16_t>)
+        {
+            return "Uint16";
+        }
+        else if constexpr (std::is_same_v<T, uint32_t>)
+        {
+            return "Uint32";
+        }
+        else if constexpr (std::is_same_v<T, uint64_t>)
+        {
+            return "Uint64";
+        }
+        else if constexpr (std::is_same_v<T, float>)
+        {
+            return "Float";
+        }
+        else if constexpr (std::is_same_v<T, double>)
+        {
+            return "Double";
+        }
+        else if constexpr (std::is_same_v<T, CString>)
+        {
+            return "String";
+        }
+        else if constexpr (std::is_same_v<T, CName>)
+        {
+            return "CName";
+        }
+        else if constexpr (std::is_same_v<T, TweakDBID>)
+        {
+            return "TweakDBID";
+        }
+        else if constexpr (std::is_same_v<T, Vector2>)
+        {
+            return "Vector2";
+        }
+        else if constexpr (std::is_same_v<T, Vector3>)
+        {
+            return "Vector3";
+        }
+        else if constexpr (std::is_same_v<T, Vector4>)
+        {
+            return "Vector4";
+        }
+        else if constexpr (std::is_same_v<T, Quaternion>)
+        {
+            return "Quaternion";
+        }
+        else
+        {
+            // TODO: support all game types and user types using RedLib solution:
+            // https://github.com/psiberx/cp2077-red-lib/blob/master/include/Red/TypeInfo/Resolving.hpp
+            static_assert(!std::is_same_v<T, T>, "Type is currently unsupported.");
+            return "";
+        }
+    }
+
+    const rtti::IType* type{nullptr};
     union
     {
         uint8_t inlined[InlineSize]{0};
-        ScriptInstance instance;
+        void* instance;
     };
 };
 RED4EXT_ASSERT_SIZE(Variant, 0x18);
+
+template<typename T>
+[[nodiscard]] Variant ToVariant(const T& acValue)
+{
+    return {acValue};
+}
+
+template<typename T>
+[[nodiscard]] std::optional<T> FromVariant(const Variant& acValue)
+{
+    return acValue.Get<T>();
+}
 
 struct gamedataLocKeyWrapper
 {
@@ -210,15 +346,6 @@ struct RuntimeEntityRef
 RED4EXT_ASSERT_SIZE(RuntimeEntityRef, 0x8);
 
 template<typename T, uint32_t MAX_LEN>
-struct StaticArray
-{
-    T entries[MAX_LEN]; // 00
-    uint32_t size;
-};
-static_assert(sizeof(StaticArray<std::array<uint8_t, 5>, 32>) ==
-              164); // StaticArray<GpuWrapApiVertexPackingPackingElement, 32>
-
-template<typename T, uint32_t MAX_LEN>
 using NativeArray = std::array<T, MAX_LEN>;
 
 template<typename T>
@@ -235,7 +362,7 @@ struct CurveBuffer
     [[nodiscard]] T* GetValues() noexcept;
 
     uint32_t size;         // 00
-    uint32_t unk04;        // 04
+    uint32_t alignment;    // 04
     uint32_t pointsOffset; // 08
     uint32_t valuesOffset; // 0C
     // float points[size]; // 10h
@@ -262,7 +389,7 @@ struct CurveData
 
     CName name;                                  // 00
     RawBuffer buffer;                            // 08
-    CBaseRTTIType* valueType;                    // 40
+    rtti::IType* valueType;                      // 40
     curve::EInterpolationType interpolationType; // 48
     curve::ESegmentsLinkType linkType;           // 49
 };
@@ -276,10 +403,10 @@ RED4EXT_ASSERT_OFFSET(CurveData<float>, linkType, 0x31);
 template<typename T>
 struct ScriptRef
 {
-    uint8_t unk00[0x10];      // 00
-    CBaseRTTIType* innerType; // 10
-    T* ref;                   // 18
-    CName hash;               // 20
+    uint8_t unk00[0x10];    // 00
+    rtti::IType* innerType; // 10
+    T* ref;                 // 18
+    CName hash;             // 20
 };
 RED4EXT_ASSERT_SIZE(ScriptRef<void>, 0x28);
 

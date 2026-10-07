@@ -2,11 +2,10 @@
 
 #include <RED4ext/Common.hpp>
 #include <RED4ext/Scripting/IScriptable.hpp>
+#include <RED4ext/SystemUpdate.hpp>
 
 namespace RED4ext
 {
-struct UpdateRegistrar;
-
 struct IUpdatableSystem : IScriptable
 {
     static constexpr const char* NAME = "IUpdatableSystem";

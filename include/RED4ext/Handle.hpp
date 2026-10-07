@@ -56,7 +56,7 @@ public:
 
     Handle(Handle&& aRhs) noexcept
     {
-        BaseType::MoveConstructFrom(std::move(aRhs));
+        BaseType::MoveConstructFrom(aRhs);
     }
 
     Handle(const WeakHandle<T>& aOther) noexcept
@@ -138,7 +138,7 @@ public:
 
     WeakHandle(WeakHandle&& aOther) noexcept
     {
-        BaseType::MoveConstructFrom(std::move(aOther));
+        BaseType::MoveConstructFrom(aOther);
     }
 
     ~WeakHandle() noexcept

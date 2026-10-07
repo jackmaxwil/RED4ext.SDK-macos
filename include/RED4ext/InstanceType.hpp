@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #include <RED4ext/Common.hpp>
-#include <RED4ext/DynArray.hpp>
+#include <RED4ext/Containers/DynArray.hpp>
 #include <RED4ext/Handle.hpp>
 
 namespace RED4ext
@@ -36,6 +36,4 @@ union ScriptInstanceUnion
     RED4EXT_DECLARE_TYPE(DynArray<Handle<IScriptable>>, array_ref);
 };
 RED4EXT_ASSERT_SIZE(ScriptInstanceUnion, 0x8);
-
-using ScriptInstance = void*;
 } // namespace RED4ext

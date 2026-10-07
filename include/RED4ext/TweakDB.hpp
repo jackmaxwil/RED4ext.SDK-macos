@@ -4,7 +4,8 @@
 #include <shared_mutex>
 
 #include <RED4ext/Common.hpp>
-#include <RED4ext/DynArray.hpp>
+#include <RED4ext/Containers/DynArray.hpp>
+#include <RED4ext/Containers/SortedArray.hpp>
 #include <RED4ext/Handle.hpp>
 #include <RED4ext/HashMap.hpp>
 #include <RED4ext/Map.hpp>
@@ -20,7 +21,6 @@
 #include <RED4ext/Scripting/Natives/gamedataTweakDBRecord.hpp>
 #include <RED4ext/Scripting/Stack.hpp>
 #include <RED4ext/SharedSpinLock.hpp>
-#include <RED4ext/SortedArray.hpp>
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -193,18 +193,18 @@ struct TweakDB
     void* unk28;                    // 28 - class - 344 bytes - has DynArray<GroupTagCName> and DynArray<TagVal-1byte>
     void* unk30;                    // 30 - class - 248 bytes
     bool unk38;                     // 38
-    SortedUniqueArray<TweakDBID> flats;                                   // 40
-    HashMap<TweakDBID, Handle<IScriptable>> recordsByID;                  // 58
-    HashMap<CBaseRTTIType*, DynArray<Handle<IScriptable>>> recordsByType; // 88
-    Map<TweakDBID, DynArray<TweakDBID>> queries;                          // B8
-    Map<TweakDBID, GroupTag> groups;                                      // E0
-    HashMap<CName, FlatValue*> defaultValues;                             // 108
-    DynArray<CString> unk138;                                             // 138 - empty - maybe not CString
-    uintptr_t flatDataBuffer;                                             // 148
-    uint32_t flatDataBufferCapacity;                                      // 150
-    uintptr_t flatDataBufferEnd;                                          // 158
-    uint8_t unk160;                                                       // 160
-    uint32_t unk164;                                                      // 164
+    SortedUniqueArray<TweakDBID> flats;                                 // 40
+    HashMap<TweakDBID, Handle<IScriptable>> recordsByID;                // 58
+    HashMap<rtti::IType*, DynArray<Handle<IScriptable>>> recordsByType; // 88
+    Map<TweakDBID, DynArray<TweakDBID>> queries;                        // B8
+    Map<TweakDBID, GroupTag> groups;                                    // E0
+    HashMap<CName, FlatValue*> defaultValues;                           // 108
+    DynArray<CString> unk138;                                           // 138 - empty - maybe not CString
+    uintptr_t flatDataBuffer;                                           // 148
+    uint32_t flatDataBufferCapacity;                                    // 150
+    uintptr_t flatDataBufferEnd;                                        // 158
+    uint8_t unk160;                                                     // 160
+    uint32_t unk164;                                                    // 164
 
     template<typename T>
     T GetValue(TweakDBID aDBID)
@@ -230,8 +230,8 @@ struct TweakDB
     Handle<IScriptable> GetRecord(TweakDBID aDBID);
     bool TryGetRecord(TweakDBID aDBID, Handle<IScriptable>& aRecord);
 
-    DynArray<Handle<IScriptable>> GetRecordsByType(CBaseRTTIType* aType);
-    bool TryGetRecordsByType(CBaseRTTIType* aType, DynArray<Handle<IScriptable>>& aRecordsArray);
+    DynArray<Handle<IScriptable>> GetRecordsByType(rtti::IType* aType);
+    bool TryGetRecordsByType(rtti::IType* aType, DynArray<Handle<IScriptable>>& aRecordsArray);
 
     bool AddQuery(TweakDBID aDBID, const DynArray<TweakDBID>& aArray);
     bool ReplaceQuery(TweakDBID aDBID, const DynArray<TweakDBID>& aArray);
@@ -249,7 +249,7 @@ struct TweakDB
     // Updates all the value offsets inside the record
     bool UpdateRecord(gamedataTweakDBRecord* aRecord);
 
-    bool CreateRecord(TweakDBID aDBID, CBaseRTTIType* aType);
+    bool CreateRecord(TweakDBID aDBID, rtti::IType* aType);
     bool CreateRecord(TweakDBID aDBID, uint32_t aTweakBaseHash);
     bool RemoveRecord(TweakDBID aDBID);
 

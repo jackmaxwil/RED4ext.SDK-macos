@@ -11,14 +11,13 @@
 #include <RED4ext/Scripting/Functions.hpp>
 #include <RED4ext/Scripting/IScriptable.hpp>
 
-RED4EXT_INLINE bool RED4ext::ExecuteFunction(ScriptInstance aInstance, CBaseFunction* aFunc, void* aOut)
+RED4EXT_INLINE bool RED4ext::ExecuteFunction(void* aInstance, CBaseFunction* aFunc, void* aOut)
 {
     StackArgs_t args;
     return ExecuteFunction(aInstance, aFunc, aOut, args);
 }
 
-RED4EXT_INLINE bool RED4ext::ExecuteFunction(ScriptInstance aInstance, CBaseFunction* aFunc, void* aOut,
-                                             StackArgs_t& aArgs)
+RED4EXT_INLINE bool RED4ext::ExecuteFunction(void* aInstance, CBaseFunction* aFunc, void* aOut, StackArgs_t& aArgs)
 {
     CStackType result;
     if (aFunc->returnType)
@@ -34,7 +33,7 @@ RED4EXT_INLINE bool RED4ext::ExecuteFunction(ScriptInstance aInstance, CBaseFunc
 
     // Set the arguments types here. This is done here so that we don't have to copy the code for finding a function
     // multiple times.
-    for (size_t i = 0; i < aArgs.size() && i < aFunc->params.size; i++)
+    for (size_t i = 0; i < aArgs.size() && i < aFunc->params.Size(); i++)
     {
         auto& arg = aArgs[i];
 

@@ -4,6 +4,16 @@
 
 // This file is generated from the Game's Reflection data
 
+#include <RED4ext/Scripting/Natives/AICAgent.hpp>
+
+namespace RED4ext
+{
+RED4EXT_ASSERT_SIZE(AI::CAgent, 0x4F0);
+using AICAgent = AI::CAgent;
+using AIComponent = AI::CAgent;
+} // namespace RED4ext
+
+/*
 #include <cstdint>
 #include <RED4ext/Common.hpp>
 #include <RED4ext/Scripting/Natives/Generated/game/Component.hpp>
@@ -24,5 +34,6 @@ RED4EXT_ASSERT_SIZE(CAgent, 0x4F0);
 using AICAgent = AI::CAgent;
 using AIComponent = AI::CAgent;
 } // namespace RED4ext
+*/
 
 // clang-format on
