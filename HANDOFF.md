@@ -152,7 +152,7 @@ python3 scripts/check_addresses.py --strict
 
 ### Step 3: Update Loader Hooks (if applicable)
 If loader hooks changed:
-1. Update `scripts/loader_hook_targets.json`
+1. Update `cyberpunk2077_addresses.json`
 2. Regenerate loader DB:
    ```bash
    python3 scripts/generate_loader_addresses.py
@@ -231,7 +231,7 @@ export RED4EXT_SDK_ADDRESS_DB=/path/to/cyberpunk2077_addresses.json
 - `scripts/check_addresses.py` - SDK DB validation
 - `scripts/check_loader_addresses.py` - Loader DB validation
 - `scripts/generate_loader_addresses.py` - DB merger
-- `scripts/loader_hook_targets.json` - Loader hook definitions
+- `cyberpunk2077_addresses.json` - Loader hook definitions
 
 **Commit 2:** `834d710a` - Add macOS ARM64 support to RED4ext.SDK
 - 31 files changed (605 insertions, 164 deletions)

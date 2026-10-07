@@ -89,7 +89,8 @@
     },
     {
       "hash": "326438016",
-      "offset": "1:0x2B7D228"
+      "offset": "1:0x3453B14",
+      "verified": true
     },
     {
       "hash": "364779332",
@@ -109,7 +110,8 @@
     },
     {
       "hash": "404169501",
-      "offset": "1:0x94FE44"
+      "offset": "1:0x2173120",
+      "verified": true
     },
     {
       "hash": "405668637",
@@ -245,7 +247,8 @@
     },
     {
       "hash": "838931066",
-      "offset": "1:0x2B737AC"
+      "offset": "1:0x26B8DB8",
+      "verified": true
     },
     {
       "hash": "859509764",
@@ -355,7 +358,8 @@
     },
     {
       "hash": "1299190886",
-      "offset": "1:0x3A939B8"
+      "offset": "1:0x3A939A0",
+      "verified": true
     },
     {
       "hash": "1303056161",
@@ -388,7 +392,8 @@
     },
     {
       "hash": "1444748215",
-      "offset": "1:0x3A94744"
+      "offset": "1:0x3A9472C",
+      "verified": true
     },
     {
       "hash": "1452677801",
@@ -787,7 +792,8 @@
     },
     {
       "hash": "2954893634",
-      "offset": "1:0x3A93E7C"
+      "offset": "1:0x3A93E74",
+      "verified": true
     },
     {
       "hash": "3007126651",
@@ -807,7 +813,8 @@
     },
     {
       "hash": "3062572522",
-      "offset": "1:0x2B79AC0"
+      "offset": "1:0x35F1BAC",
+      "verified": true
     },
     {
       "hash": "3063747982",
@@ -819,7 +826,8 @@
     },
     {
       "hash": "3123320294",
-      "offset": "1:0x3A93F00"
+      "offset": "1:0x3A93EF0",
+      "verified": true
     },
     {
       "hash": "3128897273",
@@ -900,7 +908,8 @@
     },
     {
       "hash": "3512345737",
-      "offset": "1:0x2B7BAB0"
+      "offset": "1:0x2B7CC9C",
+      "verified": true
     },
     {
       "hash": "3516862860",
@@ -932,7 +941,8 @@
     },
     {
       "hash": "3602585178",
-      "offset": "1:0x2B7BE94"
+      "offset": "1:0x2B75570",
+      "verified": true
     },
     {
       "hash": "3628731410",
@@ -949,7 +959,8 @@
     },
     {
       "hash": "3652194890",
-      "offset": "1:0x3A932C4"
+      "offset": "1:0x3A932A8",
+      "verified": true
     },
     {
       "hash": "3659799256",

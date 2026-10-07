@@ -132,3 +132,37 @@ The old value, `1:0x6E40000`, was a fabricated round number. The correct value i
 3. `blr x8` with `(frame.context, frame, out, 0)`.
 
 7,417 code sites load the table address. The frame fields touched (`data @0x30`, `dataType @0x38`, `context @0x40`, `currentParam @0x62`) match the SDK's `CStackFrame` exactly.
+
+## TweakXL addresses (2026-10-06): 11 replaced, all verified
+
+All 11 of TweakXL's previous macOS candidates were wrong: seven were unrelated functions and four pointed into the middle of a prologue or body. Each replacement below is in `LC_FUNCTION_STARTS` and was checked by disassembly.
+
+| Name | Hash | Old | New | Evidence |
+| --- | --- | --- | --- | --- |
+| `TweakDB_Init` | 3062572522 | `0x2B79AC0` (TDBID script native) | `0x35F1BAC` | Job lambda that engine init `0x1035F0A48` registers (ADRP+ADD at `0x1035F0D88`), third in the same order as the "BaseGameEngine/Initialization/LoadTweakDB" label. It is the only engine-init caller of `TweakDB_Load`. |
+| `TweakDB_Load` | 3602585178 | `0x2B7BE94` | `0x2B75570` | `(TweakDB*, CString&)`. Its failure path asserts "Failed to load optimized TweakDB file!". It calls `TryLoad` twice. |
+| `TweakDB_TryLoad` | 3512345737 | `0x2B7BAB0` (`.tweak` parser) | `0x2B7CC9C` | `bool(x0, TweakDB*, CString*, x3)`. It references "Binary blob not found" and "Binary blob header is not valid", then runs the four section loaders. |
+| `TweakDB_CreateRecord` | 838931066 | `0x2B737AC` (RTTI registration) | `0x26B8DB8` | `(TweakDB*, w1 typeHash, x2 TweakDBID)`. It starts with `and w8, w1, #0x1f` to dispatch on the hash. The records loader `0x2B16B64` calls it with `(db, hash, id)`. |
+| `TweakDBID_Derive` | 326438016 | `0x2B7D228` | `0x3453B14` | **arm64 signature is `TweakDBID(const TweakDBID* base, const char* name)`, returned in x0.** It computes the string length, then tail-calls the CRC routine `0x34535C0` seeded with `*base`. The Windows `(base, out, name)` form must not be used. |
+| `StatsDataSystem_InitializeRecords` | 1299190886 | `0x3A939B8` (mid-prologue) | `0x3A939A0` | Loops 1709 (`0x6AD`) times over the stat enum. Called at `0x3A9532C`, directly before `InitializeParams`. |
+| `StatsDataSystem_InitializeParams` | 3652194890 | `0x3A932C4` (mid-function) | `0x3A932A8` | Fills the array at `+0xE8` from the one at `+0xD8`. Calls the verified `DynArray_Realloc`. |
+| `StatsDataSystem_GetStatRange` | 1444748215 | `0x3A94744` (mid-function) | `0x3A9472C` | Vtable `0x107239E60`. **Returns `{float min, float max}` in s0/s1 with `(this, stat)`.** There is no hidden return pointer. |
+| `StatsDataSystem_GetStatFlags` | 3123320294 | `0x3A93F00` (mid-function) | `0x3A93EF0` | Vtable `0x107239E68`. `uint32(this, stat)`. The `cmp`/`b.hi` bounds check comes before the prologue. |
+| `StatsDataSystem_CheckStatFlag` | 2954893634 | `0x3A93E7C` (mid-prologue) | `0x3A93E74` | Vtable `0x107239E70`. `bool(this, stat, flag)`, ending in `tst flags, w2`. |
+| `CBaseFunction_InternalExecute` | 404169501 | `0x94FE44` (functional-test routine) | `0x2173120` | `bool(func, ctx, frame, ret, retType)`. It tests `func+0xA8` bit 0 to choose the native path. It is called from the call opcode handlers `0x2250114` and `0x22501F4`. |
+
+The three StatsDataSystem accessors sit in consecutive vtable slots. They take the reader lock at `+0xFC` and read 12-byte `StatParams` from the array at `+0xE8`, which confirms TweakXL's offsets.
+
+## SharedSpinLock encoding differs on macOS (2026-10-06)
+
+The game's macOS lock routines are at `0x100002098` (lock shared), `0x1000020C0` (lock), `0x1000020E8` (try lock) and `0x100002100` (try lock shared). The releases are inlined: `ldaddalb -1` for a reader and `ldclralb 0x80` for the writer. These routines use a different byte encoding from Windows:
+
+- **Windows:** `-1` means a writer holds the lock. A writer releases by storing 0. A reader enters by compare-and-swap, and only while the value is not `-1`.
+- **macOS:** bit 7 means a writer holds the lock, and bits 0–6 count readers.
+  - A reader increments the count first, then waits for bit 7 to clear.
+  - A writer waits for 0, then compare-and-swaps in `0x80`.
+  - A writer releases by clearing only bit 7, so the counts of readers waiting meanwhile survive.
+
+With the Windows encoding, SDK code would let a plugin reader in while a game writer held the lock, and an SDK writer's release would erase the game's reader counts. That affects every SDK struct that embeds `SharedSpinLock`, including TweakDB, RTTISystem, ResourceLoader, ink widgets and memory pools. `SharedSpinLock-inl.hpp` now implements the macOS encoding under `__APPLE__`.
+
+`Mutex` (`CRITICAL_SECTION` on Windows, `pthread_mutex_t` here) differs in size. Any SDK struct that embeds it, such as `CRTTISystem`, is not layout-compatible on macOS and must not be accessed by field offset.

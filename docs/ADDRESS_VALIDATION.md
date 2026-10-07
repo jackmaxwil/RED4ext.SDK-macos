@@ -69,7 +69,7 @@ Exit code: `0` on success, `1` on failure (if `--strict` is used)
 
 ### 3. Generate/Update Loader Database
 
-If you have new hook targets in `scripts/loader_hook_targets.json`:
+If you have new hook targets in `cyberpunk2077_addresses.json`:
 
 ```bash
 python3 scripts/generate_loader_addresses.py
@@ -191,7 +191,7 @@ The SDK searches for `cyberpunk2077_addresses.json` in this order:
 |------|---------|
 | `cyberpunk2077_addresses.json` | Main SDK address database (126 entries) |
 | `cyberpunk2077_addresses.loader.json` | Extended database including loader hooks (134 entries) |
-| `scripts/loader_hook_targets.json` | Loader-specific hook targets |
+| `cyberpunk2077_addresses.json` | Loader-specific hook targets |
 | `include/RED4ext/Detail/AddressHashes.hpp` | Hash constant definitions |
 | `include/RED4ext/Relocation-inl.hpp` | Address resolution implementation |
 
