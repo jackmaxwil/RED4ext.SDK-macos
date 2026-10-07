@@ -50,4 +50,4 @@ jobs:
 
       # No game binary in CI: segment/section/alignment/zero/duplicate/stats checks only.
       - name: Validate
-        run: python3 scripts/validate_addresses.py --quiet
+        run: python3 scripts/validate_addresses.py --verified-only --quiet

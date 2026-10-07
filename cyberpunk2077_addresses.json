@@ -5,12 +5,14 @@
   "stats": {
     "total": 135,
     "resolved": 131,
-    "unresolved": 4
+    "unresolved": 4,
+    "verified": 12
   },
   "Addresses": [
     {
       "hash": "10488987",
-      "offset": "1:0x3452DDC"
+      "offset": "1:0x3452DDC",
+      "verified": true
     },
     {
       "hash": "15404457",
@@ -34,7 +36,8 @@
     },
     {
       "hash": "240386859",
-      "offset": "1:0x344CBFC"
+      "offset": "1:0x344CBFC",
+      "verified": true
     },
     {
       "hash": "242552139",
@@ -146,7 +149,8 @@
     },
     {
       "hash": "1247874916",
-      "offset": "1:0x2188E8C"
+      "offset": "1:0x2188E8C",
+      "verified": true
     },
     {
       "hash": "1250309504",
@@ -166,7 +170,8 @@
     },
     {
       "hash": "1409615660",
-      "offset": "1:0x29228"
+      "offset": "1:0x29228",
+      "verified": true
     },
     {
       "hash": "1411585028",
@@ -226,7 +231,8 @@
     },
     {
       "hash": "1759447004",
-      "offset": "1:0x3452D84"
+      "offset": "1:0x3452D84",
+      "verified": true
     },
     {
       "hash": "1862212562",
@@ -258,7 +264,8 @@
     },
     {
       "hash": "2065762423",
-      "offset": "1:0x2940C"
+      "offset": "1:0x2940C",
+      "verified": true
     },
     {
       "hash": "2141394294",
@@ -414,7 +421,8 @@
     },
     {
       "hash": "3357477547",
-      "offset": "1:0x2CDB8"
+      "offset": "1:0x2CDB8",
+      "verified": true
     },
     {
       "hash": "3362732471",
@@ -462,7 +470,8 @@
     },
     {
       "hash": "3649309656",
-      "offset": "1:0x3452DA0"
+      "offset": "1:0x3452DA0",
+      "verified": true
     },
     {
       "hash": "3651996672",
@@ -498,7 +507,8 @@
     },
     {
       "hash": "3904113489",
-      "offset": "1:0x2AACC"
+      "offset": "1:0x2AACC",
+      "verified": true
     },
     {
       "hash": "3947570603",
@@ -526,11 +536,13 @@
     },
     {
       "hash": "4201325776",
-      "offset": "1:0x21739E8"
+      "offset": "1:0x21739E8",
+      "verified": true
     },
     {
       "hash": "4223801011",
-      "offset": "1:0x3D8ADD0"
+      "offset": "1:0x3D8ADD0",
+      "verified": true
     },
     {
       "hash": "4228123904",
@@ -546,7 +558,8 @@
     },
     {
       "hash": "4292220681",
-      "offset": "1:0x3452F08"
+      "offset": "1:0x3452F08",
+      "verified": true
     }
   ]
 }

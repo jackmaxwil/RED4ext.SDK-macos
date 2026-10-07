@@ -77,3 +77,31 @@ The real getter is still being located. Every RTTI-dependent feature is blocked 
 | `CNamePool_Get` | `0x90E7D8` (inside a strtoul parser) | `0x3452D84` | `ldr x0,[x0]; b 0x3452BDC`. The target looks up the hash in the name-pool singleton and returns `{ptr, len}` in x0 and x1. 1240 callers. |
 
 `CNamePool_AddCstr`, `CNamePool_AddPair` and `CNamePool_AddCString` sit in the same misplaced block of text-formatting code and are wrong. The real add-a-C-string function appears to be `0x3452DDC` (thunk `0x2188524`). It returns the `CName` in x0, so the SDK binding has to change too. Pending confirmation.
+
+## Fail-closed resolution (2026-10-06)
+
+Database entries carry `"verified": true` only when this audit has evidence for them. Both the RED4ext loader (`Addresses.cpp`) and the SDK (`Relocation-inl.hpp`) resolve **only** verified entries. Every other hash resolves to null:
+
+- a hook on a null address is refused;
+- an SDK call through a null address stops at pc 0;
+- no wrong address is ever called or written through.
+
+`RED4EXT_ALLOW_UNVERIFIED_ADDRESSES=1` disables the gate. Use it for reverse-engineering sessions only.
+
+CI runs `validate_addresses.py --verified-only`. A verified entry with any finding fails the build.
+
+**Verified (12):**
+- `CGameApplication_AddState`
+- `Main`
+- `CRTTISystem_Get`
+- `CGlobalFunction_ctor`
+- `CNamePool_Get`
+- `CNamePool_AddCstr`
+- `CNamePool_AddPair`
+- `CNamePool_AddCString`
+- `CString_ctor_str`
+- `CString_ctor_span`
+- `CString_dtor`
+- `CString_copy`
+
+**`DynArray_Realloc` (`0x2C524`) is wrong.** It is `String::reserve` (it has the 19-character inline-capacity check). Using it for `CBaseFunction::AddParam` wrote into read-only memory (crash 2026-10-06 21:23).

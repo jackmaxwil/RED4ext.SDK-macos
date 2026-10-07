@@ -108,6 +108,9 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
         //  3 = __DATA
         std::uint32_t segment{0};
         std::uintptr_t offset{0};
+        // Only entries the address audit marked "verified": true are resolved (fail closed). An unverified address
+        // may point anywhere; calling or dereferencing it can corrupt memory instead of failing.
+        bool verified{false};
     };
 
     struct AddressDb
@@ -221,6 +224,13 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
                                    OffsetEntry entry{};
                                    if (tryParseU32(hashStr, hash) && tryParseOffset(offStr, entry))
                                    {
+                                       const auto entryEnd = text.find('}', offNext);
+                                       const auto rest = text.substr(offNext, entryEnd == std::string_view::npos
+                                                                                   ? std::string_view::npos
+                                                                                   : entryEnd - offNext);
+                                       const auto key = rest.find("\"verified\"");
+                                       entry.verified = key != std::string_view::npos &&
+                                                        rest.substr(key).find("true") < rest.substr(key).find_first_of(",}");
                                        db.offsets.emplace(hash, entry);
                                    }
 
@@ -405,9 +415,22 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
                                      << db.path.string() << "\n";
                        });
 
+        static const bool allowUnverified = []()
+        {
+            const char* env = std::getenv("RED4EXT_ALLOW_UNVERIFIED_ADDRESSES");
+            return env && *env == '1';
+        }();
+
         const auto it = db.offsets.find(aHash);
         if (it != db.offsets.end() && it->second.offset != 0)
         {
+            if (!it->second.verified && !allowUnverified)
+            {
+                std::cerr << "[RED4ext.SDK] Refusing unverified address for hash " << aHash
+                          << " (see docs/ADDRESS_AUDIT.md)\n";
+                return 0;
+            }
+
             const auto addr = resolveEntry(it->second);
             if (addr != 0)
                 return addr;

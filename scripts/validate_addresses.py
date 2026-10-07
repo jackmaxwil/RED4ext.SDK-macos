@@ -148,7 +148,8 @@ def load_source(path: Path) -> tuple[list[dict], dict | None]:
     entries = []
     for r in rows:
         seg, off = parse_seg_offset(r["offset"])
-        entries.append({"hash": int(str(r["hash"]), 0), "name": r.get("name"), "seg": seg, "off": off, "raw": r["offset"]})
+        entries.append({"hash": int(str(r["hash"]), 0), "name": r.get("name"), "seg": seg, "off": off, "raw": r["offset"],
+                        "verified": r.get("verified") is True})
     return entries, obj.get("stats") if "Addresses" in obj else None
 
 
@@ -162,7 +163,8 @@ def locate(layout: dict, addr: int) -> tuple[str | None, str]:
     return seg, f"{seg},{sect}" if sect else str(seg)
 
 
-def validate(sources: list[Path], layout: dict, names: dict[int, str], data_names: set[str]) -> list[tuple]:
+def validate(sources: list[Path], layout: dict, names: dict[int, str], data_names: set[str],
+             verified_only: bool = False) -> list[tuple]:
     """Returns [(level, source, hash, name, raw, message)]."""
     out: list[tuple] = []
     text_va = layout["segments"]["__TEXT"][0]
@@ -178,6 +180,9 @@ def validate(sources: list[Path], layout: dict, names: dict[int, str], data_name
                 names.setdefault(e["hash"], e["name"])
 
         def issue(level, e, msg):
+            # --verified-only: the loader and SDK refuse unverified entries, so their defects cannot reach the game.
+            if verified_only and level == "ERROR" and not e.get("verified", True):
+                level = "UNVER"
             out.append((level, sname, e["hash"], names.get(e["hash"], "?"), e["raw"], msg))
 
         seen_hash: set[int] = set()
@@ -299,7 +304,9 @@ def main() -> int:
     ap.add_argument("sources", nargs="*", type=Path)
     ap.add_argument("--binary", type=Path, default=Path(os.environ.get("CP2077_BINARY", DEFAULT_BINARY)))
     ap.add_argument("--names", type=Path, action="append", default=[], help="extra header/dir with hash constants")
-    ap.add_argument("-q", "--quiet", action="store_true", help="hide warnings")
+    ap.add_argument("-q", "--quiet", action="store_true", help="hide warnings and unverified-entry findings")
+    ap.add_argument("--verified-only", action="store_true",
+                    help="fail only on entries marked \"verified\": true (what the loader and SDK will resolve)")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args()
     if args.self_test:
@@ -317,13 +324,15 @@ def main() -> int:
         print(f"binary not found ({args.binary}): using embedded 2.3.1 layout; function-start/prologue checks skipped")
 
     names, data_names = load_names([ROOT / "include/RED4ext", *args.names])
-    res = validate(sources, layout, names, data_names)
+    res = validate(sources, layout, names, data_names, args.verified_only)
     for level, src, h, name, raw, msg in sorted(res, key=lambda r: (r[1], r[0], r[3])):
-        if level == "WARN" and args.quiet:
+        if level in ("WARN", "UNVER") and args.quiet:
             continue
         print(f"{level:5} {src}: {name} ({h}) {raw}: {msg}")
     nerr = sum(r[0] == "ERROR" for r in res)
-    print(f"{len(sources)} sources, {nerr} errors, {len(res) - nerr} warnings")
+    nunver = sum(r[0] == "UNVER" for r in res)
+    print(f"{len(sources)} sources, {nerr} errors, {nunver} findings on unverified entries, "
+          f"{len(res) - nerr - nunver} warnings")
     return 1 if nerr else 0
 
 
