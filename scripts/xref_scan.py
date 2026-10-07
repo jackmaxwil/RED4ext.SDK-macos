@@ -39,11 +39,17 @@ def main() -> int:
                 continue
             rd = w & 31
             for n in words[i + 1 : i + 6]:
-                if (n & 0xFFC00000) == 0x91000000 and ((n >> 5) & 31) == rd:  # ADD Xd, Xn, #imm12
-                    full = page + ((n >> 10) & 0xFFF)
-                    if full in targets or full - 0x10 in targets:
-                        print(f"{pc:#x} ADRP+ADD -> {full:#x}")
-                    break
+                if ((n >> 5) & 31) != rd:
+                    continue
+                if (n & 0xFFC00000) == 0x91000000:  # ADD Xd, Xn, #imm12
+                    full, kind = page + ((n >> 10) & 0xFFF), "ADD"
+                elif (n & 0x3B000000) == 0x39000000:  # LDR/STR (unsigned imm12, scaled by access size)
+                    full, kind = page + (((n >> 10) & 0xFFF) << (n >> 30)), "LDR/STR"
+                else:
+                    continue
+                if full in targets or full - 0x10 in targets:
+                    print(f"{pc:#x} ADRP+{kind} -> {full:#x}")
+                break
     return 0
 
 
