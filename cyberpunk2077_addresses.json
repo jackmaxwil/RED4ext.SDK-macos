@@ -52,7 +52,8 @@
     },
     {
       "hash": "69014212",
-      "offset": "1:0x9D7E88"
+      "offset": "1:0x9D4590",
+      "verified": true
     },
     {
       "hash": "110771572",
@@ -77,7 +78,8 @@
     },
     {
       "hash": "242552139",
-      "offset": "1:0x9D7DD4"
+      "offset": "1:0x9D4374",
+      "verified": true
     },
     {
       "hash": "298916620",
@@ -417,7 +419,8 @@
     },
     {
       "hash": "1508445968",
-      "offset": "1:0x9D7D00"
+      "offset": "3:0x1A33FF0",
+      "verified": true
     },
     {
       "hash": "1518151849",
@@ -433,7 +436,8 @@
     },
     {
       "hash": "1525942140",
-      "offset": "1:0x9D7E88"
+      "offset": "1:0x9D4660",
+      "verified": true
     },
     {
       "hash": "1560690857",
@@ -445,7 +449,8 @@
     },
     {
       "hash": "1576079097",
-      "offset": "1:0x22575C0"
+      "offset": "1:0x9D479C",
+      "verified": true
     },
     {
       "hash": "1609519068",
@@ -494,7 +499,8 @@
     },
     {
       "hash": "1862212562",
-      "offset": "1:0x9D7D18"
+      "offset": "1:0x9D8388",
+      "verified": true
     },
     {
       "hash": "1863723270",
@@ -564,7 +570,8 @@
     },
     {
       "hash": "2193429752",
-      "offset": "1:0x9D7DD4"
+      "offset": "1:0x9D40C8",
+      "verified": true
     },
     {
       "hash": "2203918127",
@@ -692,11 +699,13 @@
     },
     {
       "hash": "2621709954",
-      "offset": "1:0x9D7D70"
+      "offset": "1:0x9D8690",
+      "verified": true
     },
     {
       "hash": "2627471740",
-      "offset": "1:0x9D7CD4"
+      "offset": "1:0x9D4A3C",
+      "verified": true
     },
     {
       "hash": "2630817091",
@@ -708,7 +717,8 @@
     },
     {
       "hash": "2655521326",
-      "offset": "1:0x9D7BF8"
+      "offset": "1:0x9D4A00",
+      "verified": true
     },
     {
       "hash": "2693863796",
@@ -955,7 +965,8 @@
     },
     {
       "hash": "3651996672",
-      "offset": "1:0x9D7E88"
+      "offset": "1:0x9D451C",
+      "verified": true
     },
     {
       "hash": "3652194890",

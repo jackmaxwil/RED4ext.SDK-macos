@@ -16,8 +16,10 @@
 
 RED4EXT_INLINE void RED4ext::JobInternals::SetLocalThreadParam(uint8_t aParam)
 {
-    auto tls = TLS::Get();
-    tls->jobParam = aParam;
+    if (auto tls = TLS::Get())
+    {
+        tls->jobParam = aParam;
+    }
 }
 
 RED4EXT_INLINE RED4ext::JobFamily::JobFamily(const char* aName) noexcept
@@ -96,10 +98,18 @@ RED4EXT_INLINE void RED4ext::JobHandle::Join(const JobHandle& aOther)
 
 RED4EXT_INLINE void RED4ext::JobHandle::AcquireInternalHandle(uintptr_t aUnk)
 {
+#ifdef __APPLE__
+    // macOS: (unused, name, unk). The game's own callers pass "" as the name.
+    using func_t = JobInternalHandle* (*)(void*, const char*, uintptr_t);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::JobInternalHandle_Acquire);
+
+    internal = func(nullptr, "", aUnk);
+#else
     using func_t = JobInternalHandle* (*)(void*, uintptr_t);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::JobInternalHandle_Acquire);
 
     internal = func(nullptr, aUnk);
+#endif
 }
 
 RED4EXT_INLINE void RED4ext::JobHandle::CopyInternalHandle(const JobHandle& aOther)
@@ -156,6 +166,14 @@ RED4EXT_INLINE void RED4ext::JobQueue::Wait(const JobHandle& aJob)
 
 [[nodiscard]] RED4EXT_INLINE RED4ext::JobHandle RED4ext::JobQueue::Capture()
 {
+#ifdef __APPLE__
+    // macOS: the handle is returned by value through x8 into uninitialized storage, which is what clang does for a
+    // non-trivial return type.
+    using func_t = JobHandle (*)(JobQueue*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::JobQueue_Capture);
+
+    return func(this);
+#else
     using func_t = JobHandle* (*)(JobQueue*, JobHandle*);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::JobQueue_Capture);
 
@@ -163,6 +181,7 @@ RED4EXT_INLINE void RED4ext::JobQueue::Wait(const JobHandle& aJob)
     func(this, &handle);
 
     return handle;
+#endif
 }
 
 RED4EXT_INLINE void RED4ext::JobQueue::DispatchJob(const JobInstance& aJob)
