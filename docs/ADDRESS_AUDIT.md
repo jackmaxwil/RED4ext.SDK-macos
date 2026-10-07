@@ -67,3 +67,13 @@ On macOS, `Memory/Allocators.hpp` resolves them with `dlsym(RTLD_MAIN_ONLY, ...)
 The Running-state self-check `rtti_get_type` fails as expected, and it refuses to call through the object.
 
 The real getter is still being located. Every RTTI-dependent feature is blocked on it: native function registration, TweakXL and ArchiveXL.
+
+## RTTI system, function constructor, name pool (2026-10-06)
+
+| Hash name | Old | Now | Evidence |
+|---|---|---|---|
+| `CRTTISystem_Get` | `0x3452734` (the CNamePool singleton getter) | `0x2188E8C` | **Guarded singleton.** Returns `0x107D6A288` in `__bss`. Its constructor stores vtable `0x106FFBD70`, which has 41 slots, with the destructor pair last because the header declares the destructor last. **Callers:** thunk `0x21885A0` has 2914 BL callers. Callers use slots `+0x08`, `+0x10` and `+0x18` with 64-bit name hashes. The register wrapper at `0x21884A4` calls slot `+0xA0`. **Path from `GetTypeObject<CName>`:** found through the GOT. Exported weak symbols are reached only via `__got`, so ADRP scans on the symbols themselves find nothing. |
+| `CGlobalFunction_ctor` | `0x21E8C88` (walks a DynArray) | `0x21739E8` | **Stores** the base vtable, names, and DynArrays at `+0x28` and `+0x38`, then the `CGlobalFunction` vtable and `regIndex` at `+0xB0`. **Callers:** thunk `0x2173AD4` has 653 callers; the `NameToString` registration calls it. |
+| `CNamePool_Get` | `0x90E7D8` (inside a strtoul parser) | `0x3452D84` | `ldr x0,[x0]; b 0x3452BDC`. The target looks up the hash in the name-pool singleton and returns `{ptr, len}` in x0 and x1. 1240 callers. |
+
+`CNamePool_AddCstr`, `CNamePool_AddPair` and `CNamePool_AddCString` sit in the same misplaced block of text-formatting code and are wrong. The real add-a-C-string function appears to be `0x3452DDC` (thunk `0x2188524`). It returns the `CName` in x0, so the SDK binding has to change too. Pending confirmation.
