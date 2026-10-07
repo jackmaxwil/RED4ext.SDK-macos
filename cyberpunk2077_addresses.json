@@ -6,7 +6,7 @@
     "total": 135,
     "resolved": 131,
     "unresolved": 4,
-    "verified": 12
+    "verified": 13
   },
   "Addresses": [
     {
@@ -260,7 +260,8 @@
     },
     {
       "hash": "2057311186",
-      "offset": "1:0x2C524"
+      "offset": "1:0x286E8",
+      "verified": true
     },
     {
       "hash": "2065762423",

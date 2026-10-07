@@ -105,3 +105,19 @@ CI runs `validate_addresses.py --verified-only`. A verified entry with any findi
 - `CString_copy`
 
 **`DynArray_Realloc` (`0x2C524`) is wrong.** It is `String::reserve` (it has the 19-character inline-capacity check). Using it for `CBaseFunction::AddParam` wrote into read-only memory (crash 2026-10-06 21:23).
+
+## DynArray_Realloc (2026-10-06): fixed, verified
+
+`0x2C524` → **`0x286E8`**. The call graph pins it down:
+
+- **Callers.** 21,709 BL plus 75 B call sites.
+- **Through the move callbacks.** About 6,030 of 2,378 `MoveAfterReallocation` GOT slots lead straight to it, loaded into x4 just before the call. The next-best candidate gets 2.
+
+The body matches the SDK signature `(array, capacity, elemSize, alignment, move)`:
+
+1. It returns early if the capacity is unchanged.
+2. It allocates, then calls the move callback with a byte count and the source array.
+3. It stores the new pointer at `+0` and the capacity at `+8`.
+4. It keeps the allocator handle after the buffer.
+
+**Caveat:** a null move callback selects the realloc/raw-copy path. That is fine only for trivially relocatable element types.
