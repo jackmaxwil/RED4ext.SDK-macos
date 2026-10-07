@@ -33,7 +33,6 @@ Add `include/` to your project's include path. Include the address resolver over
 ```bash
 python3 scripts/validate_addresses.py   # uses the Steam binary if present, else segment checks only
 python3 scripts/check_addresses.py --strict
-python3 scripts/check_loader_addresses.py --strict
 ```
 
 ## Related projects

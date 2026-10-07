@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate Cyberpunk 2077 macOS address tables against the game's Mach-O (RESUME_PLAN Phase 2.2).
 
-Sources (any mix, given as paths; default = this repo's two DBs + loader_hook_targets.json):
+Sources (any mix, given as paths; default = this repo DB + loader_hook_targets.json):
   *.json with "Addresses": [{"hash": "<dec>", "offset": "<seg>:0x<off>"}]   seg-relative,
         seg 1=__TEXT 2=__DATA_CONST 3=__DATA (as in Addresses.cpp / Relocation-inl.hpp)
   *.json with "hooks":     loader_hook_targets.json (same offset format, carries names)
@@ -307,7 +307,6 @@ def main() -> int:
 
     sources = args.sources or [
         ROOT / "cyberpunk2077_addresses.json",
-        ROOT / "cyberpunk2077_addresses.loader.json",
         ROOT / "scripts/loader_hook_targets.json",
     ]
     if args.binary.is_file():

@@ -93,10 +93,8 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 //
 // Search paths (in order):
 //   1. $RED4EXT_SDK_ADDRESS_DB environment variable
-//   2. Same directory as the plugin (.dylib)
-//   3. red4ext/ or red4ext/bin/x64/ relative to plugin
-//   4. Same directory as the game executable
-//   5. red4ext/ or red4ext/bin/x64/ relative to executable
+//   2. <game>/red4ext/bin/x64/cyberpunk2077_addresses.json, found by walking up from the plugin,
+//      then from the game executable. This is the single canonical copy, shared with the loader.
 //
 // Validation: Run scripts/check_addresses.py --strict
 // ============================================================================
@@ -268,8 +266,6 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
 
                                    if (!red4extRoot.empty())
                                    {
-                                       if (tryLoadFromPath(red4extRoot / fileName))
-                                           return true;
                                        if (tryLoadFromPath(red4extRoot / "bin" / "x64" / fileName))
                                            return true;
                                    }
@@ -282,9 +278,6 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
                            const auto modulePath = GetCurrentModulePath();
                            if (!modulePath.empty())
                            {
-                               if (tryLoadFromPath(modulePath.parent_path() / fileName))
-                                   return;
-
                                // Common layout: <game>/red4ext/plugins/<PluginName>/<plugin>.dylib
                                if (tryLoadFromRed4extRootNear(modulePath.parent_path()))
                                    return;
@@ -295,8 +288,6 @@ uintptr_t RED4ext::UniversalRelocBase::Resolve(uint32_t aHash)
                            if (_NSGetExecutablePath(exePathBuf, &exeSize) == 0)
                            {
                                const auto exeDir = std::filesystem::path(exePathBuf).parent_path();
-                               if (tryLoadFromPath(exeDir / fileName))
-                                   return;
 
                                // Also try <game>/red4ext/... by walking up from the executable directory.
                                if (tryLoadFromRed4extRootNear(exeDir))
