@@ -169,6 +169,11 @@ constexpr std::uint32_t JobHandle_Join = 0x9C9C097C;
 constexpr std::uint32_t JobInternalHandle_Acquire = 0x6EFF1BD2;
 #pragma endregion
 
+#pragma region JobInternals
+// macOS only (no Windows Address Library ID): FNV1a32("JobInternals_SetLocalThreadParam").
+constexpr std::uint32_t JobInternals_SetLocalThreadParam = 0x5CA0DA01;
+#pragma endregion
+
 #pragma region JobQueue
 constexpr std::uint32_t JobQueue_ctor_FromGroup = 0xE750D4B;
 constexpr std::uint32_t JobQueue_ctor_FromParams = 0x82BD14F8;

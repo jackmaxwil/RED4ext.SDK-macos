@@ -16,10 +16,22 @@
 
 RED4EXT_INLINE void RED4ext::JobInternals::SetLocalThreadParam(uint8_t aParam)
 {
+#ifdef __APPLE__
+    // macOS keeps the job param in a C++ thread_local (__thread_vars descriptor 0x1074BCF50); the game's setter
+    // 0x1009E5F94 stores the byte through the TLV thunk. Fail closed: no call unless the address is verified.
+    using func_t = void (*)(uint8_t);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::JobInternals_SetLocalThreadParam);
+
+    if (func.IsValid())
+    {
+        func(aParam);
+    }
+#else
     if (auto tls = TLS::Get())
     {
         tls->jobParam = aParam;
     }
+#endif
 }
 
 RED4EXT_INLINE RED4ext::JobFamily::JobFamily(const char* aName) noexcept

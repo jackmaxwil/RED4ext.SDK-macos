@@ -192,6 +192,15 @@ These groups were reverse-engineered statically. The per-entry evidence (strings
     - SDK structs derived from `CResource` can be laid out differently from the game. The game puts `inkWidgetLibraryResource.libraryItems` at 0x40, but the SDK puts it at 0x48.
     - Compare SDK field offsets against the game's RTTI property offsets before trusting any SDK struct on macOS.
 
+## Job thread param setter (2026-10-07): verified
+
+| Hash name | Hash | Offset | Identity | Evidence |
+|---|---|---|---|---|
+| `JobInternals_SetLocalThreadParam` | 1554045441 (macOS only: `FNV1a32` of the name, no Windows ID) | `1:0x9E5F94` | **confirmed** | `void(u8)`: `mov x8,x0`, `adrp/add x0,0x1074BCF50`, `ldr x9,[x0]; blr x9` (the TLV thunk returns the variable's address), `strb w8,[x0]`. `0x1074BCF50` is descriptor 15 of `__DATA,__thread_vars` (0x1074BCDE8, 0x18-byte descriptors). Only three functions reference it: this setter, the getter `0x1009E5FBC` (`ldrb w0,[x0]`) and the address getter `0x1009E5FE0`. The setter has 2468 BL callers; the job shims follow the SDK's `JobClosure::HandleTarget` pattern exactly: set the param from the job's counter (`0x1009D4AF8` reads `(*ctx->counter)+0x21`), run, then set `0xFF` (e.g. `0x1009491C0`/`0x1009491C4` and `0x1009491F0`/`0x1009491F4`). The getter's only callers are the six `job::Builder` constructors (`0x1009D4020`, `JobQueue_ctor_FromParams` `0x1009D40C8`, `0x1009D4170`, `0x1009D420C`, `0x1009D42A8`, `JobQueue_ctor_FromGroup` `0x1009D4374`): a param of `0xFF` means "take the thread's". |
+
+`JobInternals::SetLocalThreadParam` calls it on macOS (it was a no-op, because `TLS::Get()` returns null there).
+**Caller hazard:** `JobClosure::HandleTarget` (`JobQueue.hpp`) passes `aGroup.params.unk02` (RunContext+0x32), which the macOS runner `0x1009D812C` leaves uninitialized (`docs/re/jobs.md` item 3). On macOS it should pass the byte the game's shims use, `(*(JobInternalHandle**)&aGroup.unk20)->params.unk00` (Counter+0x21), or 0xFF when there is no counter.
+
 ## macOS struct layouts (2026-10-06): live RTTI dump
 `data/rtti_layout_macos.json` comes from one main-menu run with `RED4EXT_DUMP_RTTI=1` (`tools/cp-run rttidump`) and is tagged with UUID A6656ADC. It lists 15,903 classes, 43,502 properties and 20,434 types. Its reads are confirmed in `docs/re/reflection_layout.md`:
 - `GetClasses` at vtable +0x70;
