@@ -1,49 +1,97 @@
-# RED4ext.SDK (macOS)
+# RED4ext.SDK (macOS arm64 fork)
 
-C++ SDK for building Cyberpunk 2077 mods on macOS ARM64.
+C++20 headers for writing [RED4ext](https://github.com/jackmaxwil/RED4ext-macos) plugins for Cyberpunk 2077. This fork of
+[WopsS/RED4ext.SDK](https://github.com/WopsS/RED4ext.SDK) adds macOS arm64 support for Cyberpunk 2077 **2.3.1** (game
+binary UUID `A6656ADC-FBE2-36A4-9B9D-B4A9DE645089`). The Windows build is kept; CI still builds it.
 
-**Status:** In progress. Only address DB entries marked `"verified": true` resolve, and most are not verified yet. RED4ext boots to the main menu with these headers and the SDK self-checks pass; ModMenu loads, TweakXL and ArchiveXL do not yet. See [docs/ADDRESS_AUDIT.md](docs/ADDRESS_AUDIT.md) and §0 of `~/Development/cyberpunk/RESUME_PLAN.md`.
+What the fork adds:
 
-## What it does
+- arm64/Itanium ABI fixes in the hand-written headers (see the rules below).
+- macOS class layouts for the generated headers, produced from a live RTTI dump (`data/rtti_layout_macos.json`) by
+  `scripts/gen_macos_layouts.py`.
+- An address database, `cyberpunk2077_addresses.json`, that replaces the Windows Address Library.
+- A small Windows compatibility layer (`include/RED4ext/Detail/WinCompat.hpp`) and pthread/atomic versions of the
+  mutex and spinlocks.
 
-Provides header-only C++ types and address resolution for the Cyberpunk 2077 runtime. Plugins include this SDK to access game functions, RTTI types, TweakDB, and scripting APIs. On macOS, addresses resolve from `cyberpunk2077_addresses.json` instead of Windows Address Library.
+## Use it in a plugin
 
-## Usage
+Add this repo as a submodule (or a sibling checkout), then:
 
-Add `include/` to your project's include path. Include the address resolver override header before any SDK headers if your plugin uses custom hashes:
+```cmake
+set(CMAKE_CXX_STANDARD 20)
+set(RED4EXT_HEADER_ONLY ON CACHE BOOL "" FORCE)   # recommended on macOS
+add_subdirectory(deps/RED4ext.SDK)
+
+add_library(MyPlugin SHARED src/Main.cpp)
+target_link_libraries(MyPlugin PRIVATE RED4ext::SDK)
+```
 
 ```cpp
 #include <RED4ext/RED4ext.hpp>
 ```
 
-## Key files
+Start from any project in `examples/`. Copy the built `.dylib` into `<game>/red4ext/plugins/MyPlugin/`; RED4ext loads
+every `.dylib` it finds there.
 
-| File | Purpose |
-|------|---------|
-| `include/RED4ext/Relocation-inl.hpp` | macOS address resolution (JSON loading) |
-| `include/RED4ext/Detail/AddressHashes.hpp` | 126 address hash constants |
-| `include/RED4ext/Common.hpp` | Platform compatibility types |
-| `cyberpunk2077_addresses.json` | Hash-to-offset mapping for v2.3.1, with a `verified` flag per entry |
-| `scripts/validate_addresses.py` | Validate address tables against the game binary (`--help`) |
-| `scripts/plugin_requirements.py` | List the hashes a plugin dylib needs and whether each is verified |
-| `docs/ADDRESS_AUDIT.md` | Evidence for each verified or refuted address |
-| `docs/STATUS.md` | Port status |
+Without `RED4EXT_HEADER_ONLY` the target is a static library; both modes build on macOS. TweakXL, ArchiveXL and ModMenu
+instead add `include/` to their include path directly, which is equivalent to header-only mode.
 
-## Validation
+## macOS rules for plugin authors
+
+- **Only verified addresses resolve.** An address hash whose DB entry is not `"verified": true` resolves to 0, and
+  RED4ext refuses to load a plugin that needs one. Check your build:
+  `python3 scripts/plugin_requirements.py path/to/MyPlugin.dylib` (exit 1 lists the unverified hashes).
+- **Check the classes you touch.** `python3 scripts/sdk_layout_diff.py --plugin-sources path/to/src` fails if a class
+  your code uses has a different macOS size or field offset than the SDK header says.
+- **Struct results come back through x8.** A function that returns a non-trivial struct by value takes a hidden result
+  pointer in x8, not as the first argument as on Windows. Declare such functions with the real return type.
+- **Vtables have two destructor slots.** Slot 0 is the complete destructor, slot 1 the deleting destructor, so every
+  later virtual is 8 bytes after its MSVC offset. Never index vtables with Windows offsets.
+- **Member-function pointers are 16 bytes** (function plus this-adjustment), not 8.
+- **Overloaded virtuals keep declaration order** under clang; MSVC can reverse them, so their slots can differ.
+- **No TLS block.** `RED4ext::TLS::Get()` returns `nullptr` on macOS; the game keeps per-thread state in C++
+  `thread_local` variables.
+
+## Address database
+
+`cyberpunk2077_addresses.json` maps 32-bit hashes (constants in `include/RED4ext/Detail/AddressHashes.hpp`) to
+`segment:offset` (1 = `__TEXT`, 2 = `__DATA_CONST`, 3 = `__DATA`). At runtime the SDK reads it from
+`$RED4EXT_SDK_ADDRESS_DB` or `<game>/red4ext/bin/x64/cyberpunk2077_addresses.json` (installed by RED4ext).
+
+**Verified** means the address was identified in the 2.3.1 binary by static analysis, with the evidence written down in
+[docs/ADDRESS_AUDIT.md](docs/ADDRESS_AUDIT.md) or [docs/re/](docs/README.md). Currently 187 of 278 entries are
+verified, including every address TweakXL, ArchiveXL and ModMenu use. Unverified entries are kept for later work but do
+not resolve.
 
 ```bash
-python3 scripts/validate_addresses.py   # uses the Steam binary if present, else segment checks only
-python3 scripts/plugin_requirements.py <plugin.dylib>   # exit 1 if any required hash is unverified
+python3 scripts/validate_addresses.py --verified-only --quiet   # checks against the game binary if installed
+python3 scripts/plugin_requirements.py MyPlugin.dylib           # which hashes a plugin needs, and are they verified
 ```
 
-## Related projects
+### Patch day
 
-| Project | Description |
-|---------|-------------|
-| [RED4ext](../RED4ext) | Mod loader that uses this SDK |
-| [TweakXL](../cp2077-tweak-xl) | Plugin built on this SDK |
-| [ArchiveXL](../cp2077-archive-xl-macos) | Plugin built on this SDK |
+A game update invalidates every address and the layout dump.
 
-## Attribution
+1. In RED4ext, run `tools/cp-run rttidump` and copy `logs/rtti_layout_macos.json` to `data/` here.
+2. Run `python3 scripts/gen_macos_layouts.py --verify` to regenerate the macOS layouts.
+3. Re-verify each verified DB entry against the new binary using the evidence in `docs/`. Update offsets and the `uuid`
+   field, and set `"verified": false` on anything not re-confirmed.
+4. In RED4ext, run `tools/cp-gate`. It checks the UUID, the DB, the layouts and every plugin's required hashes.
 
-Forked from [WopsS/RED4ext.SDK](https://github.com/WopsS/RED4ext.SDK). macOS port by memaxo.
+## Build and test
+
+```bash
+cmake -S . -B build -DRED4EXT_BUILD_EXAMPLES=ON          # add -DRED4EXT_HEADER_ONLY=ON for header-only
+cmake --build build -j8
+
+python3 scripts/validate_addresses.py --self-test
+python3 scripts/validate_addresses.py --verified-only --quiet
+python3 scripts/sdk_layout_diff.py --self-test
+```
+
+CI (`.github/workflows/build.yml`) runs the Windows build matrix and the three Python checks.
+
+## Credits
+
+Upstream: [WopsS/RED4ext.SDK](https://github.com/WopsS/RED4ext.SDK) by Octavian Dima and contributors, MIT licensed
+(see [LICENSE.md](LICENSE.md) and [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)). The macOS port is by jackmaxwil.
