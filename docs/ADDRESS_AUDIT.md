@@ -121,3 +121,14 @@ The body matches the SDK signature `(array, capacity, elemSize, alignment, move)
 4. It keeps the allocator handle after the buffer.
 
 **Caveat:** a null move callback selects the realloc/raw-copy path. That is fine only for trivially relocatable element types.
+
+## OpcodeHandlers (2026-10-06): fixed, verified
+
+The old value, `1:0x6E40000`, was a fabricated round number. The correct value is **`3:0x1CF7798`**, the script VM's opcode handler table at absolute `0x10908B798`.
+
+**Evidence:** the 502 exported script natives (`funcOperator*<T>(IScriptable*, CScriptStackFrame&, void*, rtti::IType const*)`) read each parameter the same way:
+1. `ldrb w8, [frame.code], #1`, then `adrp/add x21, table`.
+2. `ldr x8, [x21, x8, lsl #3]`.
+3. `blr x8` with `(frame.context, frame, out, 0)`.
+
+7,417 code sites load the table address. The frame fields touched (`data @0x30`, `dataType @0x38`, `context @0x40`, `currentParam @0x62`) match the SDK's `CStackFrame` exactly.
