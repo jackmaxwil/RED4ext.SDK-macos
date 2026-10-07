@@ -39,14 +39,14 @@ RED4EXT_INLINE bool RED4ext::TweakDB::TryGetRecord(TweakDBID aDBID, Handle<IScri
 }
 
 RED4EXT_INLINE RED4ext::DynArray<RED4ext::Handle<RED4ext::IScriptable>> RED4ext::TweakDB::GetRecordsByType(
-    CBaseRTTIType* aType)
+    rtti::IType* aType)
 {
     RED4ext::DynArray<RED4ext::Handle<RED4ext::IScriptable>> records;
     TryGetRecordsByType(aType, records);
     return records;
 }
 
-RED4EXT_INLINE bool RED4ext::TweakDB::TryGetRecordsByType(CBaseRTTIType* aType,
+RED4EXT_INLINE bool RED4ext::TweakDB::TryGetRecordsByType(rtti::IType* aType,
                                                           DynArray<Handle<IScriptable>>& aRecordsArray)
 {
     std::shared_lock<SharedSpinLock> _(mutex01);
@@ -233,14 +233,14 @@ RED4EXT_INLINE bool RED4ext::TweakDB::UpdateRecord(gamedataTweakDBRecord* aRecor
     return updated;
 }
 
-RED4EXT_INLINE bool RED4ext::TweakDB::CreateRecord(TweakDBID aDBID, CBaseRTTIType* aType)
+RED4EXT_INLINE bool RED4ext::TweakDB::CreateRecord(TweakDBID aDBID, rtti::IType* aType)
 {
     Handle<IScriptable> record;
     {
         std::shared_lock<SharedSpinLock> _(mutex01);
 
         const auto* records = recordsByType.Get(aType);
-        if (records == nullptr || records->size == 0)
+        if (records == nullptr || records->IsEmpty())
             return false;
 
         record = (*records)[0];
@@ -324,19 +324,21 @@ RED4EXT_INLINE int32_t RED4ext::TweakDB::CreateFlatValue(const CStackType& aStac
 
     UpsizeFlatDataBuffer(MaxFlatDataBufferSize);
 
-    uintptr_t flatAlignment =
-        (std::max)(static_cast<uintptr_t>(aStackType.type->GetAlignment()), static_cast<uintptr_t>(8));
-    uintptr_t flatValueSize = RED4ext::AlignUp(
+    const uintptr_t flatAlignment = (std::max)(aStackType.type->GetAlignment(), 8u);
+    const uintptr_t flatValueSize = RED4ext::AlignUp(
         static_cast<uintptr_t>(8) /* vftable */ + static_cast<uintptr_t>(aStackType.type->GetSize()), flatAlignment);
-    uintptr_t flatDataBufferEnd_Aligned = RED4ext::AlignUp(flatDataBufferEnd, flatAlignment);
+    const uintptr_t flatAddressAligned = RED4ext::AlignUp(flatDataBufferEnd, flatAlignment);
+    const uintptr_t newFlatDataBufferEnd = flatAddressAligned + flatValueSize;
 
-    if (AllocateFlatValue(reinterpret_cast<void*>(flatDataBufferEnd_Aligned), aStackType))
+    if (newFlatDataBufferEnd > (flatDataBuffer + flatDataBufferCapacity) ||
+        !AllocateFlatValue(reinterpret_cast<void*>(flatAddressAligned), aStackType))
     {
-        flatDataBufferEnd = flatDataBufferEnd_Aligned + flatValueSize;
-        return reinterpret_cast<FlatValue*>(flatDataBufferEnd_Aligned)->ToTDBOffset();
+        return -1;
     }
 
-    return -1;
+    flatDataBufferEnd = newFlatDataBufferEnd;
+
+    return reinterpret_cast<FlatValue*>(flatAddressAligned)->ToTDBOffset();
 }
 
 RED4EXT_INLINE bool RED4ext::TweakDB::AllocateFlatValue(void* aBuffer, const CStackType& aStackType)

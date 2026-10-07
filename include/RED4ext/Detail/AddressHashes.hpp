@@ -30,7 +30,13 @@ constexpr std::uint32_t CBitfield_FromString = 0xA09B15A8;
 
 #pragma region CClass
 constexpr std::uint32_t CClass_Unserialize = 0xE4AA0CAD;
+#ifdef __APPLE__
+// macOS DB key: upstream re-pointed the Windows ID, but the macOS entry (vtable slot +0x70 = 0x1021975E4, see
+// docs/re/rttireg.md) is CClass::ToString and is stored under the original hash.
 constexpr std::uint32_t CClass_ToString = 0x65293F06;
+#else
+constexpr std::uint32_t CClass_ToString = 409015031UL;
+#endif
 constexpr std::uint32_t CClass_sub_80 = 0x11D11B0C;
 constexpr std::uint32_t CClass_sub_88 = 0x4BDF1BB2;
 constexpr std::uint32_t CClass_sub_90 = 0xA26D374E;
@@ -158,6 +164,7 @@ constexpr std::uint32_t ISerializable_Counter = 2630817091;
 #pragma region JobDispatcher
 constexpr std::uint32_t JobDispatcher = 1508445968UL;
 constexpr std::uint32_t JobDispatcher_DispatchJob = 2621709954UL;
+constexpr std::uint32_t JobDispatcher_DispatchParallelJob = 4117243690UL;
 #pragma endregion
 
 #pragma region JobHandle

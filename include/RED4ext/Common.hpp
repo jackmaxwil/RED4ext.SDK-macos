@@ -1,8 +1,11 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
-#if !defined(_WIN32) && !defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
+#include <Windows.h>
+#else
 #include <RED4ext/Detail/WinCompat.hpp>
 #endif
 
@@ -76,4 +79,16 @@
 #else
 #define RED4EXT_CALL
 #endif
+#endif
+
+/*
+ * @brief Compute the runtime address of an offset.
+ *
+ * @example
+ *  const auto offset = 0x14022EAD0 - 0x140000000;
+ *  const auto addr =  RED4EXT_OFFSET_TO_ADDR(offset);
+ */
+#ifndef RED4EXT_OFFSET_TO_ADDR
+#define RED4EXT_OFFSET_TO_ADDR(offset)                                                                                 \
+    reinterpret_cast<void*>(reinterpret_cast<std::uintptr_t>(GetModuleHandle(nullptr)) + offset)
 #endif

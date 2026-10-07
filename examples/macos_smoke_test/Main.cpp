@@ -206,13 +206,13 @@ std::vector<std::uint32_t> LoadHashesFromJson(const std::filesystem::path& aPath
 }
 } // namespace
 
-RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::EMainReason aReason,
-                                        const RED4ext::Sdk* aSdk)
+RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::v1::PluginHandle aHandle, RED4ext::v1::EMainReason aReason,
+                                        const RED4ext::v1::Sdk* aSdk)
 {
     RED4EXT_UNUSED_PARAMETER(aHandle);
     RED4EXT_UNUSED_PARAMETER(aSdk);
 
-    if (aReason != RED4ext::EMainReason::Load)
+    if (aReason != RED4ext::v1::EMainReason::Load)
         return true;
 
     auto& log = LogStream();
@@ -326,16 +326,16 @@ RED4EXT_C_EXPORT bool RED4EXT_CALL Main(RED4ext::PluginHandle aHandle, RED4ext::
     return true;
 }
 
-RED4EXT_C_EXPORT void RED4EXT_CALL Query(RED4ext::PluginInfo* aInfo)
+RED4EXT_C_EXPORT void RED4EXT_CALL Query(RED4ext::v1::PluginInfo* aInfo)
 {
     aInfo->name = L"RED4ext.SDK.macos_smoke_test";
     aInfo->author = L"Factory";
-    aInfo->version = RED4EXT_SEMVER(1, 0, 0);
-    aInfo->runtime = RED4EXT_FILEVER(2, 3, 1, 0);
-    aInfo->sdk = RED4EXT_SDK_LATEST;
+    aInfo->version = RED4EXT_V1_SEMVER(1, 0, 0);
+    aInfo->runtime = RED4EXT_V1_FILEVER(2, 3, 1, 0);
+    aInfo->sdk = RED4EXT_V1_SDK_VERSION_CURRENT;
 }
 
 RED4EXT_C_EXPORT uint32_t RED4EXT_CALL Supports()
 {
-    return RED4EXT_API_VERSION_LATEST;
+    return RED4EXT_API_VERSION_1;
 }

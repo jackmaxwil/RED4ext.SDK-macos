@@ -13,24 +13,9 @@ RED4EXT_INLINE RED4ext::CRTTISystem* RED4ext::CRTTISystem::Get()
     return func();
 }
 
-RED4EXT_INLINE void RED4ext::CRTTISystem::RegisterType(CBaseRTTIType* aType)
+RED4EXT_INLINE void RED4ext::CRTTISystem::RegisterType(rtti::IType* aType)
 {
     RegisterType(aType, RTTIRegistrator::GetNextId());
-}
-
-RED4EXT_INLINE void RED4ext::RTTIRegistrator::Add(CallbackFunc aRegFunc, CallbackFunc aPostRegFunc, bool aUnused)
-{
-    RED4EXT_UNUSED_PARAMETER(aUnused);
-
-    if (aRegFunc)
-    {
-        CRTTISystem::Get()->AddRegisterCallback(aRegFunc);
-    }
-
-    if (aPostRegFunc)
-    {
-        CRTTISystem::Get()->AddPostRegisterCallback(aPostRegFunc);
-    }
 }
 
 RED4EXT_INLINE uint32_t RED4ext::RTTIRegistrator::GetNextId()

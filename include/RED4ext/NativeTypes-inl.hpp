@@ -4,8 +4,6 @@
 #include <RED4ext/NativeTypes.hpp>
 #endif
 
-#include <RED4ext/RTTISystem.hpp>
-
 RED4EXT_INLINE RED4ext::TweakDBID::TweakDBID(const std::string_view aName) noexcept
 {
     size_t len = aName.size();
@@ -115,7 +113,7 @@ RED4EXT_INLINE RED4ext::gamedataLocKeyWrapper::gamedataLocKeyWrapper(const char*
 {
 }
 
-RED4EXT_INLINE RED4ext::Variant::Variant(const RED4ext::CBaseRTTIType* aType)
+RED4EXT_INLINE RED4ext::Variant::Variant(const RED4ext::rtti::IType* aType)
     : Variant()
 {
     if (aType)
@@ -124,7 +122,7 @@ RED4EXT_INLINE RED4ext::Variant::Variant(const RED4ext::CBaseRTTIType* aType)
     }
 }
 
-RED4EXT_INLINE RED4ext::Variant::Variant(const RED4ext::CBaseRTTIType* aType, const RED4ext::ScriptInstance aData)
+RED4EXT_INLINE RED4ext::Variant::Variant(const RED4ext::rtti::IType* aType, const void* aData)
     : Variant()
 {
     if (aType)
@@ -138,7 +136,7 @@ RED4EXT_INLINE RED4ext::Variant::Variant(RED4ext::CName aTypeName)
 {
 }
 
-RED4EXT_INLINE RED4ext::Variant::Variant(RED4ext::CName aTypeName, const RED4ext::ScriptInstance aData)
+RED4EXT_INLINE RED4ext::Variant::Variant(RED4ext::CName aTypeName, const void* aData)
     : Variant(RED4ext::CRTTISystem::Get()->GetType(aTypeName), aData)
 {
 }
@@ -188,17 +186,17 @@ RED4EXT_INLINE bool RED4ext::Variant::IsInlined() const noexcept
     return reinterpret_cast<uintptr_t>(type) & InlineFlag;
 }
 
-RED4EXT_INLINE RED4ext::CBaseRTTIType* RED4ext::Variant::GetType() const noexcept
+RED4EXT_INLINE RED4ext::rtti::IType* RED4ext::Variant::GetType() const noexcept
 {
-    return reinterpret_cast<RED4ext::CBaseRTTIType*>(reinterpret_cast<uintptr_t>(type) & TypeMask);
+    return reinterpret_cast<RED4ext::rtti::IType*>(reinterpret_cast<uintptr_t>(type) & TypeMask);
 }
 
-RED4EXT_INLINE RED4ext::ScriptInstance RED4ext::Variant::GetDataPtr() const noexcept
+RED4EXT_INLINE void* RED4ext::Variant::GetDataPtr() const noexcept
 {
     return IsInlined() ? const_cast<uint8_t*>(inlined) : instance;
 }
 
-RED4EXT_INLINE bool RED4ext::Variant::Init(const RED4ext::CBaseRTTIType* aType)
+RED4EXT_INLINE bool RED4ext::Variant::Init(const RED4ext::rtti::IType* aType)
 {
     if (!aType)
     {
@@ -206,8 +204,8 @@ RED4EXT_INLINE bool RED4ext::Variant::Init(const RED4ext::CBaseRTTIType* aType)
         return false;
     }
 
-    RED4ext::CBaseRTTIType* ownType = GetType();
-    RED4ext::ScriptInstance ownData = GetDataPtr();
+    RED4ext::rtti::IType* ownType = GetType();
+    void* ownData = GetDataPtr();
 
     if (ownType)
     {
@@ -241,7 +239,7 @@ RED4EXT_INLINE bool RED4ext::Variant::Init(const RED4ext::CBaseRTTIType* aType)
     return true;
 }
 
-RED4EXT_INLINE bool RED4ext::Variant::Fill(const RED4ext::CBaseRTTIType* aType, const RED4ext::ScriptInstance aData)
+RED4EXT_INLINE bool RED4ext::Variant::Fill(const RED4ext::rtti::IType* aType, const void* aData)
 {
     if (!Init(aType))
         return false;
@@ -254,7 +252,7 @@ RED4EXT_INLINE bool RED4ext::Variant::Fill(const RED4ext::CBaseRTTIType* aType, 
     return true;
 }
 
-RED4EXT_INLINE bool RED4ext::Variant::Extract(RED4ext::ScriptInstance aBuffer)
+RED4EXT_INLINE bool RED4ext::Variant::Extract(void* aBuffer) const
 {
     if (IsEmpty())
         return false;
@@ -269,8 +267,8 @@ RED4EXT_INLINE void RED4ext::Variant::Free()
     if (IsEmpty())
         return;
 
-    RED4ext::CBaseRTTIType* ownType = GetType();
-    RED4ext::ScriptInstance ownData = GetDataPtr();
+    RED4ext::rtti::IType* ownType = GetType();
+    void* ownData = GetDataPtr();
 
     if (ownData)
     {
@@ -284,7 +282,7 @@ RED4EXT_INLINE void RED4ext::Variant::Free()
     type = nullptr;
 }
 
-RED4EXT_INLINE bool RED4ext::Variant::CanBeInlined(const RED4ext::CBaseRTTIType* aType) noexcept
+RED4EXT_INLINE bool RED4ext::Variant::CanBeInlined(const RED4ext::rtti::IType* aType) noexcept
 {
     return aType->GetSize() <= InlineSize && aType->GetAlignment() <= InlineAlignment;
 }
@@ -354,24 +352,29 @@ RED4EXT_INLINE void RED4ext::CurveData<T>::SetPoint(uint32_t aIndex, float aPoin
 template<typename T>
 RED4EXT_INLINE void RED4ext::CurveData<T>::Resize(uint32_t aNewSize) noexcept
 {
-    constexpr auto HeaderSize = sizeof(CurveBuffer<T>);
-    constexpr auto FixedPointsOffset = HeaderSize;
+    constexpr uint32_t HeaderSize = sizeof(CurveBuffer<T>);
+    constexpr uint32_t FixedPointsOffset = HeaderSize;
+    constexpr uint32_t PointSize = sizeof(float);
+    constexpr uint32_t ValueSize = sizeof(T);
+    constexpr uint32_t ValueAlignment = alignof(T);
 
     if (aNewSize < 1)
     {
         return;
     }
 
+    auto newValuesOffset = AlignUp(FixedPointsOffset + aNewSize * PointSize, ValueAlignment);
+    auto newBufferSize = newValuesOffset + aNewSize * ValueSize;
+
     if (!buffer)
     {
-        buffer.Initialize(nullptr, HeaderSize + aNewSize * sizeof(float) + aNewSize * sizeof(T));
+        buffer.Initialize(nullptr, newBufferSize, ValueAlignment);
 
         auto curve = GetCurve();
         curve->size = aNewSize;
-        curve->unk04 = 0;
+        curve->alignment = ValueAlignment;
         curve->pointsOffset = FixedPointsOffset;
-        curve->valuesOffset = FixedPointsOffset + aNewSize * sizeof(float);
-
+        curve->valuesOffset = newValuesOffset;
         return;
     }
 
@@ -384,7 +387,6 @@ RED4EXT_INLINE void RED4ext::CurveData<T>::Resize(uint32_t aNewSize) noexcept
     }
 
     auto oldValuesOffset = curve->valuesOffset;
-    auto newValuesOffset = FixedPointsOffset + aNewSize * sizeof(float);
 
     if (aNewSize < oldSize)
     {
@@ -395,7 +397,7 @@ RED4EXT_INLINE void RED4ext::CurveData<T>::Resize(uint32_t aNewSize) noexcept
         std::copy(oldValues, oldValues + aNewSize, newValues);
     }
 
-    buffer.Resize(HeaderSize + aNewSize * sizeof(float) + aNewSize * sizeof(T));
+    buffer.Resize(newBufferSize);
 
     if (aNewSize > oldSize)
     {
