@@ -167,7 +167,7 @@ With the Windows encoding, SDK code would let a plugin reader in while a game wr
 
 `Mutex` (`CRITICAL_SECTION` on Windows, `pthread_mutex_t` here) differs in size. Any SDK struct that embeds it, such as `CRTTISystem`, is not layout-compatible on macOS and must not be accessed by field offset.
 
-## Plugin worklist pass (2026-10-06): jobs, core, appearance, character customization, resources
+## Plugin worklist pass (2026-10-06): jobs, core, appearance, character customization, resources, world
 
 These groups were reverse-engineered statically. The per-entry evidence (strings, call graph, vtable slots, struct fingerprints) is in `docs/re/<group>.md`. Only entries marked "confirmed" there are `"verified": true` in the database. Entries marked "likely" have their offset updated but are left unverified.
 
@@ -186,3 +186,8 @@ These groups were reverse-engineered statically. The per-entry evidence (strings
   - The earlier ArchiveXL crash at `0x1D50D24` is in the game's input-context code (`0x101D50CE8`), not in any resource function.
 
 **`verified` covers the address only.** Many confirmed functions have arm64 signatures that differ from ArchiveXL's Windows declarations. The most common difference is a result returned through x8 that the Windows declaration passes as a hidden second argument. Each group file lists them under "signature" or "ABI". ArchiveXL must be ported to those signatures, and must drop or replace its hooks on inlined or missing functions, before it can be enabled. The loader keeps refusing it while any hash it uses is unverified.
+- **world:** 17 confirmed and 5 likely. `AISpotPersistentDataArray_Reserve` is inlined; rebuild it from the verified `DynArray_Realloc`.
+  - **Two cross-cutting hazards:**
+    - ArchiveXL's `RawVFunc` slot offsets are MSVC offsets, and every slot after the destructor is 8 bytes later on macOS.
+    - SDK structs derived from `CResource` can be laid out differently from the game. The game puts `inkWidgetLibraryResource.libraryItems` at 0x40, but the SDK puts it at 0x48.
+    - Compare SDK field offsets against the game's RTTI property offsets before trusting any SDK struct on macOS.
