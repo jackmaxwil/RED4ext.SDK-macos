@@ -204,7 +204,13 @@ struct JobClosure : JobInstance
 
     static void HandleTarget(ClosurePtr aTarget, const JobGroup& aGroup)
     {
+#ifdef __APPLE__
+        // On macOS the runner never initializes params.unk02 (RunContext+0x32), so pass the "no param" value the game
+        // itself restores after each job instead of stack garbage (docs/re/jobs.md, item 3).
+        JobInternals::SetLocalThreadParam(255);
+#else
         JobInternals::SetLocalThreadParam(aGroup.params.unk02);
+#endif
 
         if constexpr (Detail::IsClosure<ClosureType, void, const JobGroup&>)
         {
