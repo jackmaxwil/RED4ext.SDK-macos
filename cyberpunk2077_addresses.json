@@ -3,8 +3,8 @@
   "game_version": "2.3.1",
   "uuid": "A6656ADC-FBE2-36A4-9B9D-B4A9DE645089",
   "stats": {
-    "total": 134,
-    "resolved": 130,
+    "total": 135,
+    "resolved": 131,
     "unresolved": 4
   },
   "Addresses": [
@@ -31,6 +31,10 @@
     {
       "hash": "114701897",
       "offset": "1:0x2185F18"
+    },
+    {
+      "hash": "240386859",
+      "offset": "1:0x344CBFC"
     },
     {
       "hash": "242552139",
