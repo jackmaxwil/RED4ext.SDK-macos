@@ -18,10 +18,22 @@ struct TimeOfDayCondition : work::IWorkspotCondition
     static constexpr const char* NAME = "workTimeOfDayCondition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk35[0x38 - 0x35]; // 35
     GameTime activeAfter; // 38
     GameTime activeUntil; // 3C
+#else
+    GameTime activeAfter; // 38
+    GameTime activeUntil; // 3C
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TimeOfDayCondition, 0x40);
+RED4EXT_ASSERT_OFFSET(TimeOfDayCondition, activeAfter, 0x38);
+RED4EXT_ASSERT_OFFSET(TimeOfDayCondition, activeUntil, 0x3C);
+#else
+RED4EXT_ASSERT_SIZE(TimeOfDayCondition, 0x40);
+#endif
 } // namespace work
 using workTimeOfDayCondition = work::TimeOfDayCondition;
 } // namespace RED4ext

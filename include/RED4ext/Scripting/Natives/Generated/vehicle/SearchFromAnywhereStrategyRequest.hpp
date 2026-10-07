@@ -18,9 +18,19 @@ struct SearchFromAnywhereStrategyRequest : vehicle::BaseStrategyRequest
     static constexpr const char* NAME = "vehicleSearchFromAnywhereStrategyRequest";
     static constexpr const char* ALIAS = "SearchFromAnywhereStrategyRequest";
 
+#ifdef __APPLE__
+    Vector2 angleRange; // 54
+    uint8_t unk5C[0x60 - 0x5C]; // 5C
+#else
     Vector2 angleRange; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SearchFromAnywhereStrategyRequest, 0x60);
+RED4EXT_ASSERT_OFFSET(SearchFromAnywhereStrategyRequest, angleRange, 0x54);
+#else
+RED4EXT_ASSERT_SIZE(SearchFromAnywhereStrategyRequest, 0x60);
+#endif
 } // namespace vehicle
 using vehicleSearchFromAnywhereStrategyRequest = vehicle::SearchFromAnywhereStrategyRequest;
 using SearchFromAnywhereStrategyRequest = vehicle::SearchFromAnywhereStrategyRequest;

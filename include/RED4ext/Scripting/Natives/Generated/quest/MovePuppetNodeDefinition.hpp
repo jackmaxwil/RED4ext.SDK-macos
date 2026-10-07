@@ -22,11 +22,25 @@ struct MovePuppetNodeDefinition : quest::ConfigurableAICommandNode
     static constexpr const char* NAME = "questMovePuppetNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference entityReference; // 48
     CName moveType; // 80
     Handle<quest::AICommandParams> nodeParams; // 88
+#else
+    game::EntityReference entityReference; // 48
+    CName moveType; // 80
+    Handle<quest::AICommandParams> nodeParams; // 88
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MovePuppetNodeDefinition, 0x98);
+RED4EXT_ASSERT_OFFSET(MovePuppetNodeDefinition, entityReference, 0x48);
+RED4EXT_ASSERT_OFFSET(MovePuppetNodeDefinition, moveType, 0x80);
+RED4EXT_ASSERT_OFFSET(MovePuppetNodeDefinition, nodeParams, 0x88);
+#else
+RED4EXT_ASSERT_SIZE(MovePuppetNodeDefinition, 0x98);
+#endif
 } // namespace quest
 using questMovePuppetNodeDefinition = quest::MovePuppetNodeDefinition;
 } // namespace RED4ext

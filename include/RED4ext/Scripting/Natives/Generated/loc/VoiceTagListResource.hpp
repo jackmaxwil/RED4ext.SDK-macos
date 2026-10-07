@@ -19,9 +19,19 @@ struct VoiceTagListResource : CResource
     static constexpr const char* NAME = "locVoiceTagListResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<loc::VoiceTag> voiceTags; // 40
+#else
+    DynArray<loc::VoiceTag> voiceTags; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VoiceTagListResource, 0x50);
+RED4EXT_ASSERT_OFFSET(VoiceTagListResource, voiceTags, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(VoiceTagListResource, 0x50);
+#endif
 } // namespace loc
 using locVoiceTagListResource = loc::VoiceTagListResource;
 } // namespace RED4ext

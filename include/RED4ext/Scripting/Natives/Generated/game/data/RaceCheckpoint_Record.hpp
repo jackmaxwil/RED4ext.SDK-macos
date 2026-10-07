@@ -17,8 +17,15 @@ struct RaceCheckpoint_Record : game::data::LCDScreen_Record
     static constexpr const char* NAME = "gamedataRaceCheckpoint_Record";
     static constexpr const char* ALIAS = "RaceCheckpoint_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RaceCheckpoint_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(RaceCheckpoint_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataRaceCheckpoint_Record = game::data::RaceCheckpoint_Record;
 using RaceCheckpoint_Record = game::data::RaceCheckpoint_Record;

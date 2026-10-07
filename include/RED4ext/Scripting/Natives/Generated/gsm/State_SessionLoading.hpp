@@ -17,9 +17,17 @@ struct State_SessionLoading : gsm::State
     static constexpr const char* NAME = "gsmState_SessionLoading";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkB8[0x188 - 0xB8]; // B8
+#else
     uint8_t unkB8[0x190 - 0xB8]; // B8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(State_SessionLoading, 0x188);
+#else
 RED4EXT_ASSERT_SIZE(State_SessionLoading, 0x190);
+#endif
 } // namespace gsm
 using gsmState_SessionLoading = gsm::State_SessionLoading;
 } // namespace RED4ext

@@ -19,9 +19,19 @@ struct AreaResource : CResource
     static constexpr const char* NAME = "gameAreaResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<game::CookedAreaData> cookedData; // 40
+#else
+    DynArray<game::CookedAreaData> cookedData; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AreaResource, 0x50);
+RED4EXT_ASSERT_OFFSET(AreaResource, cookedData, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(AreaResource, 0x50);
+#endif
 } // namespace game
 using gameAreaResource = game::AreaResource;
 } // namespace RED4ext

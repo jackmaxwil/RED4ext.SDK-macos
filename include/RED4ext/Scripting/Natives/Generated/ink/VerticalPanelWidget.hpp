@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) VerticalPanelWidget : ink::BasePanelWidget
     static constexpr const char* NAME = "inkVerticalPanelWidget";
     static constexpr const char* ALIAS = "inkVerticalPanel";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(VerticalPanelWidget, 0x230);
+#else
 RED4EXT_ASSERT_SIZE(VerticalPanelWidget, 0x240);
+#endif
 } // namespace ink
 using inkVerticalPanelWidget = ink::VerticalPanelWidget;
 using inkVerticalPanel = ink::VerticalPanelWidget;

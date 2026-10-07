@@ -18,9 +18,19 @@ struct ControlObject_NodeType : quest::IGameManagerNonSignalStoppingNodeType
     static constexpr const char* NAME = "questControlObject_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     game::EntityReference objectRef; // 38
+#else
+    game::EntityReference objectRef; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ControlObject_NodeType, 0x70);
+RED4EXT_ASSERT_OFFSET(ControlObject_NodeType, objectRef, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(ControlObject_NodeType, 0x70);
+#endif
 } // namespace quest
 using questControlObject_NodeType = quest::ControlObject_NodeType;
 } // namespace RED4ext

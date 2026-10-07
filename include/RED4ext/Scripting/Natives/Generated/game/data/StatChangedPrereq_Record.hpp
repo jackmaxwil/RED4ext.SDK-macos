@@ -17,9 +17,17 @@ struct StatChangedPrereq_Record : game::data::IPrereq_Record
     static constexpr const char* NAME = "gamedataStatChangedPrereq_Record";
     static constexpr const char* ALIAS = "StatChangedPrereq_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x78 - 0x58]; // 58
+#else
     uint8_t unk58[0x80 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(StatChangedPrereq_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(StatChangedPrereq_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataStatChangedPrereq_Record = game::data::StatChangedPrereq_Record;
 using StatChangedPrereq_Record = game::data::StatChangedPrereq_Record;

@@ -8,7 +8,11 @@
 
 namespace RED4ext
 {
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ent::MorphTargetSkinnedMeshComponent, 0x360);
+#else
 RED4EXT_ASSERT_SIZE(ent::MorphTargetSkinnedMeshComponent, 0x370);
+#endif
 using entMorphTargetSkinnedMeshComponent = ent::MorphTargetSkinnedMeshComponent;
 } // namespace RED4ext
 

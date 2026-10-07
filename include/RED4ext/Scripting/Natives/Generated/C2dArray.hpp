@@ -17,10 +17,22 @@ struct C2dArray : CResource
     static constexpr const char* NAME = "C2dArray";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<CString> headers; // 40
     DynArray<DynArray<CString>> data; // 50
+#else
+    DynArray<CString> headers; // 40
+    DynArray<DynArray<CString>> data; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(C2dArray, 0x60);
+RED4EXT_ASSERT_OFFSET(C2dArray, headers, 0x40);
+RED4EXT_ASSERT_OFFSET(C2dArray, data, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(C2dArray, 0x60);
+#endif
 } // namespace RED4ext
 
 // clang-format on

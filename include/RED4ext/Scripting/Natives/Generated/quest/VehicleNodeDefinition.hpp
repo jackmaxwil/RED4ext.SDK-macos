@@ -20,9 +20,19 @@ struct VehicleNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questVehicleNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IVehicleManagerNodeType> type; // 48
+#else
+    Handle<quest::IVehicleManagerNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VehicleNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(VehicleNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(VehicleNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questVehicleNodeDefinition = quest::VehicleNodeDefinition;
 } // namespace RED4ext

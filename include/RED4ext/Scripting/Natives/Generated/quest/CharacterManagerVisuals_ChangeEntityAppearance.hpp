@@ -17,8 +17,15 @@ struct CharacterManagerVisuals_ChangeEntityAppearance : quest::CharacterManagerV
     static constexpr const char* NAME = "questCharacterManagerVisuals_ChangeEntityAppearance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CharacterManagerVisuals_ChangeEntityAppearance, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(CharacterManagerVisuals_ChangeEntityAppearance, 0xD8);
+#endif
 } // namespace quest
 using questCharacterManagerVisuals_ChangeEntityAppearance = quest::CharacterManagerVisuals_ChangeEntityAppearance;
 } // namespace RED4ext

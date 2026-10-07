@@ -17,10 +17,20 @@ struct MachineConsumableParameterBool : game::state::MachineActionParameterBool
     static constexpr const char* NAME = "gamestateMachineConsumableParameterBool";
     static constexpr const char* ALIAS = "ConsumableParameterBool";
 
+#ifdef __APPLE__
+    bool consumed; // 11
+    uint8_t unk12[0x18 - 0x12]; // 12
+#else
     bool consumed; // 18
     uint8_t unk19[0x20 - 0x19]; // 19
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MachineConsumableParameterBool, 0x18);
+RED4EXT_ASSERT_OFFSET(MachineConsumableParameterBool, consumed, 0x11);
+#else
 RED4EXT_ASSERT_SIZE(MachineConsumableParameterBool, 0x20);
+#endif
 } // namespace game::state
 using gamestateMachineConsumableParameterBool = game::state::MachineConsumableParameterBool;
 using ConsumableParameterBool = game::state::MachineConsumableParameterBool;

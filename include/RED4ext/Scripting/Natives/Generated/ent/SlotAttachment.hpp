@@ -17,9 +17,16 @@ struct SlotAttachment : ent::ITransformAttachment
     static constexpr const char* NAME = "entSlotAttachment";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unk58[0x60 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SlotAttachment, 0x58);
+#else
 RED4EXT_ASSERT_SIZE(SlotAttachment, 0x60);
+#endif
 } // namespace ent
 using entSlotAttachment = ent::SlotAttachment;
 } // namespace RED4ext

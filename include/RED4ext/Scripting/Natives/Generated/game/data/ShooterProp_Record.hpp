@@ -17,9 +17,17 @@ struct ShooterProp_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterProp_Record";
     static constexpr const char* ALIAS = "ShooterProp_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x108 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x110 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterProp_Record, 0x108);
+#else
 RED4EXT_ASSERT_SIZE(ShooterProp_Record, 0x110);
+#endif
 } // namespace game::data
 using gamedataShooterProp_Record = game::data::ShooterProp_Record;
 using ShooterProp_Record = game::data::ShooterProp_Record;

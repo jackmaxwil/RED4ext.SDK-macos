@@ -17,9 +17,17 @@ struct ModifyAttackCritChanceEffector_Record : game::data::Effector_Record
     static constexpr const char* NAME = "gamedataModifyAttackCritChanceEffector_Record";
     static constexpr const char* ALIAS = "ModifyAttackCritChanceEffector_Record";
 
+#ifdef __APPLE__
+    uint8_t unk88[0x90 - 0x88]; // 88
+#else
     uint8_t unk88[0x98 - 0x88]; // 88
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ModifyAttackCritChanceEffector_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(ModifyAttackCritChanceEffector_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataModifyAttackCritChanceEffector_Record = game::data::ModifyAttackCritChanceEffector_Record;
 using ModifyAttackCritChanceEffector_Record = game::data::ModifyAttackCritChanceEffector_Record;

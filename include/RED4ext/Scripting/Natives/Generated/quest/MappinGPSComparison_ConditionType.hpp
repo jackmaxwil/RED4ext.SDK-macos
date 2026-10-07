@@ -22,12 +22,27 @@ struct MappinGPSComparison_ConditionType : quest::IDistanceConditionType
     static constexpr const char* NAME = "questMappinGPSComparison_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<quest::MappinGPSDistance> distanceDefinition1; // 38
     Handle<quest::ValueDistance> distanceDefinition2; // 48
     EComparisonType comparisonType; // 58
     uint8_t unk5C[0x60 - 0x5C]; // 5C
+#else
+    Handle<quest::MappinGPSDistance> distanceDefinition1; // 38
+    Handle<quest::ValueDistance> distanceDefinition2; // 48
+    EComparisonType comparisonType; // 58
+    uint8_t unk5C[0x60 - 0x5C]; // 5C
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MappinGPSComparison_ConditionType, 0x60);
+RED4EXT_ASSERT_OFFSET(MappinGPSComparison_ConditionType, distanceDefinition1, 0x38);
+RED4EXT_ASSERT_OFFSET(MappinGPSComparison_ConditionType, distanceDefinition2, 0x48);
+RED4EXT_ASSERT_OFFSET(MappinGPSComparison_ConditionType, comparisonType, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(MappinGPSComparison_ConditionType, 0x60);
+#endif
 } // namespace quest
 using questMappinGPSComparison_ConditionType = quest::MappinGPSComparison_ConditionType;
 } // namespace RED4ext

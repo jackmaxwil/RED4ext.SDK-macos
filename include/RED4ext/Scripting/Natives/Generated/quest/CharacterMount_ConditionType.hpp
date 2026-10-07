@@ -24,6 +24,8 @@ struct CharacterMount_ConditionType : quest::ICharacterConditionType
     static constexpr const char* NAME = "questCharacterMount_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk71[0x78 - 0x71]; // 71
     game::EntityReference parentRef; // 78
     bool parentIsPlayer; // B0
     quest::MountConditionType condition; // B1
@@ -39,8 +41,41 @@ struct CharacterMount_ConditionType : quest::ICharacterConditionType
     bool anyChild; // EA
     bool enterAnimationFinished; // EB
     uint8_t unkEC[0xF0 - 0xEC]; // EC
+#else
+    game::EntityReference parentRef; // 78
+    bool parentIsPlayer; // B0
+    quest::MountConditionType condition; // B1
+    uint8_t unkB2[0xB4 - 0xB2]; // B2
+    game::MountingSlotRole role; // B4
+    quest::MountVehicleType vehicleType; // B8
+    quest::MountVehicleOrigin vehicleOrigin; // BC
+    game::data::Affiliation vehicleAfiliation; // C0
+    uint8_t unkC4[0xC8 - 0xC4]; // C4
+    CString playerVehicleName; // C8
+    bool usePlayersVehicle; // E8
+    bool anyParent; // E9
+    bool anyChild; // EA
+    bool enterAnimationFinished; // EB
+    uint8_t unkEC[0xF0 - 0xEC]; // EC
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CharacterMount_ConditionType, 0xF0);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, parentRef, 0x78);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, parentIsPlayer, 0xB0);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, condition, 0xB1);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, role, 0xB4);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, vehicleType, 0xB8);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, vehicleOrigin, 0xBC);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, vehicleAfiliation, 0xC0);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, playerVehicleName, 0xC8);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, usePlayersVehicle, 0xE8);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, anyParent, 0xE9);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, anyChild, 0xEA);
+RED4EXT_ASSERT_OFFSET(CharacterMount_ConditionType, enterAnimationFinished, 0xEB);
+#else
+RED4EXT_ASSERT_SIZE(CharacterMount_ConditionType, 0xF0);
+#endif
 } // namespace quest
 using questCharacterMount_ConditionType = quest::CharacterMount_ConditionType;
 } // namespace RED4ext

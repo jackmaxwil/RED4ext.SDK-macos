@@ -19,6 +19,16 @@ struct ProgressBar_NodeType : quest::IUIManagerNodeType
     static constexpr const char* NAME = "questProgressBar_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool show; // 34
+    uint8_t unk35[0x38 - 0x35]; // 35
+    float duration; // 38
+    uint8_t unk3C[0x40 - 0x3C]; // 3C
+    LocalizationString text; // 40
+    LocalizationString bottomText; // 68
+    game::SimpleMessageType type; // 90
+    uint8_t unk94[0x98 - 0x94]; // 94
+#else
     bool show; // 38
     uint8_t unk39[0x3C - 0x39]; // 39
     float duration; // 3C
@@ -26,8 +36,18 @@ struct ProgressBar_NodeType : quest::IUIManagerNodeType
     LocalizationString bottomText; // 68
     game::SimpleMessageType type; // 90
     uint8_t unk94[0x98 - 0x94]; // 94
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ProgressBar_NodeType, 0x98);
+RED4EXT_ASSERT_OFFSET(ProgressBar_NodeType, show, 0x34);
+RED4EXT_ASSERT_OFFSET(ProgressBar_NodeType, duration, 0x38);
+RED4EXT_ASSERT_OFFSET(ProgressBar_NodeType, text, 0x40);
+RED4EXT_ASSERT_OFFSET(ProgressBar_NodeType, bottomText, 0x68);
+RED4EXT_ASSERT_OFFSET(ProgressBar_NodeType, type, 0x90);
+#else
+RED4EXT_ASSERT_SIZE(ProgressBar_NodeType, 0x98);
+#endif
 } // namespace quest
 using questProgressBar_NodeType = quest::ProgressBar_NodeType;
 } // namespace RED4ext

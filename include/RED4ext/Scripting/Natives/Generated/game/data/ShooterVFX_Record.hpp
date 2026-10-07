@@ -17,9 +17,17 @@ struct ShooterVFX_Record : game::data::ShooterObject_Record
     static constexpr const char* NAME = "gamedataShooterVFX_Record";
     static constexpr const char* ALIAS = "ShooterVFX_Record";
 
+#ifdef __APPLE__
+    uint8_t unkA8[0xD8 - 0xA8]; // A8
+#else
     uint8_t unkB0[0xE0 - 0xB0]; // B0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterVFX_Record, 0xD8);
+#else
 RED4EXT_ASSERT_SIZE(ShooterVFX_Record, 0xE0);
+#endif
 } // namespace game::data
 using gamedataShooterVFX_Record = game::data::ShooterVFX_Record;
 using ShooterVFX_Record = game::data::ShooterVFX_Record;

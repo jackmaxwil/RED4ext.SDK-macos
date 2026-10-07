@@ -18,12 +18,26 @@ struct CrosshairBaseGameController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiCrosshairBaseGameController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkDC[0xE0 - 0xDC]; // DC
     ink::WidgetReference details; // E0
     uint8_t unkF8[0x108 - 0xF8]; // F8
     bool isActive; // 108
     uint8_t unk109[0x110 - 0x109]; // 109
+#else
+    ink::WidgetReference details; // E0
+    uint8_t unkF8[0x108 - 0xF8]; // F8
+    bool isActive; // 108
+    uint8_t unk109[0x110 - 0x109]; // 109
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CrosshairBaseGameController, 0x110);
+RED4EXT_ASSERT_OFFSET(CrosshairBaseGameController, details, 0xE0);
+RED4EXT_ASSERT_OFFSET(CrosshairBaseGameController, isActive, 0x108);
+#else
+RED4EXT_ASSERT_SIZE(CrosshairBaseGameController, 0x110);
+#endif
 } // namespace game::ui
 using gameuiCrosshairBaseGameController = game::ui::CrosshairBaseGameController;
 } // namespace RED4ext

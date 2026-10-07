@@ -17,9 +17,16 @@ struct CMovementTarget : AI::Position
     static constexpr const char* NAME = "AICMovementTarget";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unk18[0x20 - 0x18]; // 18
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CMovementTarget, 0x18);
+#else
 RED4EXT_ASSERT_SIZE(CMovementTarget, 0x20);
+#endif
 } // namespace AI
 using AICMovementTarget = AI::CMovementTarget;
 } // namespace RED4ext

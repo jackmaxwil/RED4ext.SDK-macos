@@ -18,11 +18,24 @@ struct AnimNode_EventValue : anim::AnimNode_FloatValue
     static constexpr const char* NAME = "animAnimNode_EventValue";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     CName eventName; // 48
     float defaultValue; // 50
     uint8_t unk54[0x68 - 0x54]; // 54
+#else
+    CName eventName; // 48
+    float defaultValue; // 50
+    uint8_t unk54[0x68 - 0x54]; // 54
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_EventValue, 0x68);
+RED4EXT_ASSERT_OFFSET(AnimNode_EventValue, eventName, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_EventValue, defaultValue, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_EventValue, 0x68);
+#endif
 } // namespace anim
 using animAnimNode_EventValue = anim::AnimNode_EventValue;
 } // namespace RED4ext

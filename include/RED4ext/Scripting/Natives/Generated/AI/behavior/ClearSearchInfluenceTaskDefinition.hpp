@@ -20,11 +20,25 @@ struct ClearSearchInfluenceTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorClearSearchInfluenceTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> clearedAreaRadius; // 38
     Handle<AI::ArgumentMapping> clearedAreaDistance; // 48
     Handle<AI::ArgumentMapping> clearedAreaAngle; // 58
+#else
+    Handle<AI::ArgumentMapping> clearedAreaRadius; // 38
+    Handle<AI::ArgumentMapping> clearedAreaDistance; // 48
+    Handle<AI::ArgumentMapping> clearedAreaAngle; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ClearSearchInfluenceTaskDefinition, 0x68);
+RED4EXT_ASSERT_OFFSET(ClearSearchInfluenceTaskDefinition, clearedAreaRadius, 0x38);
+RED4EXT_ASSERT_OFFSET(ClearSearchInfluenceTaskDefinition, clearedAreaDistance, 0x48);
+RED4EXT_ASSERT_OFFSET(ClearSearchInfluenceTaskDefinition, clearedAreaAngle, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(ClearSearchInfluenceTaskDefinition, 0x68);
+#endif
 } // namespace AI::behavior
 using AIbehaviorClearSearchInfluenceTaskDefinition = AI::behavior::ClearSearchInfluenceTaskDefinition;
 } // namespace RED4ext

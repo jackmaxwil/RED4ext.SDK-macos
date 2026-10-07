@@ -21,10 +21,22 @@ struct PuppeteerNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questPuppeteerNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::PuppetsEffector> effector; // 48
     game::EntityReference reference; // 58
+#else
+    Handle<quest::PuppetsEffector> effector; // 48
+    game::EntityReference reference; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(PuppeteerNodeDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(PuppeteerNodeDefinition, effector, 0x48);
+RED4EXT_ASSERT_OFFSET(PuppeteerNodeDefinition, reference, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(PuppeteerNodeDefinition, 0x90);
+#endif
 } // namespace quest
 using questPuppeteerNodeDefinition = quest::PuppeteerNodeDefinition;
 } // namespace RED4ext

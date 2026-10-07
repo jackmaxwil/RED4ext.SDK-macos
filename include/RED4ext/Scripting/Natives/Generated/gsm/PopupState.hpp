@@ -17,9 +17,17 @@ struct PopupState : gsm::State
     static constexpr const char* NAME = "gsmPopupState";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkB8[0x288 - 0xB8]; // B8
+#else
     uint8_t unkB8[0x308 - 0xB8]; // B8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PopupState, 0x288);
+#else
 RED4EXT_ASSERT_SIZE(PopupState, 0x308);
+#endif
 } // namespace gsm
 using gsmPopupState = gsm::PopupState;
 } // namespace RED4ext

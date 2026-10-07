@@ -17,8 +17,15 @@ struct MenuState_Multiplayer : gsm::MenuState
     static constexpr const char* NAME = "gsmMenuState_Multiplayer";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MenuState_Multiplayer, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(MenuState_Multiplayer, 0xD8);
+#endif
 } // namespace gsm
 using gsmMenuState_Multiplayer = gsm::MenuState_Multiplayer;
 } // namespace RED4ext

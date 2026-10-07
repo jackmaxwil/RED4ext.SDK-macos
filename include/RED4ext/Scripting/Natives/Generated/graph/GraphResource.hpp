@@ -20,9 +20,19 @@ struct GraphResource : CResource
     static constexpr const char* NAME = "graphGraphResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<graph::GraphDefinition> graph; // 40
+#else
+    Handle<graph::GraphDefinition> graph; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(GraphResource, 0x50);
+RED4EXT_ASSERT_OFFSET(GraphResource, graph, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(GraphResource, 0x50);
+#endif
 } // namespace graph
 using graphGraphResource = graph::GraphResource;
 } // namespace RED4ext

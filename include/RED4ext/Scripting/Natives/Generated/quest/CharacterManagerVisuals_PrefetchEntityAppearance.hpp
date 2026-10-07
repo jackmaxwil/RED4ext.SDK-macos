@@ -17,8 +17,15 @@ struct CharacterManagerVisuals_PrefetchEntityAppearance : quest::CharacterManage
     static constexpr const char* NAME = "questCharacterManagerVisuals_PrefetchEntityAppearance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CharacterManagerVisuals_PrefetchEntityAppearance, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(CharacterManagerVisuals_PrefetchEntityAppearance, 0xD8);
+#endif
 } // namespace quest
 using questCharacterManagerVisuals_PrefetchEntityAppearance = quest::CharacterManagerVisuals_PrefetchEntityAppearance;
 } // namespace RED4ext

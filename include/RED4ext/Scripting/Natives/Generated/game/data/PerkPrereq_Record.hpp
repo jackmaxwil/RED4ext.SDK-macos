@@ -17,9 +17,17 @@ struct PerkPrereq_Record : game::data::IPrereq_Record
     static constexpr const char* NAME = "gamedataPerkPrereq_Record";
     static constexpr const char* ALIAS = "PerkPrereq_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PerkPrereq_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(PerkPrereq_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataPerkPrereq_Record = game::data::PerkPrereq_Record;
 using PerkPrereq_Record = game::data::PerkPrereq_Record;

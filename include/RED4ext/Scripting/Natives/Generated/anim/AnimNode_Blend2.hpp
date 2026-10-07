@@ -22,6 +22,17 @@ struct AnimNode_Blend2 : anim::AnimNode_Base
     static constexpr const char* NAME = "animAnimNode_Blend2";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    float minInputValue; // 44
+    float maxInputValue; // 48
+    bool timeWarpingEnabled; // 4C
+    uint8_t unk4D[0x50 - 0x4D]; // 4D
+    Handle<anim::ISyncMethod> syncMethod; // 50
+    uint8_t unk60[0x80 - 0x60]; // 60
+    anim::PoseLink firstInputNode; // 80
+    anim::PoseLink secondInputNode; // 98
+    anim::FloatLink weightNode; // B0
+#else
     float minInputValue; // 48
     float maxInputValue; // 4C
     bool timeWarpingEnabled; // 50
@@ -31,8 +42,20 @@ struct AnimNode_Blend2 : anim::AnimNode_Base
     anim::PoseLink firstInputNode; // 88
     anim::PoseLink secondInputNode; // A0
     anim::FloatLink weightNode; // B8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_Blend2, 0xD0);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, minInputValue, 0x44);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, maxInputValue, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, timeWarpingEnabled, 0x4C);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, syncMethod, 0x50);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, firstInputNode, 0x80);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, secondInputNode, 0x98);
+RED4EXT_ASSERT_OFFSET(AnimNode_Blend2, weightNode, 0xB0);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_Blend2, 0xD8);
+#endif
 } // namespace anim
 using animAnimNode_Blend2 = anim::AnimNode_Blend2;
 } // namespace RED4ext

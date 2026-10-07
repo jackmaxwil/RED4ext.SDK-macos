@@ -18,11 +18,21 @@ struct IVisualizerDefinition : ISerializable
     static constexpr const char* NAME = "gameinteractionsvisIVisualizerDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk30[0x40 - 0x30]; // 30
+    game::interactions::vis::EVisualizerDefinitionFlags flags; // 40
+#else
     uint8_t unk30[0x40 - 0x30]; // 30
     game::interactions::vis::EVisualizerDefinitionFlags flags; // 40
     uint8_t unk42[0x48 - 0x42]; // 42
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(IVisualizerDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(IVisualizerDefinition, flags, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(IVisualizerDefinition, 0x48);
+#endif
 } // namespace game::interactions::vis
 using gameinteractionsvisIVisualizerDefinition = game::interactions::vis::IVisualizerDefinition;
 } // namespace RED4ext

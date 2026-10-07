@@ -17,9 +17,17 @@ struct AugmentedRealitySignGameController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiAugmentedRealitySignGameController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkDC[0x108 - 0xDC]; // DC
+#else
     uint8_t unkE0[0x108 - 0xE0]; // E0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AugmentedRealitySignGameController, 0x108);
+#else
+RED4EXT_ASSERT_SIZE(AugmentedRealitySignGameController, 0x108);
+#endif
 } // namespace game::ui
 using gameuiAugmentedRealitySignGameController = game::ui::AugmentedRealitySignGameController;
 } // namespace RED4ext

@@ -21,12 +21,26 @@ struct CookedAppearanceData : CResource
     static constexpr const char* NAME = "appearanceCookedAppearanceData";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Ref<CResource>> dependencies; // 40
     uint8_t unk50[0x60 - 0x50]; // 50
     uint32_t totalSizeOnDisk; // 60
     uint8_t unk64[0x68 - 0x64]; // 64
+#else
+    DynArray<Ref<CResource>> dependencies; // 40
+    uint8_t unk50[0x60 - 0x50]; // 50
+    uint32_t totalSizeOnDisk; // 60
+    uint8_t unk64[0x68 - 0x64]; // 64
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CookedAppearanceData, 0x68);
+RED4EXT_ASSERT_OFFSET(CookedAppearanceData, dependencies, 0x40);
+RED4EXT_ASSERT_OFFSET(CookedAppearanceData, totalSizeOnDisk, 0x60);
+#else
+RED4EXT_ASSERT_SIZE(CookedAppearanceData, 0x68);
+#endif
 } // namespace appearance
 using appearanceCookedAppearanceData = appearance::CookedAppearanceData;
 } // namespace RED4ext

@@ -18,9 +18,19 @@ struct MultiplayerChoiceTokenNodeDefinition : quest::SignalStoppingNodeDefinitio
     static constexpr const char* NAME = "questMultiplayerChoiceTokenNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     quest::MultiplayerChoiceTokenParams params; // 48
+#else
+    quest::MultiplayerChoiceTokenParams params; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MultiplayerChoiceTokenNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(MultiplayerChoiceTokenNodeDefinition, params, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(MultiplayerChoiceTokenNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questMultiplayerChoiceTokenNodeDefinition = quest::MultiplayerChoiceTokenNodeDefinition;
 } // namespace RED4ext

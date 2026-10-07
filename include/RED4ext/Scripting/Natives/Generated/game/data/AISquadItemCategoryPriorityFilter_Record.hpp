@@ -17,9 +17,17 @@ struct AISquadItemCategoryPriorityFilter_Record : game::data::AISquadItemPriorit
     static constexpr const char* NAME = "gamedataAISquadItemCategoryPriorityFilter_Record";
     static constexpr const char* ALIAS = "AISquadItemCategoryPriorityFilter_Record";
 
+#ifdef __APPLE__
+    uint8_t unk88[0x90 - 0x88]; // 88
+#else
     uint8_t unk90[0xA0 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadItemCategoryPriorityFilter_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(AISquadItemCategoryPriorityFilter_Record, 0xA0);
+#endif
 } // namespace game::data
 using gamedataAISquadItemCategoryPriorityFilter_Record = game::data::AISquadItemCategoryPriorityFilter_Record;
 using AISquadItemCategoryPriorityFilter_Record = game::data::AISquadItemCategoryPriorityFilter_Record;

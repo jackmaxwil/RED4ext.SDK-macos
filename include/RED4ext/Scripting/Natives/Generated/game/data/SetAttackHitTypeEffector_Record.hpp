@@ -17,9 +17,17 @@ struct SetAttackHitTypeEffector_Record : game::data::Effector_Record
     static constexpr const char* NAME = "gamedataSetAttackHitTypeEffector_Record";
     static constexpr const char* ALIAS = "SetAttackHitTypeEffector_Record";
 
+#ifdef __APPLE__
+    uint8_t unk88[0x90 - 0x88]; // 88
+#else
     uint8_t unk88[0x98 - 0x88]; // 88
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SetAttackHitTypeEffector_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(SetAttackHitTypeEffector_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataSetAttackHitTypeEffector_Record = game::data::SetAttackHitTypeEffector_Record;
 using SetAttackHitTypeEffector_Record = game::data::SetAttackHitTypeEffector_Record;

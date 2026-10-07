@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) CoverVisualData : game::SmartObjectVisualData
     static constexpr const char* NAME = "gameCoverVisualData";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk70[0xD0 - 0x70]; // 70
+#else
     uint8_t unk80[0xE0 - 0x80]; // 80
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CoverVisualData, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(CoverVisualData, 0xE0);
+#endif
 } // namespace game
 using gameCoverVisualData = game::CoverVisualData;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct AIAssignedVehicleInPanicDriving_Record : game::data::AIActionSubCondition
     static constexpr const char* NAME = "gamedataAIAssignedVehicleInPanicDriving_Record";
     static constexpr const char* ALIAS = "AIAssignedVehicleInPanicDriving_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIAssignedVehicleInPanicDriving_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AIAssignedVehicleInPanicDriving_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAIAssignedVehicleInPanicDriving_Record = game::data::AIAssignedVehicleInPanicDriving_Record;
 using AIAssignedVehicleInPanicDriving_Record = game::data::AIAssignedVehicleInPanicDriving_Record;

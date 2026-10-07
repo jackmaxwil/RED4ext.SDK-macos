@@ -22,11 +22,25 @@ struct MiscAICommandNode : quest::ConfigurableAICommandNode
     static constexpr const char* NAME = "questMiscAICommandNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference entityReference; // 48
     CName function; // 80
     Handle<quest::AICommandParams> params; // 88
+#else
+    game::EntityReference entityReference; // 48
+    CName function; // 80
+    Handle<quest::AICommandParams> params; // 88
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MiscAICommandNode, 0x98);
+RED4EXT_ASSERT_OFFSET(MiscAICommandNode, entityReference, 0x48);
+RED4EXT_ASSERT_OFFSET(MiscAICommandNode, function, 0x80);
+RED4EXT_ASSERT_OFFSET(MiscAICommandNode, params, 0x88);
+#else
+RED4EXT_ASSERT_SIZE(MiscAICommandNode, 0x98);
+#endif
 } // namespace quest
 using questMiscAICommandNode = quest::MiscAICommandNode;
 } // namespace RED4ext

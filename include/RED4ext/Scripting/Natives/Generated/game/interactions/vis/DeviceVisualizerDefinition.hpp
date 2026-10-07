@@ -22,6 +22,17 @@ struct DeviceVisualizerDefinition : game::interactions::vis::IVisualizerDefiniti
     static constexpr const char* NAME = "gameinteractionsvisDeviceVisualizerDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    game::interactions::vis::InteractionType interactionType; // 42
+    uint8_t unk43[0x48 - 0x43]; // 43
+    CString displayNameOverride; // 48
+    bool isDynamic; // 68
+    bool useDefaultActionMapping; // 69
+    bool createMappin; // 6A
+    uint8_t unk6B[0x70 - 0x6B]; // 6B
+    Handle<game::interactions::vis::IVisualizerTimeProvider> timeProvider; // 70
+    uint8_t unk80[0x88 - 0x80]; // 80
+#else
     game::interactions::vis::InteractionType interactionType; // 48
     uint8_t unk49[0x50 - 0x49]; // 49
     CString displayNameOverride; // 50
@@ -31,8 +42,19 @@ struct DeviceVisualizerDefinition : game::interactions::vis::IVisualizerDefiniti
     uint8_t unk73[0x78 - 0x73]; // 73
     Handle<game::interactions::vis::IVisualizerTimeProvider> timeProvider; // 78
     uint8_t unk88[0x90 - 0x88]; // 88
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(DeviceVisualizerDefinition, 0x88);
+RED4EXT_ASSERT_OFFSET(DeviceVisualizerDefinition, interactionType, 0x42);
+RED4EXT_ASSERT_OFFSET(DeviceVisualizerDefinition, displayNameOverride, 0x48);
+RED4EXT_ASSERT_OFFSET(DeviceVisualizerDefinition, isDynamic, 0x68);
+RED4EXT_ASSERT_OFFSET(DeviceVisualizerDefinition, useDefaultActionMapping, 0x69);
+RED4EXT_ASSERT_OFFSET(DeviceVisualizerDefinition, createMappin, 0x6A);
+RED4EXT_ASSERT_OFFSET(DeviceVisualizerDefinition, timeProvider, 0x70);
+#else
 RED4EXT_ASSERT_SIZE(DeviceVisualizerDefinition, 0x90);
+#endif
 } // namespace game::interactions::vis
 using gameinteractionsvisDeviceVisualizerDefinition = game::interactions::vis::DeviceVisualizerDefinition;
 } // namespace RED4ext

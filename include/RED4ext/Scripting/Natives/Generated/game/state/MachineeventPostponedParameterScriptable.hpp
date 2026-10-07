@@ -20,9 +20,19 @@ struct MachineeventPostponedParameterScriptable : game::state::MachineeventPostp
     static constexpr const char* NAME = "gamestateMachineeventPostponedParameterScriptable";
     static constexpr const char* ALIAS = "PSMPostponedParameterScriptable";
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     Handle<IScriptable> value; // 50
+#else
+    Handle<IScriptable> value; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MachineeventPostponedParameterScriptable, 0x60);
+RED4EXT_ASSERT_OFFSET(MachineeventPostponedParameterScriptable, value, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(MachineeventPostponedParameterScriptable, 0x60);
+#endif
 } // namespace game::state
 using gamestateMachineeventPostponedParameterScriptable = game::state::MachineeventPostponedParameterScriptable;
 using PSMPostponedParameterScriptable = game::state::MachineeventPostponedParameterScriptable;

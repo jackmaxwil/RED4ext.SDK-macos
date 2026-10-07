@@ -17,9 +17,17 @@ struct RuntimeSystemRemoteViews : world::IRuntimeSystem
     static constexpr const char* NAME = "worldRuntimeSystemRemoteViews";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0x60 - 0x48]; // 48
+#else
     uint8_t unk48[0x68 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RuntimeSystemRemoteViews, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(RuntimeSystemRemoteViews, 0x68);
+#endif
 } // namespace world
 using worldRuntimeSystemRemoteViews = world::RuntimeSystemRemoteViews;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct LocationResource : CResource
     static constexpr const char* NAME = "gameLocationResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x70 - 0x39]; // 39
+#else
     uint8_t unk40[0x70 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(LocationResource, 0x70);
+#else
+RED4EXT_ASSERT_SIZE(LocationResource, 0x70);
+#endif
 } // namespace game
 using gameLocationResource = game::LocationResource;
 } // namespace RED4ext

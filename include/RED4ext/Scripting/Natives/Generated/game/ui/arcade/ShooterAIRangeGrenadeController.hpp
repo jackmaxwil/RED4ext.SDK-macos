@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) ShooterAIRangeGrenadeController : game::ui::arcad
     static constexpr const char* NAME = "gameuiarcadeShooterAIRangeGrenadeController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk270[0x2C0 - 0x270]; // 270
+#else
     uint8_t unk280[0x2D0 - 0x280]; // 280
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterAIRangeGrenadeController, 0x2C0);
+#else
 RED4EXT_ASSERT_SIZE(ShooterAIRangeGrenadeController, 0x2D0);
+#endif
 } // namespace game::ui::arcade
 using gameuiarcadeShooterAIRangeGrenadeController = game::ui::arcade::ShooterAIRangeGrenadeController;
 } // namespace RED4ext

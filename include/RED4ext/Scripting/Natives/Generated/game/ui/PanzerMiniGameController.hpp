@@ -17,8 +17,15 @@ struct PanzerMiniGameController : game::ui::SideScrollerMiniGameControllerAdvanc
     static constexpr const char* NAME = "gameuiPanzerMiniGameController";
     static constexpr const char* ALIAS = "PanzerMiniGameController";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PanzerMiniGameController, 0x108);
+#else
 RED4EXT_ASSERT_SIZE(PanzerMiniGameController, 0x110);
+#endif
 } // namespace game::ui
 using gameuiPanzerMiniGameController = game::ui::PanzerMiniGameController;
 using PanzerMiniGameController = game::ui::PanzerMiniGameController;

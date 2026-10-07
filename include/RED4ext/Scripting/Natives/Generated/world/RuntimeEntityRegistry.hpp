@@ -17,9 +17,17 @@ struct RuntimeEntityRegistry : world::IRuntimeSystem
     static constexpr const char* NAME = "worldRuntimeEntityRegistry";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0xB0 - 0x48]; // 48
+#else
     uint8_t unk48[0xB8 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RuntimeEntityRegistry, 0xB0);
+#else
 RED4EXT_ASSERT_SIZE(RuntimeEntityRegistry, 0xB8);
+#endif
 } // namespace world
 using worldRuntimeEntityRegistry = world::RuntimeEntityRegistry;
 } // namespace RED4ext

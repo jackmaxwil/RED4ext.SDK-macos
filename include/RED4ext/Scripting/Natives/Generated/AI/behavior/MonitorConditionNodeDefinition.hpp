@@ -17,10 +17,19 @@ struct MonitorConditionNodeDefinition : AI::behavior::ConditionNodeDefinition
     static constexpr const char* NAME = "AIbehaviorMonitorConditionNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    float timeout; // 54
+#else
     float timeout; // 58
     uint8_t unk5C[0x60 - 0x5C]; // 5C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MonitorConditionNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(MonitorConditionNodeDefinition, timeout, 0x54);
+#else
 RED4EXT_ASSERT_SIZE(MonitorConditionNodeDefinition, 0x60);
+#endif
 } // namespace AI::behavior
 using AIbehaviorMonitorConditionNodeDefinition = AI::behavior::MonitorConditionNodeDefinition;
 } // namespace RED4ext

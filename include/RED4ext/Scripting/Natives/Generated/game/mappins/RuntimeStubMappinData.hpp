@@ -17,9 +17,16 @@ struct RuntimeStubMappinData : game::mappins::IRuntimeMappinData
     static constexpr const char* NAME = "gamemappinsRuntimeStubMappinData";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unk50[0x58 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RuntimeStubMappinData, 0x50);
+#else
 RED4EXT_ASSERT_SIZE(RuntimeStubMappinData, 0x58);
+#endif
 } // namespace game::mappins
 using gamemappinsRuntimeStubMappinData = game::mappins::RuntimeStubMappinData;
 } // namespace RED4ext

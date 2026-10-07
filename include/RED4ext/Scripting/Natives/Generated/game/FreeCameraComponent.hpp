@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) FreeCameraComponent : game::CameraComponent
     static constexpr const char* NAME = "gameFreeCameraComponent";
     static constexpr const char* ALIAS = "FreeCameraComponent";
 
+#ifdef __APPLE__
+    uint8_t unk318[0x4E0 - 0x318]; // 318
+#else
     uint8_t unk320[0x4F0 - 0x320]; // 320
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(FreeCameraComponent, 0x4E0);
+#else
 RED4EXT_ASSERT_SIZE(FreeCameraComponent, 0x4F0);
+#endif
 } // namespace game
 using gameFreeCameraComponent = game::FreeCameraComponent;
 using FreeCameraComponent = game::FreeCameraComponent;

@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) TerrainCollisionNodeInstance : world::INodeInstan
     static constexpr const char* NAME = "worldTerrainCollisionNodeInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk90[0xA0 - 0x90]; // 90
+#else
     uint8_t unk90[0xB0 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TerrainCollisionNodeInstance, 0xA0);
+#else
 RED4EXT_ASSERT_SIZE(TerrainCollisionNodeInstance, 0xB0);
+#endif
 } // namespace world
 using worldTerrainCollisionNodeInstance = world::TerrainCollisionNodeInstance;
 } // namespace RED4ext

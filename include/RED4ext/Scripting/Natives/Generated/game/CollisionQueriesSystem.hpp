@@ -17,9 +17,17 @@ struct CollisionQueriesSystem : game::ICollisionQueriesSystem
     static constexpr const char* NAME = "gameCollisionQueriesSystem";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0x2D0 - 0x48]; // 48
+#else
     uint8_t unk48[0x550 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CollisionQueriesSystem, 0x2D0);
+#else
 RED4EXT_ASSERT_SIZE(CollisionQueriesSystem, 0x550);
+#endif
 } // namespace game
 using gameCollisionQueriesSystem = game::CollisionQueriesSystem;
 } // namespace RED4ext

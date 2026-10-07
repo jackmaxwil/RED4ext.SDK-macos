@@ -20,10 +20,21 @@ struct JournalResource : game::JournalBaseResource
     static constexpr const char* NAME = "gameJournalResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<game::JournalEntry> entry; // 40
     uint8_t unk50[0x58 - 0x50]; // 50
+#else
+    Handle<game::JournalEntry> entry; // 40
+    uint8_t unk50[0x58 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(JournalResource, 0x58);
+RED4EXT_ASSERT_OFFSET(JournalResource, entry, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(JournalResource, 0x58);
+#endif
 } // namespace game
 using gameJournalResource = game::JournalResource;
 } // namespace RED4ext

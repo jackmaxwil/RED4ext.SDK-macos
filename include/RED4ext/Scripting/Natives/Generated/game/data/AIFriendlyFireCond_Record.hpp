@@ -17,9 +17,17 @@ struct AIFriendlyFireCond_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAIFriendlyFireCond_Record";
     static constexpr const char* ALIAS = "AIFriendlyFireCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIFriendlyFireCond_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AIFriendlyFireCond_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAIFriendlyFireCond_Record = game::data::AIFriendlyFireCond_Record;
 using AIFriendlyFireCond_Record = game::data::AIFriendlyFireCond_Record;

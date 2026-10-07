@@ -19,9 +19,19 @@ struct CreditsResource : CResource
     static constexpr const char* NAME = "inkCreditsResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<ink::CreditsSectionEntry> sections; // 40
+#else
+    DynArray<ink::CreditsSectionEntry> sections; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CreditsResource, 0x50);
+RED4EXT_ASSERT_OFFSET(CreditsResource, sections, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(CreditsResource, 0x50);
+#endif
 } // namespace ink
 using inkCreditsResource = ink::CreditsResource;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct AISubActionShootToPoint_Record : game::data::AISubActionShootWithWeapon_R
     static constexpr const char* NAME = "gamedataAISubActionShootToPoint_Record";
     static constexpr const char* ALIAS = "AISubActionShootToPoint_Record";
 
+#ifdef __APPLE__
+    uint8_t unk118[0x150 - 0x118]; // 118
+#else
     uint8_t unk118[0x158 - 0x118]; // 118
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISubActionShootToPoint_Record, 0x150);
+#else
 RED4EXT_ASSERT_SIZE(AISubActionShootToPoint_Record, 0x158);
+#endif
 } // namespace game::data
 using gamedataAISubActionShootToPoint_Record = game::data::AISubActionShootToPoint_Record;
 using AISubActionShootToPoint_Record = game::data::AISubActionShootToPoint_Record;

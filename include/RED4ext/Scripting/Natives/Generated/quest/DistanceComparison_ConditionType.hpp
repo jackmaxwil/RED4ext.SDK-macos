@@ -22,12 +22,27 @@ struct DistanceComparison_ConditionType : quest::IDistanceConditionType
     static constexpr const char* NAME = "questDistanceComparison_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<quest::ObjectDistance> distanceDefinition1; // 38
     Handle<quest::ValueDistance> distanceDefinition2; // 48
     EComparisonType comparisonType; // 58
     uint8_t unk5C[0x60 - 0x5C]; // 5C
+#else
+    Handle<quest::ObjectDistance> distanceDefinition1; // 38
+    Handle<quest::ValueDistance> distanceDefinition2; // 48
+    EComparisonType comparisonType; // 58
+    uint8_t unk5C[0x60 - 0x5C]; // 5C
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(DistanceComparison_ConditionType, 0x60);
+RED4EXT_ASSERT_OFFSET(DistanceComparison_ConditionType, distanceDefinition1, 0x38);
+RED4EXT_ASSERT_OFFSET(DistanceComparison_ConditionType, distanceDefinition2, 0x48);
+RED4EXT_ASSERT_OFFSET(DistanceComparison_ConditionType, comparisonType, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(DistanceComparison_ConditionType, 0x60);
+#endif
 } // namespace quest
 using questDistanceComparison_ConditionType = quest::DistanceComparison_ConditionType;
 } // namespace RED4ext

@@ -23,12 +23,27 @@ struct LineOfSightClearConditionDefinition : AI::behavior::ConditionDefinition
     static constexpr const char* NAME = "AIbehaviorLineOfSightClearConditionDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     DynArray<CName> collisionFilters; // 38
     Vector3 offset; // 48
     uint8_t unk54[0x58 - 0x54]; // 54
     Handle<AI::ArgumentMapping> target; // 58
+#else
+    DynArray<CName> collisionFilters; // 38
+    Vector3 offset; // 48
+    uint8_t unk54[0x58 - 0x54]; // 54
+    Handle<AI::ArgumentMapping> target; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(LineOfSightClearConditionDefinition, 0x68);
+RED4EXT_ASSERT_OFFSET(LineOfSightClearConditionDefinition, collisionFilters, 0x38);
+RED4EXT_ASSERT_OFFSET(LineOfSightClearConditionDefinition, offset, 0x48);
+RED4EXT_ASSERT_OFFSET(LineOfSightClearConditionDefinition, target, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(LineOfSightClearConditionDefinition, 0x68);
+#endif
 } // namespace AI::behavior
 using AIbehaviorLineOfSightClearConditionDefinition = AI::behavior::LineOfSightClearConditionDefinition;
 } // namespace RED4ext

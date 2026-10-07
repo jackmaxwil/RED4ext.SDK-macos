@@ -17,9 +17,17 @@ struct AINPCTypeCond_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAINPCTypeCond_Record";
     static constexpr const char* ALIAS = "AINPCTypeCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x90 - 0x58]; // 58
+#else
     uint8_t unk58[0x98 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AINPCTypeCond_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(AINPCTypeCond_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataAINPCTypeCond_Record = game::data::AINPCTypeCond_Record;
 using AINPCTypeCond_Record = game::data::AINPCTypeCond_Record;

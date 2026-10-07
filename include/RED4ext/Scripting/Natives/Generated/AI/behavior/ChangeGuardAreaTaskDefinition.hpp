@@ -20,9 +20,19 @@ struct ChangeGuardAreaTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorChangeGuardAreaTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> guardAreaNodeRef; // 38
+#else
+    Handle<AI::ArgumentMapping> guardAreaNodeRef; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ChangeGuardAreaTaskDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(ChangeGuardAreaTaskDefinition, guardAreaNodeRef, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(ChangeGuardAreaTaskDefinition, 0x48);
+#endif
 } // namespace AI::behavior
 using AIbehaviorChangeGuardAreaTaskDefinition = AI::behavior::ChangeGuardAreaTaskDefinition;
 } // namespace RED4ext

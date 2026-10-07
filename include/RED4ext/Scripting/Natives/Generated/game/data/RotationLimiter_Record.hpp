@@ -17,9 +17,17 @@ struct RotationLimiter_Record : game::data::DriveHelper_Record
     static constexpr const char* NAME = "gamedataRotationLimiter_Record";
     static constexpr const char* ALIAS = "RotationLimiter_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0xC0 - 0x58]; // 58
+#else
     uint8_t unk58[0xC8 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RotationLimiter_Record, 0xC0);
+#else
 RED4EXT_ASSERT_SIZE(RotationLimiter_Record, 0xC8);
+#endif
 } // namespace game::data
 using gamedataRotationLimiter_Record = game::data::RotationLimiter_Record;
 using RotationLimiter_Record = game::data::RotationLimiter_Record;

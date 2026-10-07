@@ -21,9 +21,19 @@ struct InterestingConversationsResource : CResource
     static constexpr const char* NAME = "scnInterestingConversationsResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Handle<scn::InterestingConversationsGroup>> conversationGroups; // 40
+#else
+    DynArray<Handle<scn::InterestingConversationsGroup>> conversationGroups; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(InterestingConversationsResource, 0x50);
+RED4EXT_ASSERT_OFFSET(InterestingConversationsResource, conversationGroups, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(InterestingConversationsResource, 0x50);
+#endif
 } // namespace scn
 using scnInterestingConversationsResource = scn::InterestingConversationsResource;
 } // namespace RED4ext

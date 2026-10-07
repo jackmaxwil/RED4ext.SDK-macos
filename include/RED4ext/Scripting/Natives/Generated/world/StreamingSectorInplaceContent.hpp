@@ -21,10 +21,21 @@ struct StreamingSectorInplaceContent : CResource
     static constexpr const char* NAME = "worldStreamingSectorInplaceContent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Ref<CResource>> inplaceResources; // 40
     uint8_t unk50[0x60 - 0x50]; // 50
+#else
+    DynArray<Ref<CResource>> inplaceResources; // 40
+    uint8_t unk50[0x60 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(StreamingSectorInplaceContent, 0x60);
+RED4EXT_ASSERT_OFFSET(StreamingSectorInplaceContent, inplaceResources, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(StreamingSectorInplaceContent, 0x60);
+#endif
 } // namespace world
 using worldStreamingSectorInplaceContent = world::StreamingSectorInplaceContent;
 } // namespace RED4ext

@@ -17,8 +17,15 @@ struct AISquadContainsSelfCheck_Record : game::data::AITicketCheck_Record
     static constexpr const char* NAME = "gamedataAISquadContainsSelfCheck_Record";
     static constexpr const char* ALIAS = "AISquadContainsSelfCheck_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadContainsSelfCheck_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AISquadContainsSelfCheck_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAISquadContainsSelfCheck_Record = game::data::AISquadContainsSelfCheck_Record;
 using AISquadContainsSelfCheck_Record = game::data::AISquadContainsSelfCheck_Record;

@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) RuntimeSystemEnvironment : world::IRuntimeSystem
     static constexpr const char* NAME = "worldRuntimeSystemEnvironment";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0x240 - 0x48]; // 48
+#else
     uint8_t unk48[0x210 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RuntimeSystemEnvironment, 0x240);
+#else
 RED4EXT_ASSERT_SIZE(RuntimeSystemEnvironment, 0x210);
+#endif
 } // namespace world
 using worldRuntimeSystemEnvironment = world::RuntimeSystemEnvironment;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct AIRestrictedMovementAreaCond_Record : game::data::AIActionSubCondition_Re
     static constexpr const char* NAME = "gamedataAIRestrictedMovementAreaCond_Record";
     static constexpr const char* ALIAS = "AIRestrictedMovementAreaCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIRestrictedMovementAreaCond_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AIRestrictedMovementAreaCond_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAIRestrictedMovementAreaCond_Record = game::data::AIRestrictedMovementAreaCond_Record;
 using AIRestrictedMovementAreaCond_Record = game::data::AIRestrictedMovementAreaCond_Record;

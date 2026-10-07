@@ -21,9 +21,19 @@ struct AnimationLibraryResource : CResource
     static constexpr const char* NAME = "inkanimAnimationLibraryResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Handle<ink::anim::Sequence>> sequences; // 40
+#else
+    DynArray<Handle<ink::anim::Sequence>> sequences; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimationLibraryResource, 0x50);
+RED4EXT_ASSERT_OFFSET(AnimationLibraryResource, sequences, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(AnimationLibraryResource, 0x50);
+#endif
 } // namespace ink::anim
 using inkanimAnimationLibraryResource = ink::anim::AnimationLibraryResource;
 } // namespace RED4ext

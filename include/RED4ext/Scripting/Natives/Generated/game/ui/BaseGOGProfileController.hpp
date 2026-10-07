@@ -17,9 +17,17 @@ struct BaseGOGProfileController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiBaseGOGProfileController";
     static constexpr const char* ALIAS = "BaseGOGProfileController";
 
+#ifdef __APPLE__
+    uint8_t unkDC[0xF8 - 0xDC]; // DC
+#else
     uint8_t unkE0[0xF8 - 0xE0]; // E0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(BaseGOGProfileController, 0xF8);
+#else
+RED4EXT_ASSERT_SIZE(BaseGOGProfileController, 0xF8);
+#endif
 } // namespace game::ui
 using gameuiBaseGOGProfileController = game::ui::BaseGOGProfileController;
 using BaseGOGProfileController = game::ui::BaseGOGProfileController;

@@ -18,9 +18,19 @@ struct AnimNode_FloatToBoolConverter : anim::AnimNode_BoolValue
     static constexpr const char* NAME = "animAnimNode_FloatToBoolConverter";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     anim::FloatLink inputNode; // 48
+#else
+    anim::FloatLink inputNode; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_FloatToBoolConverter, 0x68);
+RED4EXT_ASSERT_OFFSET(AnimNode_FloatToBoolConverter, inputNode, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_FloatToBoolConverter, 0x68);
+#endif
 } // namespace anim
 using animAnimNode_FloatToBoolConverter = anim::AnimNode_FloatToBoolConverter;
 } // namespace RED4ext

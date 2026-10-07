@@ -18,11 +18,24 @@ struct SendAutoDriveNotificationRequest : game::ScriptableSystemRequest
     static constexpr const char* NAME = "gameSendAutoDriveNotificationRequest";
     static constexpr const char* ALIAS = "SendAutoDriveNotificationRequest";
 
+#ifdef __APPLE__
+    uint8_t unk45[0x48 - 0x45]; // 45
     CString locKey; // 48
     bool isDelamain; // 68
     uint8_t unk69[0x70 - 0x69]; // 69
+#else
+    CString locKey; // 48
+    bool isDelamain; // 68
+    uint8_t unk69[0x70 - 0x69]; // 69
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SendAutoDriveNotificationRequest, 0x70);
+RED4EXT_ASSERT_OFFSET(SendAutoDriveNotificationRequest, locKey, 0x48);
+RED4EXT_ASSERT_OFFSET(SendAutoDriveNotificationRequest, isDelamain, 0x68);
+#else
+RED4EXT_ASSERT_SIZE(SendAutoDriveNotificationRequest, 0x70);
+#endif
 } // namespace game
 using gameSendAutoDriveNotificationRequest = game::SendAutoDriveNotificationRequest;
 using SendAutoDriveNotificationRequest = game::SendAutoDriveNotificationRequest;

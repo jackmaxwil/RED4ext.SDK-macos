@@ -17,9 +17,16 @@ struct __declspec(align(0x10)) EntityProxyMeshNodeInstance : world::PrefabProxyM
     static constexpr const char* NAME = "worldEntityProxyMeshNodeInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unk110[0x120 - 0x110]; // 110
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(EntityProxyMeshNodeInstance, 0x110);
+#else
 RED4EXT_ASSERT_SIZE(EntityProxyMeshNodeInstance, 0x120);
+#endif
 } // namespace world
 using worldEntityProxyMeshNodeInstance = world::EntityProxyMeshNodeInstance;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct ItemsMeshesLoaded : red::Event
     static constexpr const char* NAME = "gameItemsMeshesLoaded";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk40[0x68 - 0x40]; // 40
+#else
     uint8_t unk40[0x88 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ItemsMeshesLoaded, 0x68);
+#else
 RED4EXT_ASSERT_SIZE(ItemsMeshesLoaded, 0x88);
+#endif
 } // namespace game
 using gameItemsMeshesLoaded = game::ItemsMeshesLoaded;
 } // namespace RED4ext

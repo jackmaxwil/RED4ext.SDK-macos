@@ -19,13 +19,28 @@ struct PopupsManager : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiPopupsManager";
     static constexpr const char* ALIAS = "PopupsManager";
 
+#ifdef __APPLE__
+    uint8_t unkDC[0x138 - 0xDC]; // DC
+    ink::CompoundWidgetReference bracketsContainer; // 138
+    ink::CompoundWidgetReference tutorialOverlayContainer; // 150
+    CName bracketLibraryID; // 168
+    uint8_t unk170[0x1B0 - 0x170]; // 170
+#else
     uint8_t unkE0[0x138 - 0xE0]; // E0
     ink::CompoundWidgetReference bracketsContainer; // 138
     ink::CompoundWidgetReference tutorialOverlayContainer; // 150
     CName bracketLibraryID; // 168
     uint8_t unk170[0x1B0 - 0x170]; // 170
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(PopupsManager, 0x1B0);
+RED4EXT_ASSERT_OFFSET(PopupsManager, bracketsContainer, 0x138);
+RED4EXT_ASSERT_OFFSET(PopupsManager, tutorialOverlayContainer, 0x150);
+RED4EXT_ASSERT_OFFSET(PopupsManager, bracketLibraryID, 0x168);
+#else
+RED4EXT_ASSERT_SIZE(PopupsManager, 0x1B0);
+#endif
 } // namespace game::ui
 using gameuiPopupsManager = game::ui::PopupsManager;
 using PopupsManager = game::ui::PopupsManager;

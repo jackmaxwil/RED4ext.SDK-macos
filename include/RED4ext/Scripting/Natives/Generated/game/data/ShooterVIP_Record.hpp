@@ -17,9 +17,17 @@ struct ShooterVIP_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterVIP_Record";
     static constexpr const char* ALIAS = "ShooterVIP_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x100 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x108 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterVIP_Record, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(ShooterVIP_Record, 0x108);
+#endif
 } // namespace game::data
 using gamedataShooterVIP_Record = game::data::ShooterVIP_Record;
 using ShooterVIP_Record = game::data::ShooterVIP_Record;

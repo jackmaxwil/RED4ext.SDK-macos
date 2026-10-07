@@ -17,8 +17,15 @@ struct AISquadAvoidLastFilter_Record : game::data::AITicketFilter_Record
     static constexpr const char* NAME = "gamedataAISquadAvoidLastFilter_Record";
     static constexpr const char* ALIAS = "AISquadAvoidLastFilter_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadAvoidLastFilter_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(AISquadAvoidLastFilter_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataAISquadAvoidLastFilter_Record = game::data::AISquadAvoidLastFilter_Record;
 using AISquadAvoidLastFilter_Record = game::data::AISquadAvoidLastFilter_Record;

@@ -16,9 +16,17 @@ struct UniqueActiveCommandList
     static constexpr const char* NAME = "AIbehaviorUniqueActiveCommandList";
     static constexpr const char* ALIAS = "AIActiveCommandList";
 
+#ifdef __APPLE__
+    uint8_t unk00[0x118 - 0x0]; // 0
+#else
     uint8_t unk00[0x58 - 0x0]; // 0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(UniqueActiveCommandList, 0x118);
+#else
 RED4EXT_ASSERT_SIZE(UniqueActiveCommandList, 0x58);
+#endif
 } // namespace AI::behavior
 using AIbehaviorUniqueActiveCommandList = AI::behavior::UniqueActiveCommandList;
 using AIActiveCommandList = AI::behavior::UniqueActiveCommandList;

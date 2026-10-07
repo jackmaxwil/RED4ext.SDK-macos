@@ -19,7 +19,11 @@ struct MenuState_LoadSession : gsm::MenuState
 
     uint8_t unkD8[0xF8 - 0xD8]; // D8
 };
+#ifdef __APPLE__
+// gsmMenuState_LoadSession is not in the macOS RTTI dump: no macOS layout to assert
+#else
 RED4EXT_ASSERT_SIZE(MenuState_LoadSession, 0xF8);
+#endif
 } // namespace gsm
 using gsmMenuState_LoadSession = gsm::MenuState_LoadSession;
 } // namespace RED4ext

@@ -20,9 +20,19 @@ struct RewardManagerNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questRewardManagerNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IRewardManagerNodeType> type; // 48
+#else
+    Handle<quest::IRewardManagerNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RewardManagerNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(RewardManagerNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(RewardManagerNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questRewardManagerNodeDefinition = quest::RewardManagerNodeDefinition;
 } // namespace RED4ext

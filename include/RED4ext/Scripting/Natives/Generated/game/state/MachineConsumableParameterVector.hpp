@@ -17,10 +17,20 @@ struct __declspec(align(0x10)) MachineConsumableParameterVector : game::state::M
     static constexpr const char* NAME = "gamestateMachineConsumableParameterVector";
     static constexpr const char* ALIAS = "ConsumableParameterVector";
 
+#ifdef __APPLE__
+    bool consumed; // 20
+    uint8_t unk21[0x30 - 0x21]; // 21
+#else
     bool consumed; // 30
     uint8_t unk31[0x40 - 0x31]; // 31
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MachineConsumableParameterVector, 0x30);
+RED4EXT_ASSERT_OFFSET(MachineConsumableParameterVector, consumed, 0x20);
+#else
 RED4EXT_ASSERT_SIZE(MachineConsumableParameterVector, 0x40);
+#endif
 } // namespace game::state
 using gamestateMachineConsumableParameterVector = game::state::MachineConsumableParameterVector;
 using ConsumableParameterVector = game::state::MachineConsumableParameterVector;

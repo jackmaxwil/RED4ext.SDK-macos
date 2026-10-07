@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) ChaseSpawnComponent : ent::IComponent
     static constexpr const char* NAME = "gameChaseSpawnComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x1030 - 0x8D]; // 8D
+#else
     uint8_t unk90[0x1050 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ChaseSpawnComponent, 0x1030);
+#else
 RED4EXT_ASSERT_SIZE(ChaseSpawnComponent, 0x1050);
+#endif
 } // namespace game
 using gameChaseSpawnComponent = game::ChaseSpawnComponent;
 } // namespace RED4ext

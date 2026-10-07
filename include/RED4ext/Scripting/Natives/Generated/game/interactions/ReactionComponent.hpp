@@ -19,13 +19,27 @@ struct ReactionComponent : ent::IComponent
     static constexpr const char* NAME = "gameinteractionsReactionComponent";
     static constexpr const char* ALIAS = "ReactionComponent";
 
+#ifdef __APPLE__
+    uint8_t unk8D[0xB8 - 0x8D]; // 8D
+    DynArray<game::interactions::ReactionData> reactions; // B8
+    uint8_t unkC8[0xD8 - 0xC8]; // C8
+    bool triggerAutomatically; // D8
+    uint8_t unkD9[0xE8 - 0xD9]; // D9
+#else
     uint8_t unk90[0xB8 - 0x90]; // 90
     DynArray<game::interactions::ReactionData> reactions; // B8
     uint8_t unkC8[0xD8 - 0xC8]; // C8
     bool triggerAutomatically; // D8
     uint8_t unkD9[0xE8 - 0xD9]; // D9
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ReactionComponent, 0xE8);
+RED4EXT_ASSERT_OFFSET(ReactionComponent, reactions, 0xB8);
+RED4EXT_ASSERT_OFFSET(ReactionComponent, triggerAutomatically, 0xD8);
+#else
+RED4EXT_ASSERT_SIZE(ReactionComponent, 0xE8);
+#endif
 } // namespace game::interactions
 using gameinteractionsReactionComponent = game::interactions::ReactionComponent;
 using ReactionComponent = game::interactions::ReactionComponent;

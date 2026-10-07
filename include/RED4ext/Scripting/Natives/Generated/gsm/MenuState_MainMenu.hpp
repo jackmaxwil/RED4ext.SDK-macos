@@ -17,8 +17,15 @@ struct MenuState_MainMenu : gsm::MenuState
     static constexpr const char* NAME = "gsmMenuState_MainMenu";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MenuState_MainMenu, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(MenuState_MainMenu, 0xD8);
+#endif
 } // namespace gsm
 using gsmMenuState_MainMenu = gsm::MenuState_MainMenu;
 } // namespace RED4ext

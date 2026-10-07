@@ -17,8 +17,15 @@ struct NumberPlate_Record : game::data::LCDScreen_Record
     static constexpr const char* NAME = "gamedataNumberPlate_Record";
     static constexpr const char* ALIAS = "NumberPlate_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(NumberPlate_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(NumberPlate_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataNumberPlate_Record = game::data::NumberPlate_Record;
 using NumberPlate_Record = game::data::NumberPlate_Record;

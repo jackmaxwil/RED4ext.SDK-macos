@@ -17,10 +17,19 @@ struct TaskDefinition : ISerializable
     static constexpr const char* NAME = "AIbehaviorTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool ignoreTaskCompletion; // 30
+#else
     bool ignoreTaskCompletion; // 30
     uint8_t unk31[0x38 - 0x31]; // 31
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TaskDefinition, 0x38);
+RED4EXT_ASSERT_OFFSET(TaskDefinition, ignoreTaskCompletion, 0x30);
+#else
+RED4EXT_ASSERT_SIZE(TaskDefinition, 0x38);
+#endif
 } // namespace AI::behavior
 using AIbehaviorTaskDefinition = AI::behavior::TaskDefinition;
 } // namespace RED4ext

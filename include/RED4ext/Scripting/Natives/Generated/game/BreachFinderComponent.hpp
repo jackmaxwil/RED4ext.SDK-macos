@@ -17,9 +17,17 @@ struct BreachFinderComponent : ent::IComponent
     static constexpr const char* NAME = "gameBreachFinderComponent";
     static constexpr const char* ALIAS = "BreachFinderComponent";
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x2F8 - 0x8D]; // 8D
+#else
     uint8_t unk90[0x2F8 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(BreachFinderComponent, 0x2F8);
+#else
+RED4EXT_ASSERT_SIZE(BreachFinderComponent, 0x2F8);
+#endif
 } // namespace game
 using gameBreachFinderComponent = game::BreachFinderComponent;
 using BreachFinderComponent = game::BreachFinderComponent;

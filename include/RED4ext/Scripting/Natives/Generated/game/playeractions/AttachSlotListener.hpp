@@ -17,9 +17,17 @@ struct AttachSlotListener : game::IAttachmentSlotsListener
     static constexpr const char* NAME = "gameplayeractionsAttachSlotListener";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk40[0x80 - 0x40]; // 40
+#else
     uint8_t unk40[0xC0 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AttachSlotListener, 0x80);
+#else
 RED4EXT_ASSERT_SIZE(AttachSlotListener, 0xC0);
+#endif
 } // namespace game::playeractions
 using gameplayeractionsAttachSlotListener = game::playeractions::AttachSlotListener;
 } // namespace RED4ext

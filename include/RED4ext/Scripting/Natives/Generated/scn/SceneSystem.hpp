@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) SceneSystem : scn::ISceneSystem
     static constexpr const char* NAME = "scnSceneSystem";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0x10F0 - 0x48]; // 48
+#else
     uint8_t unk48[0x10D0 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SceneSystem, 0x10F0);
+#else
 RED4EXT_ASSERT_SIZE(SceneSystem, 0x10D0);
+#endif
 } // namespace scn
 using scnSceneSystem = scn::SceneSystem;
 } // namespace RED4ext

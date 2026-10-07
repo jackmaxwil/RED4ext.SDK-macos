@@ -20,11 +20,24 @@ struct MappinManagerNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questMappinManagerNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<game::JournalPath> path; // 48
     bool disablePreviousMappins; // 58
     uint8_t unk59[0x60 - 0x59]; // 59
+#else
+    Handle<game::JournalPath> path; // 48
+    bool disablePreviousMappins; // 58
+    uint8_t unk59[0x60 - 0x59]; // 59
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MappinManagerNodeDefinition, 0x60);
+RED4EXT_ASSERT_OFFSET(MappinManagerNodeDefinition, path, 0x48);
+RED4EXT_ASSERT_OFFSET(MappinManagerNodeDefinition, disablePreviousMappins, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(MappinManagerNodeDefinition, 0x60);
+#endif
 } // namespace quest
 using questMappinManagerNodeDefinition = quest::MappinManagerNodeDefinition;
 } // namespace RED4ext

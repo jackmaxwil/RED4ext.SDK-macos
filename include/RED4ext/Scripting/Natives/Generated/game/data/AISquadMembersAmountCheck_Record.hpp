@@ -17,9 +17,17 @@ struct AISquadMembersAmountCheck_Record : game::data::AITicketCheck_Record
     static constexpr const char* NAME = "gamedataAISquadMembersAmountCheck_Record";
     static constexpr const char* ALIAS = "AISquadMembersAmountCheck_Record";
 
+#ifdef __APPLE__
+    uint8_t unk60[0x88 - 0x60]; // 60
+#else
     uint8_t unk68[0x90 - 0x68]; // 68
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadMembersAmountCheck_Record, 0x88);
+#else
 RED4EXT_ASSERT_SIZE(AISquadMembersAmountCheck_Record, 0x90);
+#endif
 } // namespace game::data
 using gamedataAISquadMembersAmountCheck_Record = game::data::AISquadMembersAmountCheck_Record;
 using AISquadMembersAmountCheck_Record = game::data::AISquadMembersAmountCheck_Record;

@@ -21,12 +21,28 @@ struct __declspec(align(0x10)) DistantGINode : world::Node
     static constexpr const char* NAME = "worldDistantGINode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x38 - 0x32]; // 32
     RaRef<CBitmapTexture> dataAlbedo; // 38
     RaRef<CBitmapTexture> dataNormal; // 40
     RaRef<CBitmapTexture> dataHeight; // 48
     Vector4 sectorSpan; // 50
+#else
+    RaRef<CBitmapTexture> dataAlbedo; // 38
+    RaRef<CBitmapTexture> dataNormal; // 40
+    RaRef<CBitmapTexture> dataHeight; // 48
+    Vector4 sectorSpan; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(DistantGINode, 0x60);
+RED4EXT_ASSERT_OFFSET(DistantGINode, dataAlbedo, 0x38);
+RED4EXT_ASSERT_OFFSET(DistantGINode, dataNormal, 0x40);
+RED4EXT_ASSERT_OFFSET(DistantGINode, dataHeight, 0x48);
+RED4EXT_ASSERT_OFFSET(DistantGINode, sectorSpan, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(DistantGINode, 0x60);
+#endif
 } // namespace world
 using worldDistantGINode = world::DistantGINode;
 } // namespace RED4ext

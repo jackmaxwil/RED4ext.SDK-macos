@@ -19,10 +19,20 @@ struct AnimNode_ParentTransform : anim::AnimNode_OnePoseInput
     static constexpr const char* NAME = "animAnimNode_ParentTransform";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    DynArray<anim::AnimTransformMappingEntry> mapping; // 60
+    uint8_t unk70[0xA0 - 0x70]; // 70
+#else
     DynArray<anim::AnimTransformMappingEntry> mapping; // 60
     uint8_t unk70[0xB8 - 0x70]; // 70
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_ParentTransform, 0xA0);
+RED4EXT_ASSERT_OFFSET(AnimNode_ParentTransform, mapping, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_ParentTransform, 0xB8);
+#endif
 } // namespace anim
 using animAnimNode_ParentTransform = anim::AnimNode_ParentTransform;
 } // namespace RED4ext

@@ -20,9 +20,19 @@ struct PauseConditionNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questPauseConditionNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IBaseCondition> condition; // 48
+#else
+    Handle<quest::IBaseCondition> condition; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(PauseConditionNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(PauseConditionNodeDefinition, condition, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(PauseConditionNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questPauseConditionNodeDefinition = quest::PauseConditionNodeDefinition;
 } // namespace RED4ext

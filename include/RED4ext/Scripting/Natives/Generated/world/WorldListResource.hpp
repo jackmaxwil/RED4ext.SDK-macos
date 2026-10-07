@@ -19,9 +19,19 @@ struct WorldListResource : CResource
     static constexpr const char* NAME = "worldWorldListResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<world::WorldListResourceEntry> worlds; // 40
+#else
+    DynArray<world::WorldListResourceEntry> worlds; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(WorldListResource, 0x50);
+RED4EXT_ASSERT_OFFSET(WorldListResource, worlds, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(WorldListResource, 0x50);
+#endif
 } // namespace world
 using worldWorldListResource = world::WorldListResource;
 } // namespace RED4ext

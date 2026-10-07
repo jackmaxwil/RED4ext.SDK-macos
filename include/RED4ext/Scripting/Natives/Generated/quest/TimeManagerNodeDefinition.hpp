@@ -20,9 +20,19 @@ struct TimeManagerNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questTimeManagerNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::ITimeManagerNodeType> type; // 48
+#else
+    Handle<quest::ITimeManagerNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TimeManagerNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(TimeManagerNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(TimeManagerNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questTimeManagerNodeDefinition = quest::TimeManagerNodeDefinition;
 } // namespace RED4ext

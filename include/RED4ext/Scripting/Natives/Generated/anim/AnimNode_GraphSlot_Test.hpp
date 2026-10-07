@@ -20,11 +20,23 @@ struct AnimNode_GraphSlot_Test : anim::AnimNode_GraphSlot
     static constexpr const char* NAME = "animAnimNode_GraphSlot_Test";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    Ref<anim::AnimGraph> graph_TEST; // B0
+    bool copyAnimInputsAtAttachTime; // C8
+    uint8_t unkC9[0x110 - 0xC9]; // C9
+#else
     Ref<anim::AnimGraph> graph_TEST; // B0
     bool copyAnimInputsAtAttachTime; // C8
     uint8_t unkC9[0x120 - 0xC9]; // C9
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_GraphSlot_Test, 0x110);
+RED4EXT_ASSERT_OFFSET(AnimNode_GraphSlot_Test, graph_TEST, 0xB0);
+RED4EXT_ASSERT_OFFSET(AnimNode_GraphSlot_Test, copyAnimInputsAtAttachTime, 0xC8);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_GraphSlot_Test, 0x120);
+#endif
 } // namespace anim
 using animAnimNode_GraphSlot_Test = anim::AnimNode_GraphSlot_Test;
 } // namespace RED4ext

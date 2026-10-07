@@ -17,9 +17,17 @@ struct ItemCost_Record : game::data::ObjectActionCost_Record
     static constexpr const char* NAME = "gamedataItemCost_Record";
     static constexpr const char* ALIAS = "ItemCost_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ItemCost_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(ItemCost_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataItemCost_Record = game::data::ItemCost_Record;
 using ItemCost_Record = game::data::ItemCost_Record;

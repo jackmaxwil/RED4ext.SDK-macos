@@ -17,9 +17,17 @@ struct TemporalPrereq_Record : game::data::IPrereq_Record
     static constexpr const char* NAME = "gamedataTemporalPrereq_Record";
     static constexpr const char* ALIAS = "TemporalPrereq_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TemporalPrereq_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(TemporalPrereq_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataTemporalPrereq_Record = game::data::TemporalPrereq_Record;
 using TemporalPrereq_Record = game::data::TemporalPrereq_Record;

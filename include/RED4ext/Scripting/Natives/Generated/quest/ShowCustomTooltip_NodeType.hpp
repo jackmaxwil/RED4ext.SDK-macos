@@ -19,6 +19,15 @@ struct ShowCustomTooltip_NodeType : quest::IUIManagerNodeType
     static constexpr const char* NAME = "questShowCustomTooltip_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool setTooltip; // 34
+    uint8_t unk35[0x38 - 0x35]; // 35
+    LocalizationString text; // 38
+    CString inputAction; // 60
+    ink::InputHintHoldIndicationType holdIndicationType; // 80
+    uint8_t unk81[0x84 - 0x81]; // 81
+    int32_t queuePriority; // 84
+#else
     bool setTooltip; // 38
     uint8_t unk39[0x40 - 0x39]; // 39
     LocalizationString text; // 40
@@ -26,8 +35,18 @@ struct ShowCustomTooltip_NodeType : quest::IUIManagerNodeType
     ink::InputHintHoldIndicationType holdIndicationType; // 88
     uint8_t unk89[0x8C - 0x89]; // 89
     int32_t queuePriority; // 8C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShowCustomTooltip_NodeType, 0x88);
+RED4EXT_ASSERT_OFFSET(ShowCustomTooltip_NodeType, setTooltip, 0x34);
+RED4EXT_ASSERT_OFFSET(ShowCustomTooltip_NodeType, text, 0x38);
+RED4EXT_ASSERT_OFFSET(ShowCustomTooltip_NodeType, inputAction, 0x60);
+RED4EXT_ASSERT_OFFSET(ShowCustomTooltip_NodeType, holdIndicationType, 0x80);
+RED4EXT_ASSERT_OFFSET(ShowCustomTooltip_NodeType, queuePriority, 0x84);
+#else
 RED4EXT_ASSERT_SIZE(ShowCustomTooltip_NodeType, 0x90);
+#endif
 } // namespace quest
 using questShowCustomTooltip_NodeType = quest::ShowCustomTooltip_NodeType;
 } // namespace RED4ext

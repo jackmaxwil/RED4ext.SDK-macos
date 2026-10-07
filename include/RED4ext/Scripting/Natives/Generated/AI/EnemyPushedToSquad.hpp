@@ -20,9 +20,19 @@ struct EnemyPushedToSquad : AI::AIEvent
     static constexpr const char* NAME = "AIEnemyPushedToSquad";
     static constexpr const char* ALIAS = "EnemyPushedToSquad";
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     WeakHandle<ent::Entity> threat; // 50
+#else
+    WeakHandle<ent::Entity> threat; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EnemyPushedToSquad, 0x60);
+RED4EXT_ASSERT_OFFSET(EnemyPushedToSquad, threat, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(EnemyPushedToSquad, 0x60);
+#endif
 } // namespace AI
 using AIEnemyPushedToSquad = AI::EnemyPushedToSquad;
 using EnemyPushedToSquad = AI::EnemyPushedToSquad;

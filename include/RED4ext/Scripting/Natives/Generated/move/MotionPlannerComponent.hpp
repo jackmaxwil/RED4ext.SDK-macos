@@ -17,11 +17,22 @@ struct MotionPlannerComponent : move::IMotionPlannerComponent
     static constexpr const char* NAME = "moveMotionPlannerComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x1F0 - 0x8D]; // 8D
+    bool snapToGround; // 1F0
+    uint8_t unk1F1[0x1F8 - 0x1F1]; // 1F1
+#else
     uint8_t unk90[0x1F0 - 0x90]; // 90
     bool snapToGround; // 1F0
     uint8_t unk1F1[0x1F8 - 0x1F1]; // 1F1
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MotionPlannerComponent, 0x1F8);
+RED4EXT_ASSERT_OFFSET(MotionPlannerComponent, snapToGround, 0x1F0);
+#else
+RED4EXT_ASSERT_SIZE(MotionPlannerComponent, 0x1F8);
+#endif
 } // namespace move
 using moveMotionPlannerComponent = move::MotionPlannerComponent;
 } // namespace RED4ext

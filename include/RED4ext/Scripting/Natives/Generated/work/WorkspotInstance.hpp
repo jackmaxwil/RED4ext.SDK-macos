@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) WorkspotInstance : ISerializable
     static constexpr const char* NAME = "workWorkspotInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk30[0x2C0 - 0x30]; // 30
+#else
     uint8_t unk30[0x2E0 - 0x30]; // 30
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(WorkspotInstance, 0x2C0);
+#else
 RED4EXT_ASSERT_SIZE(WorkspotInstance, 0x2E0);
+#endif
 } // namespace work
 using workWorkspotInstance = work::WorkspotInstance;
 } // namespace RED4ext

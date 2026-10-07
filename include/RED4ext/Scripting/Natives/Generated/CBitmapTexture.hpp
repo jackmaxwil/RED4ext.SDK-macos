@@ -21,6 +21,21 @@ struct CBitmapTexture : ITexture
     static constexpr const char* NAME = "CBitmapTexture";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk3C[0x48 - 0x3C]; // 3C
+    uint32_t width; // 48
+    uint32_t height; // 4C
+    uint32_t depth; // 50
+    STextureGroupSetup setup; // 54
+    uint8_t unk64[0x70 - 0x64]; // 64
+    Handle<IRenderResourceBlob> renderResourceBlob; // 70
+    uint8_t unk80[0x88 - 0x80]; // 80
+    rend::RenderTextureResource renderTextureResource; // 88
+    uint8_t unk98[0xA4 - 0x98]; // 98
+    Vector3 histBiasMulCoef; // A4
+    Vector3 histBiasAddCoef; // B0
+    uint8_t unkBC[0xC0 - 0xBC]; // BC
+#else
     uint8_t unk40[0x48 - 0x40]; // 40
     uint32_t width; // 48
     uint32_t height; // 4C
@@ -34,8 +49,21 @@ struct CBitmapTexture : ITexture
     Vector3 histBiasMulCoef; // A4
     Vector3 histBiasAddCoef; // B0
     uint8_t unkBC[0xC0 - 0xBC]; // BC
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CBitmapTexture, 0xC0);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, width, 0x48);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, height, 0x4C);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, depth, 0x50);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, setup, 0x54);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, renderResourceBlob, 0x70);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, renderTextureResource, 0x88);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, histBiasMulCoef, 0xA4);
+RED4EXT_ASSERT_OFFSET(CBitmapTexture, histBiasAddCoef, 0xB0);
+#else
+RED4EXT_ASSERT_SIZE(CBitmapTexture, 0xC0);
+#endif
 } // namespace RED4ext
 
 // clang-format on

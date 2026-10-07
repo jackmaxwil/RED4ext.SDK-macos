@@ -17,8 +17,15 @@ struct AISquadClosestToTargetCheck_Record : game::data::AISquadDistanceRelationT
     static constexpr const char* NAME = "gamedataAISquadClosestToTargetCheck_Record";
     static constexpr const char* ALIAS = "AISquadClosestToTargetCheck_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadClosestToTargetCheck_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(AISquadClosestToTargetCheck_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataAISquadClosestToTargetCheck_Record = game::data::AISquadClosestToTargetCheck_Record;
 using AISquadClosestToTargetCheck_Record = game::data::AISquadClosestToTargetCheck_Record;

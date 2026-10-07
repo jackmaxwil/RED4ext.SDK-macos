@@ -18,9 +18,19 @@ struct SetSaveDataLoadingScreen_NodeType : quest::IUIManagerNodeType
     static constexpr const char* NAME = "questSetSaveDataLoadingScreen_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    TweakDBID selectedLoading; // 34
+    uint8_t unk3C[0x40 - 0x3C]; // 3C
+#else
     TweakDBID selectedLoading; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SetSaveDataLoadingScreen_NodeType, 0x40);
+RED4EXT_ASSERT_OFFSET(SetSaveDataLoadingScreen_NodeType, selectedLoading, 0x34);
+#else
+RED4EXT_ASSERT_SIZE(SetSaveDataLoadingScreen_NodeType, 0x40);
+#endif
 } // namespace quest
 using questSetSaveDataLoadingScreen_NodeType = quest::SetSaveDataLoadingScreen_NodeType;
 } // namespace RED4ext

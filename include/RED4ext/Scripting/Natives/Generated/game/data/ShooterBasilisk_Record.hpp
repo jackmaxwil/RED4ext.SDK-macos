@@ -17,9 +17,17 @@ struct ShooterBasilisk_Record : game::data::ShooterBossAI_Record
     static constexpr const char* NAME = "gamedataShooterBasilisk_Record";
     static constexpr const char* ALIAS = "ShooterBasilisk_Record";
 
+#ifdef __APPLE__
+    uint8_t unk108[0x220 - 0x108]; // 108
+#else
     uint8_t unk110[0x228 - 0x110]; // 110
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterBasilisk_Record, 0x220);
+#else
 RED4EXT_ASSERT_SIZE(ShooterBasilisk_Record, 0x228);
+#endif
 } // namespace game::data
 using gamedataShooterBasilisk_Record = game::data::ShooterBasilisk_Record;
 using ShooterBasilisk_Record = game::data::ShooterBasilisk_Record;

@@ -21,10 +21,22 @@ struct VehicleNodeCommandDefinition : quest::AICommandNodeBase
     static constexpr const char* NAME = "questVehicleNodeCommandDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference vehicle; // 48
     Handle<quest::VehicleCommandParams> commandParams; // 80
+#else
+    game::EntityReference vehicle; // 48
+    Handle<quest::VehicleCommandParams> commandParams; // 80
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VehicleNodeCommandDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(VehicleNodeCommandDefinition, vehicle, 0x48);
+RED4EXT_ASSERT_OFFSET(VehicleNodeCommandDefinition, commandParams, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(VehicleNodeCommandDefinition, 0x90);
+#endif
 } // namespace quest
 using questVehicleNodeCommandDefinition = quest::VehicleNodeCommandDefinition;
 } // namespace RED4ext

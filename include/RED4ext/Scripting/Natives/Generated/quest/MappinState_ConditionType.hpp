@@ -20,11 +20,24 @@ struct MappinState_ConditionType : quest::IJournalConditionType
     static constexpr const char* NAME = "questMappinState_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<game::JournalPath> mappinPath; // 38
     bool active; // 48
     uint8_t unk49[0x50 - 0x49]; // 49
+#else
+    Handle<game::JournalPath> mappinPath; // 38
+    bool active; // 48
+    uint8_t unk49[0x50 - 0x49]; // 49
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MappinState_ConditionType, 0x50);
+RED4EXT_ASSERT_OFFSET(MappinState_ConditionType, mappinPath, 0x38);
+RED4EXT_ASSERT_OFFSET(MappinState_ConditionType, active, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(MappinState_ConditionType, 0x50);
+#endif
 } // namespace quest
 using questMappinState_ConditionType = quest::MappinState_ConditionType;
 } // namespace RED4ext

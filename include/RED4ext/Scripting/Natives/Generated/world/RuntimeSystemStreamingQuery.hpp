@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) RuntimeSystemStreamingQuery : world::IRuntimeSyst
     static constexpr const char* NAME = "worldRuntimeSystemStreamingQuery";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0xD0 - 0x48]; // 48
+#else
     uint8_t unk48[0xE0 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RuntimeSystemStreamingQuery, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(RuntimeSystemStreamingQuery, 0xE0);
+#endif
 } // namespace world
 using worldRuntimeSystemStreamingQuery = world::RuntimeSystemStreamingQuery;
 } // namespace RED4ext

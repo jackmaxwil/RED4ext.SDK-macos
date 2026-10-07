@@ -17,9 +17,17 @@ struct BaseBunkerComputerGameController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiBaseBunkerComputerGameController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkDC[0x100 - 0xDC]; // DC
+#else
     uint8_t unkE0[0x100 - 0xE0]; // E0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(BaseBunkerComputerGameController, 0x100);
+#else
+RED4EXT_ASSERT_SIZE(BaseBunkerComputerGameController, 0x100);
+#endif
 } // namespace game::ui
 using gameuiBaseBunkerComputerGameController = game::ui::BaseBunkerComputerGameController;
 } // namespace RED4ext

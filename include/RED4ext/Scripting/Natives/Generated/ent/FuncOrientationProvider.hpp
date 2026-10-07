@@ -17,9 +17,17 @@ struct FuncOrientationProvider : ent::IOrientationProvider
     static constexpr const char* NAME = "entFuncOrientationProvider";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk40[0x60 - 0x40]; // 40
+#else
     uint8_t unk40[0x80 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(FuncOrientationProvider, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(FuncOrientationProvider, 0x80);
+#endif
 } // namespace ent
 using entFuncOrientationProvider = ent::FuncOrientationProvider;
 } // namespace RED4ext

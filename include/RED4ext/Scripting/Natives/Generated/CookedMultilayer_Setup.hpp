@@ -19,10 +19,21 @@ struct CookedMultilayer_Setup : CResource
     static constexpr const char* NAME = "CookedMultilayer_Setup";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Ref<Multilayer_Setup>> dependencies; // 40
     uint8_t unk50[0x60 - 0x50]; // 50
+#else
+    DynArray<Ref<Multilayer_Setup>> dependencies; // 40
+    uint8_t unk50[0x60 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CookedMultilayer_Setup, 0x60);
+RED4EXT_ASSERT_OFFSET(CookedMultilayer_Setup, dependencies, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(CookedMultilayer_Setup, 0x60);
+#endif
 } // namespace RED4ext
 
 // clang-format on

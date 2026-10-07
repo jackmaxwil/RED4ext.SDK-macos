@@ -17,9 +17,17 @@ struct SignalHandlerComponent : ent::IComponent
     static constexpr const char* NAME = "AISignalHandlerComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0xE0 - 0x8D]; // 8D
+#else
     uint8_t unk90[0xE0 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SignalHandlerComponent, 0xE0);
+#else
+RED4EXT_ASSERT_SIZE(SignalHandlerComponent, 0xE0);
+#endif
 } // namespace AI
 using AISignalHandlerComponent = AI::SignalHandlerComponent;
 } // namespace RED4ext

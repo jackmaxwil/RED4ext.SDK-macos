@@ -17,9 +17,17 @@ struct PlayerManager : game::IPlayerManager
     static constexpr const char* NAME = "mpPlayerManager";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk48[0x140 - 0x48]; // 48
+#else
     uint8_t unk48[0x128 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PlayerManager, 0x140);
+#else
 RED4EXT_ASSERT_SIZE(PlayerManager, 0x128);
+#endif
 } // namespace mp
 using mpPlayerManager = mp::PlayerManager;
 } // namespace RED4ext

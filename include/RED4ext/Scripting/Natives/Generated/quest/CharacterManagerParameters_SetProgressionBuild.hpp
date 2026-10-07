@@ -18,9 +18,20 @@ struct CharacterManagerParameters_SetProgressionBuild : quest::ICharacterManager
     static constexpr const char* NAME = "questCharacterManagerParameters_SetProgressionBuild";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk69[0x6C - 0x69]; // 69
+    TweakDBID buildID; // 6C
+    uint8_t unk74[0x78 - 0x74]; // 74
+#else
     TweakDBID buildID; // 70
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CharacterManagerParameters_SetProgressionBuild, 0x78);
+RED4EXT_ASSERT_OFFSET(CharacterManagerParameters_SetProgressionBuild, buildID, 0x6C);
+#else
+RED4EXT_ASSERT_SIZE(CharacterManagerParameters_SetProgressionBuild, 0x78);
+#endif
 } // namespace quest
 using questCharacterManagerParameters_SetProgressionBuild = quest::CharacterManagerParameters_SetProgressionBuild;
 } // namespace RED4ext

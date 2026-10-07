@@ -17,9 +17,17 @@ struct StateObserver_SessionAutomation : gsm::IStateObserver
     static constexpr const char* NAME = "gsmStateObserver_SessionAutomation";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk08[0x60 - 0x8]; // 8
+#else
     uint8_t unk08[0xA0 - 0x8]; // 8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(StateObserver_SessionAutomation, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(StateObserver_SessionAutomation, 0xA0);
+#endif
 } // namespace gsm
 using gsmStateObserver_SessionAutomation = gsm::StateObserver_SessionAutomation;
 } // namespace RED4ext

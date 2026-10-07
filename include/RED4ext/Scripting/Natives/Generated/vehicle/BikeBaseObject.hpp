@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) BikeBaseObject : vehicle::WheeledBaseObject
     static constexpr const char* NAME = "vehicleBikeBaseObject";
     static constexpr const char* ALIAS = "BikeObject";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(BikeBaseObject, 0xBD0);
+#else
 RED4EXT_ASSERT_SIZE(BikeBaseObject, 0xBF0);
+#endif
 } // namespace vehicle
 using vehicleBikeBaseObject = vehicle::BikeBaseObject;
 using BikeObject = vehicle::BikeBaseObject;

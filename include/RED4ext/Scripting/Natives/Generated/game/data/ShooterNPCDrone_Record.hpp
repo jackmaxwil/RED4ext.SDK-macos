@@ -17,9 +17,17 @@ struct ShooterNPCDrone_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterNPCDrone_Record";
     static constexpr const char* ALIAS = "ShooterNPCDrone_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x118 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x120 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterNPCDrone_Record, 0x118);
+#else
 RED4EXT_ASSERT_SIZE(ShooterNPCDrone_Record, 0x120);
+#endif
 } // namespace game::data
 using gamedataShooterNPCDrone_Record = game::data::ShooterNPCDrone_Record;
 using ShooterNPCDrone_Record = game::data::ShooterNPCDrone_Record;

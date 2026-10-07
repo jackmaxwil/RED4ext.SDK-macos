@@ -20,9 +20,19 @@ struct SetStyleEvent : ink::anim::Event
     static constexpr const char* NAME = "inkanimSetStyleEvent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     RaRef<ink::StyleResource> style; // 48
+#else
+    RaRef<ink::StyleResource> style; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SetStyleEvent, 0x50);
+RED4EXT_ASSERT_OFFSET(SetStyleEvent, style, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(SetStyleEvent, 0x50);
+#endif
 } // namespace ink::anim
 using inkanimSetStyleEvent = ink::anim::SetStyleEvent;
 } // namespace RED4ext

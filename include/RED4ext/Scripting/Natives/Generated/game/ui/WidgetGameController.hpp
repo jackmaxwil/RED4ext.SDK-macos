@@ -17,9 +17,17 @@ struct WidgetGameController : world::ui::IWidgetGameController
     static constexpr const char* NAME = "gameuiWidgetGameController";
     static constexpr const char* ALIAS = "inkGameController";
 
+#ifdef __APPLE__
+    uint8_t unkD0[0xDC - 0xD0]; // D0
+#else
     uint8_t unkD0[0xE0 - 0xD0]; // D0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(WidgetGameController, 0xE0);
+#else
+RED4EXT_ASSERT_SIZE(WidgetGameController, 0xE0);
+#endif
 } // namespace game::ui
 using gameuiWidgetGameController = game::ui::WidgetGameController;
 using inkGameController = game::ui::WidgetGameController;

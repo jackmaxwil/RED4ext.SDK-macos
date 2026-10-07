@@ -18,10 +18,21 @@ struct CMaterialParameterTexture : CMaterialParameter
     static constexpr const char* NAME = "CMaterialParameterTexture";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk3C[0x40 - 0x3C]; // 3C
     Ref<ITexture> texture; // 40
     uint8_t unk58[0x60 - 0x58]; // 58
+#else
+    Ref<ITexture> texture; // 40
+    uint8_t unk58[0x60 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CMaterialParameterTexture, 0x60);
+RED4EXT_ASSERT_OFFSET(CMaterialParameterTexture, texture, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(CMaterialParameterTexture, 0x60);
+#endif
 } // namespace RED4ext
 
 // clang-format on

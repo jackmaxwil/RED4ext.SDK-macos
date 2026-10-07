@@ -20,12 +20,27 @@ struct SavePatrolProgressTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorSavePatrolProgressTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> patrolProgress; // 38
     Handle<AI::ArgumentMapping> savedState; // 48
     bool saveOnDeactivation; // 58
     uint8_t unk59[0x60 - 0x59]; // 59
+#else
+    Handle<AI::ArgumentMapping> patrolProgress; // 38
+    Handle<AI::ArgumentMapping> savedState; // 48
+    bool saveOnDeactivation; // 58
+    uint8_t unk59[0x60 - 0x59]; // 59
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SavePatrolProgressTaskDefinition, 0x60);
+RED4EXT_ASSERT_OFFSET(SavePatrolProgressTaskDefinition, patrolProgress, 0x38);
+RED4EXT_ASSERT_OFFSET(SavePatrolProgressTaskDefinition, savedState, 0x48);
+RED4EXT_ASSERT_OFFSET(SavePatrolProgressTaskDefinition, saveOnDeactivation, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(SavePatrolProgressTaskDefinition, 0x60);
+#endif
 } // namespace AI::behavior
 using AIbehaviorSavePatrolProgressTaskDefinition = AI::behavior::SavePatrolProgressTaskDefinition;
 } // namespace RED4ext

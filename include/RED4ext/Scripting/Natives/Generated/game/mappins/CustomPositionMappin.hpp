@@ -17,8 +17,15 @@ struct CustomPositionMappin : game::mappins::RuntimeMappin
     static constexpr const char* NAME = "gamemappinsCustomPositionMappin";
     static constexpr const char* ALIAS = "CustomPositionMappin";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CustomPositionMappin, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(CustomPositionMappin, 0x108);
+#endif
 } // namespace game::mappins
 using gamemappinsCustomPositionMappin = game::mappins::CustomPositionMappin;
 using CustomPositionMappin = game::mappins::CustomPositionMappin;

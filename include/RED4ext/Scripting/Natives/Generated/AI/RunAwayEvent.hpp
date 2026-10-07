@@ -17,9 +17,17 @@ struct RunAwayEvent : AI::AIEvent
     static constexpr const char* NAME = "AIRunAwayEvent";
     static constexpr const char* ALIAS = "RunAwayEvent";
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x58 - 0x4C]; // 4C
+#else
     uint8_t unk50[0x60 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RunAwayEvent, 0x58);
+#else
 RED4EXT_ASSERT_SIZE(RunAwayEvent, 0x60);
+#endif
 } // namespace AI
 using AIRunAwayEvent = AI::RunAwayEvent;
 using RunAwayEvent = AI::RunAwayEvent;

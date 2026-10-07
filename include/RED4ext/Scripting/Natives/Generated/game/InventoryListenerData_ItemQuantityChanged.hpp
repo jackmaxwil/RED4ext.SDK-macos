@@ -17,9 +17,17 @@ struct InventoryListenerData_ItemQuantityChanged : game::InventoryListenerData_B
     static constexpr const char* NAME = "gameInventoryListenerData_ItemQuantityChanged";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk38[0x50 - 0x38]; // 38
+#else
     uint8_t unk38[0x58 - 0x38]; // 38
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(InventoryListenerData_ItemQuantityChanged, 0x50);
+#else
 RED4EXT_ASSERT_SIZE(InventoryListenerData_ItemQuantityChanged, 0x58);
+#endif
 } // namespace game
 using gameInventoryListenerData_ItemQuantityChanged = game::InventoryListenerData_ItemQuantityChanged;
 } // namespace RED4ext

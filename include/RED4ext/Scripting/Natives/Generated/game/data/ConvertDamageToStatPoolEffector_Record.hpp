@@ -17,9 +17,17 @@ struct ConvertDamageToStatPoolEffector_Record : game::data::Effector_Record
     static constexpr const char* NAME = "gamedataConvertDamageToStatPoolEffector_Record";
     static constexpr const char* ALIAS = "ConvertDamageToStatPoolEffector_Record";
 
+#ifdef __APPLE__
+    uint8_t unk88[0xA8 - 0x88]; // 88
+#else
     uint8_t unk88[0xB0 - 0x88]; // 88
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ConvertDamageToStatPoolEffector_Record, 0xA8);
+#else
 RED4EXT_ASSERT_SIZE(ConvertDamageToStatPoolEffector_Record, 0xB0);
+#endif
 } // namespace game::data
 using gamedataConvertDamageToStatPoolEffector_Record = game::data::ConvertDamageToStatPoolEffector_Record;
 using ConvertDamageToStatPoolEffector_Record = game::data::ConvertDamageToStatPoolEffector_Record;

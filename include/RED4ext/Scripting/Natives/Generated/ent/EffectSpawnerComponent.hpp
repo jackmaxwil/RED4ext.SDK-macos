@@ -21,10 +21,21 @@ struct __declspec(align(0x10)) EffectSpawnerComponent : ent::IVisualComponent
     static constexpr const char* NAME = "entEffectSpawnerComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk13C[0x140 - 0x13C]; // 13C
     DynArray<Handle<ent::EffectDesc>> effectDescs; // 140
     uint8_t unk150[0x230 - 0x150]; // 150
+#else
+    DynArray<Handle<ent::EffectDesc>> effectDescs; // 140
+    uint8_t unk150[0x230 - 0x150]; // 150
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EffectSpawnerComponent, 0x230);
+RED4EXT_ASSERT_OFFSET(EffectSpawnerComponent, effectDescs, 0x140);
+#else
+RED4EXT_ASSERT_SIZE(EffectSpawnerComponent, 0x230);
+#endif
 } // namespace ent
 using entEffectSpawnerComponent = ent::EffectSpawnerComponent;
 } // namespace RED4ext

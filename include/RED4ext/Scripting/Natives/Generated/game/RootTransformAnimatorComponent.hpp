@@ -19,11 +19,22 @@ struct __declspec(align(0x10)) RootTransformAnimatorComponent : ent::IMoverCompo
     static constexpr const char* NAME = "gameRootTransformAnimatorComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0xF0 - 0x8D]; // 8D
+    DynArray<game::TransformAnimationDefinition> animations; // F0
+    uint8_t unk100[0x110 - 0x100]; // 100
+#else
     uint8_t unk90[0xF0 - 0x90]; // 90
     DynArray<game::TransformAnimationDefinition> animations; // F0
     uint8_t unk100[0x110 - 0x100]; // 100
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RootTransformAnimatorComponent, 0x110);
+RED4EXT_ASSERT_OFFSET(RootTransformAnimatorComponent, animations, 0xF0);
+#else
+RED4EXT_ASSERT_SIZE(RootTransformAnimatorComponent, 0x110);
+#endif
 } // namespace game
 using gameRootTransformAnimatorComponent = game::RootTransformAnimatorComponent;
 } // namespace RED4ext

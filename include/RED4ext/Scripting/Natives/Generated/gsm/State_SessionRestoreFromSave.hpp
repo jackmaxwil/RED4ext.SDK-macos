@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) State_SessionRestoreFromSave : gsm::State
     static constexpr const char* NAME = "gsmState_SessionRestoreFromSave";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkB8[0x290 - 0xB8]; // B8
+#else
     uint8_t unkB8[0x2B0 - 0xB8]; // B8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(State_SessionRestoreFromSave, 0x290);
+#else
 RED4EXT_ASSERT_SIZE(State_SessionRestoreFromSave, 0x2B0);
+#endif
 } // namespace gsm
 using gsmState_SessionRestoreFromSave = gsm::State_SessionRestoreFromSave;
 } // namespace RED4ext

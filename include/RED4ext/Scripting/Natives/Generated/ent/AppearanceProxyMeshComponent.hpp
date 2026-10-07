@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) AppearanceProxyMeshComponent : ent::PhysicalMeshC
     static constexpr const char* NAME = "entAppearanceProxyMeshComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk230[0x240 - 0x230]; // 230
+#else
     uint8_t unk240[0x250 - 0x240]; // 240
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AppearanceProxyMeshComponent, 0x240);
+#else
 RED4EXT_ASSERT_SIZE(AppearanceProxyMeshComponent, 0x250);
+#endif
 } // namespace ent
 using entAppearanceProxyMeshComponent = ent::AppearanceProxyMeshComponent;
 } // namespace RED4ext

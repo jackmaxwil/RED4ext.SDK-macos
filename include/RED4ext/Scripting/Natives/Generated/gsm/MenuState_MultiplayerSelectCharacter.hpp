@@ -17,8 +17,15 @@ struct MenuState_MultiplayerSelectCharacter : gsm::MenuState
     static constexpr const char* NAME = "gsmMenuState_MultiplayerSelectCharacter";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MenuState_MultiplayerSelectCharacter, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(MenuState_MultiplayerSelectCharacter, 0xD8);
+#endif
 } // namespace gsm
 using gsmMenuState_MultiplayerSelectCharacter = gsm::MenuState_MultiplayerSelectCharacter;
 } // namespace RED4ext

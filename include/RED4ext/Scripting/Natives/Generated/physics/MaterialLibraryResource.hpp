@@ -21,12 +21,25 @@ struct MaterialLibraryResource : CResource
     static constexpr const char* NAME = "physicsMaterialLibraryResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x68 - 0x39]; // 39
+    Handle<physics::MaterialResource> defaultMaterial; // 68
+    DataBuffer collectionData; // 78
+    uint8_t unkA0[0xA8 - 0xA0]; // A0
+#else
     uint8_t unk40[0x68 - 0x40]; // 40
     Handle<physics::MaterialResource> defaultMaterial; // 68
     DataBuffer collectionData; // 78
     uint8_t unkA0[0xA8 - 0xA0]; // A0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MaterialLibraryResource, 0xA8);
+RED4EXT_ASSERT_OFFSET(MaterialLibraryResource, defaultMaterial, 0x68);
+RED4EXT_ASSERT_OFFSET(MaterialLibraryResource, collectionData, 0x78);
+#else
+RED4EXT_ASSERT_SIZE(MaterialLibraryResource, 0xA8);
+#endif
 } // namespace physics
 using physicsMaterialLibraryResource = physics::MaterialLibraryResource;
 } // namespace RED4ext

@@ -22,14 +22,30 @@ struct __declspec(align(0x10)) PhysicalTriggerComponent : ent::IPlacedComponent
     static constexpr const char* NAME = "entPhysicalTriggerComponent";
     static constexpr const char* ALIAS = "PhysicalTriggerComponent";
 
+#ifdef __APPLE__
+    uint8_t unk120[0x130 - 0x120]; // 120
+    Handle<physics::FilterData> filterData; // 130
+    physics::SimulationType simulationType; // 140
+    uint8_t unk141[0x150 - 0x141]; // 141
+    physics::TriggerShape shape; // 150
+    uint8_t unk180[0x188 - 0x180]; // 180
+#else
     uint8_t unk120[0x130 - 0x120]; // 120
     Handle<physics::FilterData> filterData; // 130
     physics::SimulationType simulationType; // 140
     uint8_t unk141[0x150 - 0x141]; // 141
     physics::TriggerShape shape; // 150
     uint8_t unk180[0x190 - 0x180]; // 180
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(PhysicalTriggerComponent, 0x190);
+RED4EXT_ASSERT_OFFSET(PhysicalTriggerComponent, filterData, 0x130);
+RED4EXT_ASSERT_OFFSET(PhysicalTriggerComponent, simulationType, 0x140);
+RED4EXT_ASSERT_OFFSET(PhysicalTriggerComponent, shape, 0x150);
+#else
+RED4EXT_ASSERT_SIZE(PhysicalTriggerComponent, 0x190);
+#endif
 } // namespace ent
 using entPhysicalTriggerComponent = ent::PhysicalTriggerComponent;
 using PhysicalTriggerComponent = ent::PhysicalTriggerComponent;

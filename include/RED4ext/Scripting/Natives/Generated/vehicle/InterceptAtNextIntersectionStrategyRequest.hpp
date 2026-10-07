@@ -17,10 +17,19 @@ struct InterceptAtNextIntersectionStrategyRequest : vehicle::BaseStrategyRequest
     static constexpr const char* NAME = "vehicleInterceptAtNextIntersectionStrategyRequest";
     static constexpr const char* ALIAS = "InterceptAtNextIntersectionStrategyRequest";
 
+#ifdef __APPLE__
+    float distancesToIntersectionRatio; // 54
+#else
     float distancesToIntersectionRatio; // 58
     uint8_t unk5C[0x60 - 0x5C]; // 5C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(InterceptAtNextIntersectionStrategyRequest, 0x58);
+RED4EXT_ASSERT_OFFSET(InterceptAtNextIntersectionStrategyRequest, distancesToIntersectionRatio, 0x54);
+#else
 RED4EXT_ASSERT_SIZE(InterceptAtNextIntersectionStrategyRequest, 0x60);
+#endif
 } // namespace vehicle
 using vehicleInterceptAtNextIntersectionStrategyRequest = vehicle::InterceptAtNextIntersectionStrategyRequest;
 using InterceptAtNextIntersectionStrategyRequest = vehicle::InterceptAtNextIntersectionStrategyRequest;

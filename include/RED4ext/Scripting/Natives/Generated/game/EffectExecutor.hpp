@@ -17,10 +17,19 @@ struct EffectExecutor : game::EffectNode
     static constexpr const char* NAME = "gameEffectExecutor";
     static constexpr const char* ALIAS = "EffectExecutor";
 
+#ifdef __APPLE__
+    bool usesHitCooldown; // 40
+#else
     bool usesHitCooldown; // 40
     uint8_t unk41[0x48 - 0x41]; // 41
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EffectExecutor, 0x48);
+RED4EXT_ASSERT_OFFSET(EffectExecutor, usesHitCooldown, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(EffectExecutor, 0x48);
+#endif
 } // namespace game
 using gameEffectExecutor = game::EffectExecutor;
 using EffectExecutor = game::EffectExecutor;

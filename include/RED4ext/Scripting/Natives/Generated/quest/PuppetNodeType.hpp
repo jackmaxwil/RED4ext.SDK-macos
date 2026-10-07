@@ -18,11 +18,22 @@ struct PuppetNodeType : quest::IRetNodeType
     static constexpr const char* NAME = "questPuppetNodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    game::EntityReference puppetRef; // 30
+    bool isPlayer; // 68
+#else
     game::EntityReference puppetRef; // 30
     bool isPlayer; // 68
     uint8_t unk69[0x70 - 0x69]; // 69
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(PuppetNodeType, 0x70);
+RED4EXT_ASSERT_OFFSET(PuppetNodeType, puppetRef, 0x30);
+RED4EXT_ASSERT_OFFSET(PuppetNodeType, isPlayer, 0x68);
+#else
+RED4EXT_ASSERT_SIZE(PuppetNodeType, 0x70);
+#endif
 } // namespace quest
 using questPuppetNodeType = quest::PuppetNodeType;
 } // namespace RED4ext

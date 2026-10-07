@@ -20,9 +20,19 @@ struct TrafficCollisionResource : CResource
     static constexpr const char* NAME = "worldTrafficCollisionResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<world::TrafficStaticCollisionData> data; // 40
+#else
+    Handle<world::TrafficStaticCollisionData> data; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TrafficCollisionResource, 0x50);
+RED4EXT_ASSERT_OFFSET(TrafficCollisionResource, data, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(TrafficCollisionResource, 0x50);
+#endif
 } // namespace world
 using worldTrafficCollisionResource = world::TrafficCollisionResource;
 } // namespace RED4ext

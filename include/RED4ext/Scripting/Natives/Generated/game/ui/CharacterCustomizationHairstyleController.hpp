@@ -17,8 +17,15 @@ struct CharacterCustomizationHairstyleController : game::ui::CharacterCustomizat
     static constexpr const char* NAME = "gameuiCharacterCustomizationHairstyleController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CharacterCustomizationHairstyleController, 0x118);
+#else
 RED4EXT_ASSERT_SIZE(CharacterCustomizationHairstyleController, 0x120);
+#endif
 } // namespace game::ui
 using gameuiCharacterCustomizationHairstyleController = game::ui::CharacterCustomizationHairstyleController;
 } // namespace RED4ext

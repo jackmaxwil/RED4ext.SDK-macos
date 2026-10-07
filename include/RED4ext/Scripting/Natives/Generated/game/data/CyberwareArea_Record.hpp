@@ -17,9 +17,17 @@ struct CyberwareArea_Record : game::data::EquipmentArea_Record
     static constexpr const char* NAME = "gamedataCyberwareArea_Record";
     static constexpr const char* ALIAS = "CyberwareArea_Record";
 
+#ifdef __APPLE__
+    uint8_t unk80[0x88 - 0x80]; // 80
+#else
     uint8_t unk80[0x90 - 0x80]; // 80
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CyberwareArea_Record, 0x88);
+#else
 RED4EXT_ASSERT_SIZE(CyberwareArea_Record, 0x90);
+#endif
 } // namespace game::data
 using gamedataCyberwareArea_Record = game::data::CyberwareArea_Record;
 using CyberwareArea_Record = game::data::CyberwareArea_Record;

@@ -17,9 +17,16 @@ struct State_SessionStreamingAware : gsm::State
     static constexpr const char* NAME = "gsmState_SessionStreamingAware";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unkB8[0xC0 - 0xB8]; // B8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(State_SessionStreamingAware, 0xB8);
+#else
 RED4EXT_ASSERT_SIZE(State_SessionStreamingAware, 0xC0);
+#endif
 } // namespace gsm
 using gsmState_SessionStreamingAware = gsm::State_SessionStreamingAware;
 } // namespace RED4ext

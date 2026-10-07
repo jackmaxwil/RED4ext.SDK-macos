@@ -17,8 +17,15 @@ struct AISquadJustSelfFilter_Record : game::data::AITicketFilter_Record
     static constexpr const char* NAME = "gamedataAISquadJustSelfFilter_Record";
     static constexpr const char* ALIAS = "AISquadJustSelfFilter_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadJustSelfFilter_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(AISquadJustSelfFilter_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataAISquadJustSelfFilter_Record = game::data::AISquadJustSelfFilter_Record;
 using AISquadJustSelfFilter_Record = game::data::AISquadJustSelfFilter_Record;

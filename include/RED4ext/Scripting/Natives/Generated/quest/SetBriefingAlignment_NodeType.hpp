@@ -18,10 +18,19 @@ struct SetBriefingAlignment_NodeType : quest::IUIManagerNodeType
     static constexpr const char* NAME = "questSetBriefingAlignment_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    quest::JournalAlignmentEventType briefingAlignment; // 34
+#else
     quest::JournalAlignmentEventType briefingAlignment; // 38
     uint8_t unk3C[0x40 - 0x3C]; // 3C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SetBriefingAlignment_NodeType, 0x38);
+RED4EXT_ASSERT_OFFSET(SetBriefingAlignment_NodeType, briefingAlignment, 0x34);
+#else
 RED4EXT_ASSERT_SIZE(SetBriefingAlignment_NodeType, 0x40);
+#endif
 } // namespace quest
 using questSetBriefingAlignment_NodeType = quest::SetBriefingAlignment_NodeType;
 } // namespace RED4ext

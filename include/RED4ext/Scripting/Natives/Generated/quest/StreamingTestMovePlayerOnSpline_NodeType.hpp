@@ -18,9 +18,19 @@ struct StreamingTestMovePlayerOnSpline_NodeType : quest::IWorldDataManagerNodeTy
     static constexpr const char* NAME = "questStreamingTestMovePlayerOnSpline_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     NodeRef splineRef; // 38
+#else
+    NodeRef splineRef; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(StreamingTestMovePlayerOnSpline_NodeType, 0x40);
+RED4EXT_ASSERT_OFFSET(StreamingTestMovePlayerOnSpline_NodeType, splineRef, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(StreamingTestMovePlayerOnSpline_NodeType, 0x40);
+#endif
 } // namespace quest
 using questStreamingTestMovePlayerOnSpline_NodeType = quest::StreamingTestMovePlayerOnSpline_NodeType;
 } // namespace RED4ext

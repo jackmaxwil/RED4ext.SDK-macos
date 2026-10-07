@@ -17,9 +17,17 @@ struct DebugPositionProvider : ent::IPositionProvider
     static constexpr const char* NAME = "entDebugPositionProvider";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk50[0x70 - 0x50]; // 50
+#else
     uint8_t unk50[0x90 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(DebugPositionProvider, 0x70);
+#else
 RED4EXT_ASSERT_SIZE(DebugPositionProvider, 0x90);
+#endif
 } // namespace ent
 using entDebugPositionProvider = ent::DebugPositionProvider;
 } // namespace RED4ext

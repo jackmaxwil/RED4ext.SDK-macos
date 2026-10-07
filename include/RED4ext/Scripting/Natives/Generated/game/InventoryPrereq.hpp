@@ -18,11 +18,22 @@ struct InventoryPrereq : game::IComparisonPrereq
     static constexpr const char* NAME = "gameInventoryPrereq";
     static constexpr const char* ALIAS = "InventoryPrereq";
 
+#ifdef __APPLE__
+    ItemID itemID; // 44
+    uint32_t amount; // 54
+#else
     ItemID itemID; // 48
     uint32_t amount; // 58
     uint8_t unk5C[0x60 - 0x5C]; // 5C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(InventoryPrereq, 0x58);
+RED4EXT_ASSERT_OFFSET(InventoryPrereq, itemID, 0x44);
+RED4EXT_ASSERT_OFFSET(InventoryPrereq, amount, 0x54);
+#else
 RED4EXT_ASSERT_SIZE(InventoryPrereq, 0x60);
+#endif
 } // namespace game
 using gameInventoryPrereq = game::InventoryPrereq;
 using InventoryPrereq = game::InventoryPrereq;

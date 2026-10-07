@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) DestructibleProxyMeshNodeInstance : world::Prefab
     static constexpr const char* NAME = "worldDestructibleProxyMeshNodeInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk110[0x120 - 0x110]; // 110
+#else
     uint8_t unk110[0x130 - 0x110]; // 110
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(DestructibleProxyMeshNodeInstance, 0x120);
+#else
 RED4EXT_ASSERT_SIZE(DestructibleProxyMeshNodeInstance, 0x130);
+#endif
 } // namespace world
 using worldDestructibleProxyMeshNodeInstance = world::DestructibleProxyMeshNodeInstance;
 } // namespace RED4ext

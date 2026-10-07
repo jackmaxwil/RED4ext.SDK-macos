@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) ShooterAIProp : game::ui::arcade::ShooterAIContro
     static constexpr const char* NAME = "gameuiarcadeShooterAIProp";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk270[0x280 - 0x270]; // 270
+#else
     uint8_t unk280[0x290 - 0x280]; // 280
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterAIProp, 0x280);
+#else
 RED4EXT_ASSERT_SIZE(ShooterAIProp, 0x290);
+#endif
 } // namespace game::ui::arcade
 using gameuiarcadeShooterAIProp = game::ui::arcade::ShooterAIProp;
 } // namespace RED4ext

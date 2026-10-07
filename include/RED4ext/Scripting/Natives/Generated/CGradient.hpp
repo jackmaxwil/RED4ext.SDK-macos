@@ -17,10 +17,21 @@ struct CGradient : CResource
     static constexpr const char* NAME = "CGradient";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<rend::GradientEntry> gradientEntries; // 40
     uint8_t unk50[0x60 - 0x50]; // 50
+#else
+    DynArray<rend::GradientEntry> gradientEntries; // 40
+    uint8_t unk50[0x60 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CGradient, 0x60);
+RED4EXT_ASSERT_OFFSET(CGradient, gradientEntries, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(CGradient, 0x60);
+#endif
 } // namespace RED4ext
 
 // clang-format on

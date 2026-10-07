@@ -20,9 +20,19 @@ struct WidgetBrushResource : CResource
     static constexpr const char* NAME = "inkWidgetBrushResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<ink::WidgetBrush> brush; // 40
+#else
+    Handle<ink::WidgetBrush> brush; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(WidgetBrushResource, 0x50);
+RED4EXT_ASSERT_OFFSET(WidgetBrushResource, brush, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(WidgetBrushResource, 0x50);
+#endif
 } // namespace ink
 using inkWidgetBrushResource = ink::WidgetBrushResource;
 } // namespace RED4ext

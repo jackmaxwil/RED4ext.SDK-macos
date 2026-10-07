@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) MinimapHazardWarningMappinController : game::ui::
     static constexpr const char* NAME = "gameuiMinimapHazardWarningMappinController";
     static constexpr const char* ALIAS = "MinimapHazardWarningMappinController";
 
+#ifdef __APPLE__
+    uint8_t unk224[0x240 - 0x224]; // 224
+#else
     uint8_t unk228[0x240 - 0x228]; // 228
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MinimapHazardWarningMappinController, 0x240);
+#else
+RED4EXT_ASSERT_SIZE(MinimapHazardWarningMappinController, 0x240);
+#endif
 } // namespace game::ui
 using gameuiMinimapHazardWarningMappinController = game::ui::MinimapHazardWarningMappinController;
 using MinimapHazardWarningMappinController = game::ui::MinimapHazardWarningMappinController;

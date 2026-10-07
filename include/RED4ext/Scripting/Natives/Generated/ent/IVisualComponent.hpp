@@ -18,13 +18,28 @@ struct __declspec(align(0x10)) IVisualComponent : ent::IPlacedComponent
     static constexpr const char* NAME = "entIVisualComponent";
     static constexpr const char* ALIAS = "IVisualComponent";
 
+#ifdef __APPLE__
+    float autoHideDistance; // 120
+    uint8_t unk124[0x125 - 0x124]; // 124
+    int8_t forceLODLevel; // 125
+    RenderSceneLayerMask renderSceneLayerMask; // 126
+    uint8_t unk127[0x13C - 0x127]; // 127
+#else
     float autoHideDistance; // 120
     uint8_t unk124[0x125 - 0x124]; // 124
     int8_t forceLODLevel; // 125
     RenderSceneLayerMask renderSceneLayerMask; // 126
     uint8_t unk127[0x140 - 0x127]; // 127
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(IVisualComponent, 0x140);
+RED4EXT_ASSERT_OFFSET(IVisualComponent, autoHideDistance, 0x120);
+RED4EXT_ASSERT_OFFSET(IVisualComponent, forceLODLevel, 0x125);
+RED4EXT_ASSERT_OFFSET(IVisualComponent, renderSceneLayerMask, 0x126);
+#else
+RED4EXT_ASSERT_SIZE(IVisualComponent, 0x140);
+#endif
 } // namespace ent
 using entIVisualComponent = ent::IVisualComponent;
 using IVisualComponent = ent::IVisualComponent;

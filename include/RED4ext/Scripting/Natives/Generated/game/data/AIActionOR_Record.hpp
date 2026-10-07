@@ -17,9 +17,17 @@ struct AIActionOR_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAIActionOR_Record";
     static constexpr const char* ALIAS = "AIActionOR_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIActionOR_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AIActionOR_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAIActionOR_Record = game::data::AIActionOR_Record;
 using AIActionOR_Record = game::data::AIActionOR_Record;

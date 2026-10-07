@@ -20,11 +20,24 @@ struct SelectCombatTargetTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorSelectCombatTargetTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> target; // 38
     bool targetClosest; // 48
     uint8_t unk49[0x50 - 0x49]; // 49
+#else
+    Handle<AI::ArgumentMapping> target; // 38
+    bool targetClosest; // 48
+    uint8_t unk49[0x50 - 0x49]; // 49
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SelectCombatTargetTaskDefinition, 0x50);
+RED4EXT_ASSERT_OFFSET(SelectCombatTargetTaskDefinition, target, 0x38);
+RED4EXT_ASSERT_OFFSET(SelectCombatTargetTaskDefinition, targetClosest, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(SelectCombatTargetTaskDefinition, 0x50);
+#endif
 } // namespace AI::behavior
 using AIbehaviorSelectCombatTargetTaskDefinition = AI::behavior::SelectCombatTargetTaskDefinition;
 } // namespace RED4ext

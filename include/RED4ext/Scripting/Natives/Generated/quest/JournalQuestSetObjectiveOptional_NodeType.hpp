@@ -17,10 +17,20 @@ struct JournalQuestSetObjectiveOptional_NodeType : quest::IJournal_NodeType
     static constexpr const char* NAME = "questJournalQuestSetObjectiveOptional_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool optional; // 4C
+    uint8_t unk4D[0x50 - 0x4D]; // 4D
+#else
     bool optional; // 50
     uint8_t unk51[0x58 - 0x51]; // 51
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(JournalQuestSetObjectiveOptional_NodeType, 0x50);
+RED4EXT_ASSERT_OFFSET(JournalQuestSetObjectiveOptional_NodeType, optional, 0x4C);
+#else
 RED4EXT_ASSERT_SIZE(JournalQuestSetObjectiveOptional_NodeType, 0x58);
+#endif
 } // namespace quest
 using questJournalQuestSetObjectiveOptional_NodeType = quest::JournalQuestSetObjectiveOptional_NodeType;
 } // namespace RED4ext

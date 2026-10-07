@@ -19,9 +19,19 @@ struct ArchetypeSet : CResource
     static constexpr const char* NAME = "AIArchetypeSet";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<AI::ArchetypeSetEntry> archetypeResources; // 40
+#else
+    DynArray<AI::ArchetypeSetEntry> archetypeResources; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ArchetypeSet, 0x50);
+RED4EXT_ASSERT_OFFSET(ArchetypeSet, archetypeResources, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(ArchetypeSet, 0x50);
+#endif
 } // namespace AI
 using AIArchetypeSet = AI::ArchetypeSet;
 } // namespace RED4ext

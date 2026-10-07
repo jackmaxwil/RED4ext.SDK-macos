@@ -18,9 +18,19 @@ struct SvgResource : CResource
     static constexpr const char* NAME = "SvgResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<vg::VectorGraphicDefinition> vectorGraphicDef; // 40
+#else
+    Handle<vg::VectorGraphicDefinition> vectorGraphicDef; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SvgResource, 0x50);
+RED4EXT_ASSERT_OFFSET(SvgResource, vectorGraphicDef, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(SvgResource, 0x50);
+#endif
 } // namespace RED4ext
 
 // clang-format on

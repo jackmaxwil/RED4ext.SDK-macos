@@ -17,9 +17,17 @@ struct ThreatDistanceCoverSelection : AI::CoverSelectionParameters
     static constexpr const char* NAME = "AIThreatDistanceCoverSelection";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk10[0x28 - 0x10]; // 10
+#else
     uint8_t unk10[0x30 - 0x10]; // 10
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ThreatDistanceCoverSelection, 0x28);
+#else
 RED4EXT_ASSERT_SIZE(ThreatDistanceCoverSelection, 0x30);
+#endif
 } // namespace AI
 using AIThreatDistanceCoverSelection = AI::ThreatDistanceCoverSelection;
 } // namespace RED4ext

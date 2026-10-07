@@ -17,6 +17,17 @@ struct ActionReplicatedState
     static constexpr const char* NAME = "gameActionReplicatedState";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk00[0x8 - 0x0]; // 0
+    uint32_t replicationId; // 08
+    uint16_t type; // 0C
+    uint8_t unk0E[0x10 - 0xE]; // E
+    net::Time startTimeStamp; // 10
+    net::Time stopTimeStamp; // 18
+    uint8_t updateBucket; // 20
+    uint8_t unk21[0x24 - 0x21]; // 21
+    ~ActionReplicatedState() {} // non-POD, so clang reuses the tail padding like the game
+#else
     uint8_t unk00[0x8 - 0x0]; // 0
     uint32_t replicationId; // 08
     uint16_t type; // 0C
@@ -25,8 +36,18 @@ struct ActionReplicatedState
     net::Time stopTimeStamp; // 18
     uint8_t updateBucket; // 20
     uint8_t unk21[0x28 - 0x21]; // 21
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ActionReplicatedState, 0x28);
+RED4EXT_ASSERT_OFFSET(ActionReplicatedState, replicationId, 0x8);
+RED4EXT_ASSERT_OFFSET(ActionReplicatedState, type, 0xC);
+RED4EXT_ASSERT_OFFSET(ActionReplicatedState, startTimeStamp, 0x10);
+RED4EXT_ASSERT_OFFSET(ActionReplicatedState, stopTimeStamp, 0x18);
+RED4EXT_ASSERT_OFFSET(ActionReplicatedState, updateBucket, 0x20);
+#else
+RED4EXT_ASSERT_SIZE(ActionReplicatedState, 0x28);
+#endif
 } // namespace game
 using gameActionReplicatedState = game::ActionReplicatedState;
 } // namespace RED4ext

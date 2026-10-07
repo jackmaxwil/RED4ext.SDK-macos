@@ -17,9 +17,16 @@ struct __declspec(align(0x10)) StaticMarkerNodeInstance : world::SocketNodeInsta
     static constexpr const char* NAME = "worldStaticMarkerNodeInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unkA0[0xB0 - 0xA0]; // A0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(StaticMarkerNodeInstance, 0xA0);
+#else
 RED4EXT_ASSERT_SIZE(StaticMarkerNodeInstance, 0xB0);
+#endif
 } // namespace world
 using worldStaticMarkerNodeInstance = world::StaticMarkerNodeInstance;
 } // namespace RED4ext

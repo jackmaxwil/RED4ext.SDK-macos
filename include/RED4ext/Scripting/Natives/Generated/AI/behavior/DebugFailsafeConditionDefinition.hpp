@@ -20,9 +20,19 @@ struct DebugFailsafeConditionDefinition : AI::behavior::ConditionDefinition
     static constexpr const char* NAME = "AIbehaviorDebugFailsafeConditionDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<AI::ArgumentMapping> logMessage; // 38
+#else
+    Handle<AI::ArgumentMapping> logMessage; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(DebugFailsafeConditionDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(DebugFailsafeConditionDefinition, logMessage, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(DebugFailsafeConditionDefinition, 0x48);
+#endif
 } // namespace AI::behavior
 using AIbehaviorDebugFailsafeConditionDefinition = AI::behavior::DebugFailsafeConditionDefinition;
 } // namespace RED4ext

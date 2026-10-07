@@ -18,12 +18,27 @@ struct __declspec(align(0x10)) DriveToPointAutonomousUpdate : AI::DriveCommandUp
     static constexpr const char* NAME = "AIDriveToPointAutonomousUpdate";
     static constexpr const char* ALIAS = "DriveToPointAutonomousUpdate";
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     Vector4 targetPosition; // 50
     float minimumDistanceToTarget; // 60
     bool driveDownTheRoadIndefinitely; // 64
     uint8_t unk65[0x70 - 0x65]; // 65
+#else
+    Vector4 targetPosition; // 50
+    float minimumDistanceToTarget; // 60
+    bool driveDownTheRoadIndefinitely; // 64
+    uint8_t unk65[0x70 - 0x65]; // 65
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(DriveToPointAutonomousUpdate, 0x70);
+RED4EXT_ASSERT_OFFSET(DriveToPointAutonomousUpdate, targetPosition, 0x50);
+RED4EXT_ASSERT_OFFSET(DriveToPointAutonomousUpdate, minimumDistanceToTarget, 0x60);
+RED4EXT_ASSERT_OFFSET(DriveToPointAutonomousUpdate, driveDownTheRoadIndefinitely, 0x64);
+#else
+RED4EXT_ASSERT_SIZE(DriveToPointAutonomousUpdate, 0x70);
+#endif
 } // namespace AI
 using AIDriveToPointAutonomousUpdate = AI::DriveToPointAutonomousUpdate;
 using DriveToPointAutonomousUpdate = AI::DriveToPointAutonomousUpdate;

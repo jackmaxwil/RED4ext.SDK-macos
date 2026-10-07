@@ -19,10 +19,22 @@ struct AnimNode_CurveFloatValue : anim::AnimNode_FloatValue
     static constexpr const char* NAME = "animAnimNode_CurveFloatValue";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     CurveData<float> curveData; // 48
     anim::FloatLink argument; // 80
+#else
+    CurveData<float> curveData; // 48
+    anim::FloatLink argument; // 80
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_CurveFloatValue, 0xA0);
+RED4EXT_ASSERT_OFFSET(AnimNode_CurveFloatValue, curveData, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_CurveFloatValue, argument, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_CurveFloatValue, 0xA0);
+#endif
 } // namespace anim
 using animAnimNode_CurveFloatValue = anim::AnimNode_CurveFloatValue;
 } // namespace RED4ext

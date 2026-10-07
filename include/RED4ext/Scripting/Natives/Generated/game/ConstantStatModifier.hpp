@@ -17,9 +17,16 @@ struct ConstantStatModifier : game::StatModifierBase
     static constexpr const char* NAME = "gameConstantStatModifier";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unk18[0x20 - 0x18]; // 18
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ConstantStatModifier, 0x18);
+#else
 RED4EXT_ASSERT_SIZE(ConstantStatModifier, 0x20);
+#endif
 } // namespace game
 using gameConstantStatModifier = game::ConstantStatModifier;
 } // namespace RED4ext

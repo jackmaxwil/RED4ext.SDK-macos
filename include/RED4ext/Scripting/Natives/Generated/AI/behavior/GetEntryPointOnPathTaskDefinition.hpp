@@ -20,11 +20,25 @@ struct GetEntryPointOnPathTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorGetEntryPointOnPathTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> patrolProgress; // 38
     Handle<AI::ArgumentMapping> positionOnPath; // 48
     Handle<AI::ArgumentMapping> entryTangent; // 58
+#else
+    Handle<AI::ArgumentMapping> patrolProgress; // 38
+    Handle<AI::ArgumentMapping> positionOnPath; // 48
+    Handle<AI::ArgumentMapping> entryTangent; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(GetEntryPointOnPathTaskDefinition, 0x68);
+RED4EXT_ASSERT_OFFSET(GetEntryPointOnPathTaskDefinition, patrolProgress, 0x38);
+RED4EXT_ASSERT_OFFSET(GetEntryPointOnPathTaskDefinition, positionOnPath, 0x48);
+RED4EXT_ASSERT_OFFSET(GetEntryPointOnPathTaskDefinition, entryTangent, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(GetEntryPointOnPathTaskDefinition, 0x68);
+#endif
 } // namespace AI::behavior
 using AIbehaviorGetEntryPointOnPathTaskDefinition = AI::behavior::GetEntryPointOnPathTaskDefinition;
 } // namespace RED4ext

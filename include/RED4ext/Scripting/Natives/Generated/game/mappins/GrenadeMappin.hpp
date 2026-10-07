@@ -17,8 +17,15 @@ struct GrenadeMappin : game::mappins::RuntimeMappin
     static constexpr const char* NAME = "gamemappinsGrenadeMappin";
     static constexpr const char* ALIAS = "GrenadeMappin";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(GrenadeMappin, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(GrenadeMappin, 0x108);
+#endif
 } // namespace game::mappins
 using gamemappinsGrenadeMappin = game::mappins::GrenadeMappin;
 using GrenadeMappin = game::mappins::GrenadeMappin;

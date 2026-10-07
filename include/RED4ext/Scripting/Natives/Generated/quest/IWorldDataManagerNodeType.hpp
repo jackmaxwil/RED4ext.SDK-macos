@@ -17,9 +17,17 @@ struct IWorldDataManagerNodeType : quest::IRetNodeType
     static constexpr const char* NAME = "questIWorldDataManagerNodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk30[0x34 - 0x30]; // 30
+#else
     uint8_t unk30[0x38 - 0x30]; // 30
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(IWorldDataManagerNodeType, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(IWorldDataManagerNodeType, 0x38);
+#endif
 } // namespace quest
 using questIWorldDataManagerNodeType = quest::IWorldDataManagerNodeType;
 } // namespace RED4ext

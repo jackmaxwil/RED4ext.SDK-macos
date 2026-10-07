@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) RagdollComponent : ent::IComponent
     static constexpr const char* NAME = "entRagdollComponent";
     static constexpr const char* ALIAS = "RagdollComponent";
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x220 - 0x8D]; // 8D
+#else
     uint8_t unk90[0x220 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RagdollComponent, 0x220);
+#else
+RED4EXT_ASSERT_SIZE(RagdollComponent, 0x220);
+#endif
 } // namespace ent
 using entRagdollComponent = ent::RagdollComponent;
 using RagdollComponent = ent::RagdollComponent;

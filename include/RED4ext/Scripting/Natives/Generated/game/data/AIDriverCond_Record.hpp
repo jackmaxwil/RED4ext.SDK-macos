@@ -17,9 +17,17 @@ struct AIDriverCond_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAIDriverCond_Record";
     static constexpr const char* ALIAS = "AIDriverCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIDriverCond_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AIDriverCond_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAIDriverCond_Record = game::data::AIDriverCond_Record;
 using AIDriverCond_Record = game::data::AIDriverCond_Record;

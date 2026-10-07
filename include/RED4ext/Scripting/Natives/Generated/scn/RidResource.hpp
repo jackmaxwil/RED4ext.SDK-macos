@@ -21,12 +21,28 @@ struct RidResource : CResource
     static constexpr const char* NAME = "scnRidResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<scn::ActorRid> actors; // 40
     DynArray<scn::CameraRid> cameras; // 50
     scn::RidSerialNumber nextSerialNumber; // 60
     uint32_t version; // 64
+#else
+    DynArray<scn::ActorRid> actors; // 40
+    DynArray<scn::CameraRid> cameras; // 50
+    scn::RidSerialNumber nextSerialNumber; // 60
+    uint32_t version; // 64
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RidResource, 0x68);
+RED4EXT_ASSERT_OFFSET(RidResource, actors, 0x40);
+RED4EXT_ASSERT_OFFSET(RidResource, cameras, 0x50);
+RED4EXT_ASSERT_OFFSET(RidResource, nextSerialNumber, 0x60);
+RED4EXT_ASSERT_OFFSET(RidResource, version, 0x64);
+#else
+RED4EXT_ASSERT_SIZE(RidResource, 0x68);
+#endif
 } // namespace scn
 using scnRidResource = scn::RidResource;
 } // namespace RED4ext

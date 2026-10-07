@@ -25,6 +25,8 @@ struct AISpotNode : world::SocketNode
     static constexpr const char* NAME = "worldAISpotNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x38 - 0x32]; // 32
     Handle<world::TrafficSpotDefinition> spotDef; // 38
     Handle<AI::Spot> spot; // 48
     DynArray<CName> markings; // 58
@@ -37,8 +39,37 @@ struct AISpotNode : world::SocketNode
     bool disableBumps; // 8C
     uint8_t unk8D[0x90 - 0x8D]; // 8D
     NodeRef lookAtTarget; // 90
+#else
+    Handle<world::TrafficSpotDefinition> spotDef; // 38
+    Handle<AI::Spot> spot; // 48
+    DynArray<CName> markings; // 58
+    red::TagList crowdWhitelist; // 68
+    red::TagList crowdBlacklist; // 78
+    bool useCrowdWhitelist; // 88
+    bool useCrowdBlacklist; // 89
+    bool isWorkspotInfinite; // 8A
+    bool isWorkspotStatic; // 8B
+    bool disableBumps; // 8C
+    uint8_t unk8D[0x90 - 0x8D]; // 8D
+    NodeRef lookAtTarget; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AISpotNode, 0x98);
+RED4EXT_ASSERT_OFFSET(AISpotNode, spotDef, 0x38);
+RED4EXT_ASSERT_OFFSET(AISpotNode, spot, 0x48);
+RED4EXT_ASSERT_OFFSET(AISpotNode, markings, 0x58);
+RED4EXT_ASSERT_OFFSET(AISpotNode, crowdWhitelist, 0x68);
+RED4EXT_ASSERT_OFFSET(AISpotNode, crowdBlacklist, 0x78);
+RED4EXT_ASSERT_OFFSET(AISpotNode, useCrowdWhitelist, 0x88);
+RED4EXT_ASSERT_OFFSET(AISpotNode, useCrowdBlacklist, 0x89);
+RED4EXT_ASSERT_OFFSET(AISpotNode, isWorkspotInfinite, 0x8A);
+RED4EXT_ASSERT_OFFSET(AISpotNode, isWorkspotStatic, 0x8B);
+RED4EXT_ASSERT_OFFSET(AISpotNode, disableBumps, 0x8C);
+RED4EXT_ASSERT_OFFSET(AISpotNode, lookAtTarget, 0x90);
+#else
+RED4EXT_ASSERT_SIZE(AISpotNode, 0x98);
+#endif
 } // namespace world
 using worldAISpotNode = world::AISpotNode;
 } // namespace RED4ext

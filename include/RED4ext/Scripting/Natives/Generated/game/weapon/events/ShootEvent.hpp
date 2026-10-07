@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) ShootEvent : red::Event
     static constexpr const char* NAME = "gameweaponeventsShootEvent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk40[0x1A0 - 0x40]; // 40
+#else
     uint8_t unk40[0x1E0 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShootEvent, 0x1A0);
+#else
 RED4EXT_ASSERT_SIZE(ShootEvent, 0x1E0);
+#endif
 } // namespace game::weapon::events
 using gameweaponeventsShootEvent = game::weapon::events::ShootEvent;
 } // namespace RED4ext

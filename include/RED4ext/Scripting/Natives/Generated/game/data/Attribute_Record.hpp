@@ -17,9 +17,17 @@ struct Attribute_Record : game::data::Stat_Record
     static constexpr const char* NAME = "gamedataAttribute_Record";
     static constexpr const char* ALIAS = "Attribute_Record";
 
+#ifdef __APPLE__
+    uint8_t unk140[0x148 - 0x140]; // 140
+#else
     uint8_t unk140[0x150 - 0x140]; // 140
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Attribute_Record, 0x148);
+#else
 RED4EXT_ASSERT_SIZE(Attribute_Record, 0x150);
+#endif
 } // namespace game::data
 using gamedataAttribute_Record = game::data::Attribute_Record;
 using Attribute_Record = game::data::Attribute_Record;

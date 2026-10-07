@@ -18,10 +18,19 @@ struct IComparisonPrereq : game::IPrereq
     static constexpr const char* NAME = "gameIComparisonPrereq";
     static constexpr const char* ALIAS = "IComparisonPrereq";
 
+#ifdef __APPLE__
+    game::ComparisonType comparisonType; // 40
+#else
     game::ComparisonType comparisonType; // 40
     uint8_t unk44[0x48 - 0x44]; // 44
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(IComparisonPrereq, 0x48);
+RED4EXT_ASSERT_OFFSET(IComparisonPrereq, comparisonType, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(IComparisonPrereq, 0x48);
+#endif
 } // namespace game
 using gameIComparisonPrereq = game::IComparisonPrereq;
 using IComparisonPrereq = game::IComparisonPrereq;

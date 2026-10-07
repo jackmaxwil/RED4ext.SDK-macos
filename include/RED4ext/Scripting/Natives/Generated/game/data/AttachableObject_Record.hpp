@@ -17,8 +17,15 @@ struct AttachableObject_Record : game::data::SpawnableObject_Record
     static constexpr const char* NAME = "gamedataAttachableObject_Record";
     static constexpr const char* ALIAS = "AttachableObject_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AttachableObject_Record, 0xF0);
+#else
 RED4EXT_ASSERT_SIZE(AttachableObject_Record, 0xF8);
+#endif
 } // namespace game::data
 using gamedataAttachableObject_Record = game::data::AttachableObject_Record;
 using AttachableObject_Record = game::data::AttachableObject_Record;

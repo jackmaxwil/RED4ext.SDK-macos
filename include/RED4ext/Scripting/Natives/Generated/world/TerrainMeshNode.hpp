@@ -21,11 +21,23 @@ struct TerrainMeshNode : world::Node
     static constexpr const char* NAME = "worldTerrainMeshNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x48 - 0x32]; // 32
+    Handle<CMesh> mesh; // 48
+    RaRef<CMesh> meshRef; // 58
+#else
     uint8_t unk38[0x48 - 0x38]; // 38
     Handle<CMesh> mesh; // 48
     RaRef<CMesh> meshRef; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TerrainMeshNode, 0x60);
+RED4EXT_ASSERT_OFFSET(TerrainMeshNode, mesh, 0x48);
+RED4EXT_ASSERT_OFFSET(TerrainMeshNode, meshRef, 0x58);
+#else
+RED4EXT_ASSERT_SIZE(TerrainMeshNode, 0x60);
+#endif
 } // namespace world
 using worldTerrainMeshNode = world::TerrainMeshNode;
 } // namespace RED4ext

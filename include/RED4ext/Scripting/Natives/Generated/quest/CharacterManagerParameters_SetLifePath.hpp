@@ -18,9 +18,20 @@ struct CharacterManagerParameters_SetLifePath : quest::ICharacterManagerParamete
     static constexpr const char* NAME = "questCharacterManagerParameters_SetLifePath";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk69[0x6C - 0x69]; // 69
+    TweakDBID lifePathID; // 6C
+    uint8_t unk74[0x78 - 0x74]; // 74
+#else
     TweakDBID lifePathID; // 70
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CharacterManagerParameters_SetLifePath, 0x78);
+RED4EXT_ASSERT_OFFSET(CharacterManagerParameters_SetLifePath, lifePathID, 0x6C);
+#else
+RED4EXT_ASSERT_SIZE(CharacterManagerParameters_SetLifePath, 0x78);
+#endif
 } // namespace quest
 using questCharacterManagerParameters_SetLifePath = quest::CharacterManagerParameters_SetLifePath;
 } // namespace RED4ext

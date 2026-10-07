@@ -20,9 +20,19 @@ struct TagObjectRequest : game::ScriptableSystemRequest
     static constexpr const char* NAME = "gameTagObjectRequest";
     static constexpr const char* ALIAS = "TagObjectRequest";
 
+#ifdef __APPLE__
+    uint8_t unk45[0x48 - 0x45]; // 45
     WeakHandle<game::Object> object; // 48
+#else
+    WeakHandle<game::Object> object; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TagObjectRequest, 0x58);
+RED4EXT_ASSERT_OFFSET(TagObjectRequest, object, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(TagObjectRequest, 0x58);
+#endif
 } // namespace game
 using gameTagObjectRequest = game::TagObjectRequest;
 using TagObjectRequest = game::TagObjectRequest;

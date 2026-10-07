@@ -17,10 +17,20 @@ struct JournalPushPopQuestObjective_NodeType : quest::IJournal_NodeType
     static constexpr const char* NAME = "questJournalPushPopQuestObjective_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool restore; // 4C
+    uint8_t unk4D[0x50 - 0x4D]; // 4D
+#else
     bool restore; // 50
     uint8_t unk51[0x58 - 0x51]; // 51
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(JournalPushPopQuestObjective_NodeType, 0x50);
+RED4EXT_ASSERT_OFFSET(JournalPushPopQuestObjective_NodeType, restore, 0x4C);
+#else
 RED4EXT_ASSERT_SIZE(JournalPushPopQuestObjective_NodeType, 0x58);
+#endif
 } // namespace quest
 using questJournalPushPopQuestObjective_NodeType = quest::JournalPushPopQuestObjective_NodeType;
 } // namespace RED4ext

@@ -17,10 +17,19 @@ struct NodeDefinition : graph::GraphNodeDefinition
     static constexpr const char* NAME = "questNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint16_t id; // 40
+#else
     uint16_t id; // 40
     uint8_t unk42[0x48 - 0x42]; // 42
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(NodeDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(NodeDefinition, id, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(NodeDefinition, 0x48);
+#endif
 } // namespace quest
 using questNodeDefinition = quest::NodeDefinition;
 } // namespace RED4ext

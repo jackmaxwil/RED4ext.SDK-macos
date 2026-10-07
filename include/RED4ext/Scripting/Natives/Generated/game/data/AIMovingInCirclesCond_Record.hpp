@@ -17,9 +17,17 @@ struct AIMovingInCirclesCond_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAIMovingInCirclesCond_Record";
     static constexpr const char* ALIAS = "AIMovingInCirclesCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x78 - 0x58]; // 58
+#else
     uint8_t unk58[0x80 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIMovingInCirclesCond_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(AIMovingInCirclesCond_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataAIMovingInCirclesCond_Record = game::data::AIMovingInCirclesCond_Record;
 using AIMovingInCirclesCond_Record = game::data::AIMovingInCirclesCond_Record;

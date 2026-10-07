@@ -17,9 +17,17 @@ struct TutorialPopupGameController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiTutorialPopupGameController";
     static constexpr const char* ALIAS = "TutorialPopupGameController";
 
+#ifdef __APPLE__
+    uint8_t unkDC[0xE0 - 0xDC]; // DC
+#else
     uint8_t unkE0[0xE8 - 0xE0]; // E0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TutorialPopupGameController, 0xE0);
+#else
 RED4EXT_ASSERT_SIZE(TutorialPopupGameController, 0xE8);
+#endif
 } // namespace game::ui
 using gameuiTutorialPopupGameController = game::ui::TutorialPopupGameController;
 using TutorialPopupGameController = game::ui::TutorialPopupGameController;

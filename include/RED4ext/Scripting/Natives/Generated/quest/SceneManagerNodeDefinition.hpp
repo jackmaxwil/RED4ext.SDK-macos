@@ -20,9 +20,19 @@ struct SceneManagerNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questSceneManagerNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::ISceneManagerNodeType> type; // 48
+#else
+    Handle<quest::ISceneManagerNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SceneManagerNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(SceneManagerNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(SceneManagerNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questSceneManagerNodeDefinition = quest::SceneManagerNodeDefinition;
 } // namespace RED4ext

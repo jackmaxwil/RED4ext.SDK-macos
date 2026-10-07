@@ -20,9 +20,19 @@ struct MultiplayerHeistNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questMultiplayerHeistNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IMultiplayerHeistNodeType> type; // 48
+#else
+    Handle<quest::IMultiplayerHeistNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MultiplayerHeistNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(MultiplayerHeistNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(MultiplayerHeistNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questMultiplayerHeistNodeDefinition = quest::MultiplayerHeistNodeDefinition;
 } // namespace RED4ext

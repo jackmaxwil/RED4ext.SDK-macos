@@ -17,9 +17,17 @@ struct Vehicle_Record : game::data::SpawnableObject_Record
     static constexpr const char* NAME = "gamedataVehicle_Record";
     static constexpr const char* ALIAS = "Vehicle_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x5F8 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x600 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Vehicle_Record, 0x5F8);
+#else
 RED4EXT_ASSERT_SIZE(Vehicle_Record, 0x600);
+#endif
 } // namespace game::data
 using gamedataVehicle_Record = game::data::Vehicle_Record;
 using Vehicle_Record = game::data::Vehicle_Record;

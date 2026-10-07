@@ -20,6 +20,22 @@ struct StaticFogVolumeNode : world::Node
     static constexpr const char* NAME = "worldStaticFogVolumeNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x34 - 0x32]; // 32
+    float blendFalloff; // 34
+    float densityFalloff; // 38
+    float densityFactor; // 3C
+    float streamingDistance; // 40
+    float ambientScale; // 44
+    float absorption; // 48
+    Color color; // 4C
+    uint8_t priority; // 50
+    bool absolute; // 51
+    bool applyHeightFalloff; // 52
+    EEnvColorGroup envColorGroup; // 53
+    rend::LightChannel lightChannels; // 54
+    uint8_t unk56[0x58 - 0x56]; // 56
+#else
     float blendFalloff; // 38
     float densityFalloff; // 3C
     float densityFactor; // 40
@@ -33,8 +49,25 @@ struct StaticFogVolumeNode : world::Node
     EEnvColorGroup envColorGroup; // 57
     rend::LightChannel lightChannels; // 58
     uint8_t unk5A[0x60 - 0x5A]; // 5A
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(StaticFogVolumeNode, 0x58);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, blendFalloff, 0x34);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, densityFalloff, 0x38);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, densityFactor, 0x3C);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, streamingDistance, 0x40);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, ambientScale, 0x44);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, absorption, 0x48);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, color, 0x4C);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, priority, 0x50);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, absolute, 0x51);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, applyHeightFalloff, 0x52);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, envColorGroup, 0x53);
+RED4EXT_ASSERT_OFFSET(StaticFogVolumeNode, lightChannels, 0x54);
+#else
 RED4EXT_ASSERT_SIZE(StaticFogVolumeNode, 0x60);
+#endif
 } // namespace world
 using worldStaticFogVolumeNode = world::StaticFogVolumeNode;
 } // namespace RED4ext

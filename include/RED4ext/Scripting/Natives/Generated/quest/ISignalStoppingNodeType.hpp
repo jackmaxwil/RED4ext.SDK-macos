@@ -17,9 +17,17 @@ struct ISignalStoppingNodeType : quest::IRetNodeType
     static constexpr const char* NAME = "questISignalStoppingNodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk30[0x34 - 0x30]; // 30
+#else
     uint8_t unk30[0x38 - 0x30]; // 30
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ISignalStoppingNodeType, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(ISignalStoppingNodeType, 0x38);
+#endif
 } // namespace quest
 using questISignalStoppingNodeType = quest::ISignalStoppingNodeType;
 } // namespace RED4ext

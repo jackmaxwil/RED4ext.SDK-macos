@@ -18,9 +18,19 @@ struct ClearForcedBehavioursNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questClearForcedBehavioursNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference puppet; // 48
+#else
+    game::EntityReference puppet; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ClearForcedBehavioursNodeDefinition, 0x80);
+RED4EXT_ASSERT_OFFSET(ClearForcedBehavioursNodeDefinition, puppet, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(ClearForcedBehavioursNodeDefinition, 0x80);
+#endif
 } // namespace quest
 using questClearForcedBehavioursNodeDefinition = quest::ClearForcedBehavioursNodeDefinition;
 } // namespace RED4ext

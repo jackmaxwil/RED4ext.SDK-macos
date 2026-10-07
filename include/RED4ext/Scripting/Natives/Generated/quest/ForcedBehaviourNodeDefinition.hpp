@@ -22,11 +22,25 @@ struct ForcedBehaviourNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questForcedBehaviourNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::ForcedBehaviorReference> tree; // 48
     game::EntityReference puppet; // 58
     Handle<AI::behavior::ParameterizedBehavior> behavior; // 90
+#else
+    Handle<quest::ForcedBehaviorReference> tree; // 48
+    game::EntityReference puppet; // 58
+    Handle<AI::behavior::ParameterizedBehavior> behavior; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ForcedBehaviourNodeDefinition, 0xA0);
+RED4EXT_ASSERT_OFFSET(ForcedBehaviourNodeDefinition, tree, 0x48);
+RED4EXT_ASSERT_OFFSET(ForcedBehaviourNodeDefinition, puppet, 0x58);
+RED4EXT_ASSERT_OFFSET(ForcedBehaviourNodeDefinition, behavior, 0x90);
+#else
+RED4EXT_ASSERT_SIZE(ForcedBehaviourNodeDefinition, 0xA0);
+#endif
 } // namespace quest
 using questForcedBehaviourNodeDefinition = quest::ForcedBehaviourNodeDefinition;
 } // namespace RED4ext

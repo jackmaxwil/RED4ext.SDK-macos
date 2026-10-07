@@ -17,9 +17,17 @@ struct DelayedTimer : game::BaseTimer
     static constexpr const char* NAME = "gameDelayedTimer";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk70[0x78 - 0x70]; // 70
+#else
     uint8_t unk90[0x98 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(DelayedTimer, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(DelayedTimer, 0x98);
+#endif
 } // namespace game
 using gameDelayedTimer = game::DelayedTimer;
 } // namespace RED4ext

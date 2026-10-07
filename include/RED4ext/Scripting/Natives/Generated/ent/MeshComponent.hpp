@@ -28,6 +28,33 @@ struct __declspec(align(0x10)) MeshComponent : ent::IVisualComponent
     static constexpr const char* NAME = "entMeshComponent";
     static constexpr const char* ALIAS = "MeshComponent";
 
+#ifdef __APPLE__
+    uint8_t unk13C[0x150 - 0x13C]; // 13C
+    RaRef<CMesh> mesh; // 150
+    uint8_t unk158[0x178 - 0x158]; // 158
+    Vector3 visualScale; // 178
+    ERenderingPlane renderingPlane; // 184
+    ERenderObjectType objectTypeID; // 188
+    uint8_t unk189[0x190 - 0x189]; // 189
+    CName meshAppearance; // 190
+    uint64_t chunkMask; // 198
+    uint32_t numInstances; // 1A0
+    float motionBlurScale; // 1A4
+    ent::MeshComponentLODMode LODMode; // 1A8
+    uint8_t unk1A9[0x1AB - 0x1A9]; // 1A9
+    uint8_t order; // 1AB
+    shadows::ShadowCastingMode castShadows; // 1AC
+    shadows::ShadowCastingMode castLocalShadows; // 1AD
+    shadows::ShadowCastingMode castRayTracedGlobalShadows; // 1AE
+    shadows::ShadowCastingMode castRayTracedLocalShadows; // 1AF
+    uint8_t unk1B0[0x1B2 - 0x1B0]; // 1B0
+    ent::ForcedLodDistance forcedLodDistance; // 1B2
+    uint8_t unk1B3[0x1D1 - 0x1B3]; // 1B3
+    bool overrideMeshNavigationImpact; // 1D1
+    NavGenNavigationSetting navigationImpact; // 1D2
+    uint8_t version; // 1D4
+    uint8_t unk1D5[0x1D8 - 0x1D5]; // 1D5
+#else
     uint8_t unk140[0x150 - 0x140]; // 140
     RaRef<CMesh> mesh; // 150
     uint8_t unk158[0x178 - 0x158]; // 158
@@ -53,8 +80,31 @@ struct __declspec(align(0x10)) MeshComponent : ent::IVisualComponent
     NavGenNavigationSetting navigationImpact; // 1D2
     uint8_t version; // 1D4
     uint8_t unk1D5[0x1E0 - 0x1D5]; // 1D5
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MeshComponent, 0x1E0);
+RED4EXT_ASSERT_OFFSET(MeshComponent, mesh, 0x150);
+RED4EXT_ASSERT_OFFSET(MeshComponent, visualScale, 0x178);
+RED4EXT_ASSERT_OFFSET(MeshComponent, renderingPlane, 0x184);
+RED4EXT_ASSERT_OFFSET(MeshComponent, objectTypeID, 0x188);
+RED4EXT_ASSERT_OFFSET(MeshComponent, meshAppearance, 0x190);
+RED4EXT_ASSERT_OFFSET(MeshComponent, chunkMask, 0x198);
+RED4EXT_ASSERT_OFFSET(MeshComponent, numInstances, 0x1A0);
+RED4EXT_ASSERT_OFFSET(MeshComponent, motionBlurScale, 0x1A4);
+RED4EXT_ASSERT_OFFSET(MeshComponent, LODMode, 0x1A8);
+RED4EXT_ASSERT_OFFSET(MeshComponent, order, 0x1AB);
+RED4EXT_ASSERT_OFFSET(MeshComponent, castShadows, 0x1AC);
+RED4EXT_ASSERT_OFFSET(MeshComponent, castLocalShadows, 0x1AD);
+RED4EXT_ASSERT_OFFSET(MeshComponent, castRayTracedGlobalShadows, 0x1AE);
+RED4EXT_ASSERT_OFFSET(MeshComponent, castRayTracedLocalShadows, 0x1AF);
+RED4EXT_ASSERT_OFFSET(MeshComponent, forcedLodDistance, 0x1B2);
+RED4EXT_ASSERT_OFFSET(MeshComponent, overrideMeshNavigationImpact, 0x1D1);
+RED4EXT_ASSERT_OFFSET(MeshComponent, navigationImpact, 0x1D2);
+RED4EXT_ASSERT_OFFSET(MeshComponent, version, 0x1D4);
+#else
+RED4EXT_ASSERT_SIZE(MeshComponent, 0x1E0);
+#endif
 } // namespace ent
 using entMeshComponent = ent::MeshComponent;
 using MeshComponent = ent::MeshComponent;

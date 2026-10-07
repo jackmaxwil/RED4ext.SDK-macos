@@ -25,13 +25,31 @@ struct GameDefinition : CResource
     static constexpr const char* NAME = "gsmGameDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Handle<gsm::MainQuest>> mainQuests; // 40
     RaRef<world::World> world; // 50
     RaRef<CResource> streamingWorld; // 58
     CString worldName; // 60
     red::TagList spawnPointTags; // 80
+#else
+    DynArray<Handle<gsm::MainQuest>> mainQuests; // 40
+    RaRef<world::World> world; // 50
+    RaRef<CResource> streamingWorld; // 58
+    CString worldName; // 60
+    red::TagList spawnPointTags; // 80
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(GameDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(GameDefinition, mainQuests, 0x40);
+RED4EXT_ASSERT_OFFSET(GameDefinition, world, 0x50);
+RED4EXT_ASSERT_OFFSET(GameDefinition, streamingWorld, 0x58);
+RED4EXT_ASSERT_OFFSET(GameDefinition, worldName, 0x60);
+RED4EXT_ASSERT_OFFSET(GameDefinition, spawnPointTags, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(GameDefinition, 0x90);
+#endif
 } // namespace gsm
 using gsmGameDefinition = gsm::GameDefinition;
 } // namespace RED4ext

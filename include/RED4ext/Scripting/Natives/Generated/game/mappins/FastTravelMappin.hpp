@@ -17,9 +17,17 @@ struct FastTravelMappin : game::mappins::RuntimeMappin
     static constexpr const char* NAME = "gamemappinsFastTravelMappin";
     static constexpr const char* ALIAS = "FastTravelMappin";
 
+#ifdef __APPLE__
+    uint8_t unkFC[0x130 - 0xFC]; // FC
+#else
     uint8_t unk108[0x138 - 0x108]; // 108
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(FastTravelMappin, 0x130);
+#else
 RED4EXT_ASSERT_SIZE(FastTravelMappin, 0x138);
+#endif
 } // namespace game::mappins
 using gamemappinsFastTravelMappin = game::mappins::FastTravelMappin;
 using FastTravelMappin = game::mappins::FastTravelMappin;

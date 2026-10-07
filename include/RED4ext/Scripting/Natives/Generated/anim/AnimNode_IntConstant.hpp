@@ -17,10 +17,19 @@ struct AnimNode_IntConstant : anim::AnimNode_IntValue
     static constexpr const char* NAME = "animAnimNode_IntConstant";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    int32_t value; // 44
+#else
     int32_t value; // 48
     uint8_t unk4C[0x50 - 0x4C]; // 4C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_IntConstant, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_IntConstant, value, 0x44);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_IntConstant, 0x50);
+#endif
 } // namespace anim
 using animAnimNode_IntConstant = anim::AnimNode_IntConstant;
 } // namespace RED4ext

@@ -18,14 +18,34 @@ struct VehicleCorrectlyPlaced_ConditionType : quest::IVehicleConditionType
     static constexpr const char* NAME = "questVehicleCorrectlyPlaced_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     game::EntityReference vehicleRef; // 38
     float timeInterval; // 70
     bool checkIsUpsideDown; // 74
     bool checkIsOnTheSide; // 75
     bool checkAreAllWheelsOnGround; // 76
     bool inverted; // 77
+#else
+    game::EntityReference vehicleRef; // 38
+    float timeInterval; // 70
+    bool checkIsUpsideDown; // 74
+    bool checkIsOnTheSide; // 75
+    bool checkAreAllWheelsOnGround; // 76
+    bool inverted; // 77
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VehicleCorrectlyPlaced_ConditionType, 0x78);
+RED4EXT_ASSERT_OFFSET(VehicleCorrectlyPlaced_ConditionType, vehicleRef, 0x38);
+RED4EXT_ASSERT_OFFSET(VehicleCorrectlyPlaced_ConditionType, timeInterval, 0x70);
+RED4EXT_ASSERT_OFFSET(VehicleCorrectlyPlaced_ConditionType, checkIsUpsideDown, 0x74);
+RED4EXT_ASSERT_OFFSET(VehicleCorrectlyPlaced_ConditionType, checkIsOnTheSide, 0x75);
+RED4EXT_ASSERT_OFFSET(VehicleCorrectlyPlaced_ConditionType, checkAreAllWheelsOnGround, 0x76);
+RED4EXT_ASSERT_OFFSET(VehicleCorrectlyPlaced_ConditionType, inverted, 0x77);
+#else
+RED4EXT_ASSERT_SIZE(VehicleCorrectlyPlaced_ConditionType, 0x78);
+#endif
 } // namespace quest
 using questVehicleCorrectlyPlaced_ConditionType = quest::VehicleCorrectlyPlaced_ConditionType;
 } // namespace RED4ext

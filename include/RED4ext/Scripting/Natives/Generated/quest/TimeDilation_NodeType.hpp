@@ -21,9 +21,19 @@ struct TimeDilation_NodeType : quest::IGameManagerNonSignalStoppingNodeType
     static constexpr const char* NAME = "questTimeDilation_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     DynArray<Handle<quest::TimeDilation_NodeTypeParam>> params; // 38
+#else
+    DynArray<Handle<quest::TimeDilation_NodeTypeParam>> params; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TimeDilation_NodeType, 0x48);
+RED4EXT_ASSERT_OFFSET(TimeDilation_NodeType, params, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(TimeDilation_NodeType, 0x48);
+#endif
 } // namespace quest
 using questTimeDilation_NodeType = quest::TimeDilation_NodeType;
 } // namespace RED4ext

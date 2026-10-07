@@ -17,9 +17,17 @@ struct AITargetStandingOnTopOfMovingVehicleCond_Record : game::data::AIActionSub
     static constexpr const char* NAME = "gamedataAITargetStandingOnTopOfMovingVehicleCond_Record";
     static constexpr const char* ALIAS = "AITargetStandingOnTopOfMovingVehicleCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AITargetStandingOnTopOfMovingVehicleCond_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AITargetStandingOnTopOfMovingVehicleCond_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAITargetStandingOnTopOfMovingVehicleCond_Record = game::data::AITargetStandingOnTopOfMovingVehicleCond_Record;
 using AITargetStandingOnTopOfMovingVehicleCond_Record = game::data::AITargetStandingOnTopOfMovingVehicleCond_Record;

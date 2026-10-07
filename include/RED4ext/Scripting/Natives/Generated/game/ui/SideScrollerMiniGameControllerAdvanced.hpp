@@ -18,10 +18,20 @@ struct SideScrollerMiniGameControllerAdvanced : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiSideScrollerMiniGameControllerAdvanced";
     static constexpr const char* ALIAS = "MinigameControllerAdvanced";
 
+#ifdef __APPLE__
+    uint8_t unkDC[0xF0 - 0xDC]; // DC
+    ink::WidgetReference gameplayCanvas; // F0
+#else
     uint8_t unkE0[0xF8 - 0xE0]; // E0
     ink::WidgetReference gameplayCanvas; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SideScrollerMiniGameControllerAdvanced, 0x108);
+RED4EXT_ASSERT_OFFSET(SideScrollerMiniGameControllerAdvanced, gameplayCanvas, 0xF0);
+#else
 RED4EXT_ASSERT_SIZE(SideScrollerMiniGameControllerAdvanced, 0x110);
+#endif
 } // namespace game::ui
 using gameuiSideScrollerMiniGameControllerAdvanced = game::ui::SideScrollerMiniGameControllerAdvanced;
 using MinigameControllerAdvanced = game::ui::SideScrollerMiniGameControllerAdvanced;

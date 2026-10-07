@@ -20,9 +20,19 @@ struct DeviceResource : CResource
     static constexpr const char* NAME = "gameDeviceResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<game::DeviceResourceData> data; // 40
+#else
+    Handle<game::DeviceResourceData> data; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(DeviceResource, 0x50);
+RED4EXT_ASSERT_OFFSET(DeviceResource, data, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(DeviceResource, 0x50);
+#endif
 } // namespace game
 using gameDeviceResource = game::DeviceResource;
 } // namespace RED4ext

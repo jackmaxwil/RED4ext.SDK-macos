@@ -17,9 +17,17 @@ struct SimpleOccupantSlotSpawner : ent::IComponent
     static constexpr const char* NAME = "gameSimpleOccupantSlotSpawner";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x158 - 0x8D]; // 8D
+#else
     uint8_t unk90[0x158 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SimpleOccupantSlotSpawner, 0x158);
+#else
+RED4EXT_ASSERT_SIZE(SimpleOccupantSlotSpawner, 0x158);
+#endif
 } // namespace game
 using gameSimpleOccupantSlotSpawner = game::SimpleOccupantSlotSpawner;
 } // namespace RED4ext

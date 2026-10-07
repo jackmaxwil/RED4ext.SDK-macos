@@ -18,9 +18,19 @@ struct SceneRecordingContentObserverNode : world::Node
     static constexpr const char* NAME = "worldSceneRecordingContentObserverNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x38 - 0x32]; // 32
     world::SceneRecordingNodeFilter filter; // 38
+#else
+    world::SceneRecordingNodeFilter filter; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SceneRecordingContentObserverNode, 0x68);
+RED4EXT_ASSERT_OFFSET(SceneRecordingContentObserverNode, filter, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(SceneRecordingContentObserverNode, 0x68);
+#endif
 } // namespace world
 using worldSceneRecordingContentObserverNode = world::SceneRecordingContentObserverNode;
 } // namespace RED4ext

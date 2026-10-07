@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) ShooterAIVIPController : game::ui::arcade::Shoote
     static constexpr const char* NAME = "gameuiarcadeShooterAIVIPController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk270[0x280 - 0x270]; // 270
+#else
     uint8_t unk280[0x290 - 0x280]; // 280
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterAIVIPController, 0x280);
+#else
 RED4EXT_ASSERT_SIZE(ShooterAIVIPController, 0x290);
+#endif
 } // namespace game::ui::arcade
 using gameuiarcadeShooterAIVIPController = game::ui::arcade::ShooterAIVIPController;
 } // namespace RED4ext

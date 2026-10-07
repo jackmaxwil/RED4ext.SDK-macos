@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) EffectInstance : game::IEffect
     static constexpr const char* NAME = "gameEffectInstance";
     static constexpr const char* ALIAS = "EffectInstance";
 
+#ifdef __APPLE__
+    uint8_t unk40[0x5A70 - 0x40]; // 40
+#else
     uint8_t unk40[0x5AB0 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(EffectInstance, 0x5A70);
+#else
 RED4EXT_ASSERT_SIZE(EffectInstance, 0x5AB0);
+#endif
 } // namespace game
 using gameEffectInstance = game::EffectInstance;
 using EffectInstance = game::EffectInstance;

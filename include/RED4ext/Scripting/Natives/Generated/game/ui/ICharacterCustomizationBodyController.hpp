@@ -17,8 +17,15 @@ struct ICharacterCustomizationBodyController : game::ui::ICharacterCustomization
     static constexpr const char* NAME = "gameuiICharacterCustomizationBodyController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ICharacterCustomizationBodyController, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(ICharacterCustomizationBodyController, 0x98);
+#endif
 } // namespace game::ui
 using gameuiICharacterCustomizationBodyController = game::ui::ICharacterCustomizationBodyController;
 } // namespace RED4ext

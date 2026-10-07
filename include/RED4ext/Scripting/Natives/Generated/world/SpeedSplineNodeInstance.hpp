@@ -17,9 +17,16 @@ struct __declspec(align(0x10)) SpeedSplineNodeInstance : world::SplineNodeInstan
     static constexpr const char* NAME = "worldSpeedSplineNodeInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
     uint8_t unkE0[0xF0 - 0xE0]; // E0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SpeedSplineNodeInstance, 0xE0);
+#else
 RED4EXT_ASSERT_SIZE(SpeedSplineNodeInstance, 0xF0);
+#endif
 } // namespace world
 using worldSpeedSplineNodeInstance = world::SpeedSplineNodeInstance;
 } // namespace RED4ext

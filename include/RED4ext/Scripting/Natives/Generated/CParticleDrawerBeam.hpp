@@ -15,10 +15,19 @@ struct __declspec(align(0x10)) CParticleDrawerBeam : CParticleDrawerFacingBeam
     static constexpr const char* NAME = "CParticleDrawerBeam";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    float rotation; // 7C
+#else
     float rotation; // 80
     uint8_t unk84[0x90 - 0x84]; // 84
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CParticleDrawerBeam, 0x80);
+RED4EXT_ASSERT_OFFSET(CParticleDrawerBeam, rotation, 0x7C);
+#else
 RED4EXT_ASSERT_SIZE(CParticleDrawerBeam, 0x90);
+#endif
 } // namespace RED4ext
 
 // clang-format on

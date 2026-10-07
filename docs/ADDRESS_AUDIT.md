@@ -200,8 +200,11 @@ These groups were reverse-engineered statically. The per-entry evidence (strings
 
 A separate static scan of the registration code agrees on all 18,576 overlapping properties, with 0 disagreements.
 
-`scripts/sdk_layout_diff.py` compares this dump against the generated headers. 633 of the 8,092 SDK classes differ on macOS. A plugin's classes are gated: a size difference, a moved field or a missing field fails the check.
-- **TweakXL:** all 9 gated classes match.
-- **ArchiveXL:** 13 of 115 differ, including `inkWidgetLibraryResource`, `entIComponent`, the character-customization controllers and several world node classes. These must be fixed, for example with macOS headers generated from the dump, before ArchiveXL is enabled.
+`scripts/sdk_layout_diff.py` compares this dump against the generated headers. A plugin's classes are gated: a size difference, a moved field or a missing field fails the check.
 
-Rerun the dump on patch day.
+**2026-10-07: macOS layouts generated from the dump.** `scripts/gen_macos_layouts.py` gives every generated class whose macOS layout differs an `#ifdef __APPLE__` field block with the dump's offsets, opaque padding for everything the dump does not describe, and `RED4EXT_ASSERT_SIZE`/`RED4EXT_ASSERT_OFFSET` for every macOS field; the Windows block is unchanged in `#else`. `--verify` compiles all generated headers with `RED4EXT_ENABLE_MACOS_LAYOUT_ASSERTS`.
+- Before: 738 of 8,952 classes differed. (The earlier count, 633 of 8,092, skipped the 860 `__declspec(align(0x10))` structs.) After: 12. Eight are Windows-only classes that the macOS game does not have. Four are hand-written classes whose macOS size differs while the dump has no properties to place the difference: `gameGameSessionDesc` (0x1B0), `inkWorldLayer` (0x1B0), `moveComponent` (0x2B0) and `worldAnimationSystem` (0xB2C80).
+- Hand-written classes fixed from the dump: `entIComponent` and `questICharacterConditionType` (derived classes reuse their tail padding), `entSkinnedMeshComponent` and `entMorphTargetSkinnedMeshComponent` (they start in `ISkinTargetComponent`'s tail padding, so everything is 8 bytes lower), and `vehicleBaseObject` (0xB80).
+- **TweakXL** and **ModMenu:** all 10 gated classes match. **ArchiveXL:** all 135 gated classes match.
+
+Rerun the dump on patch day, then `gen_macos_layouts.py`.

@@ -17,9 +17,17 @@ struct AIExtendTargetCirclingCond_Record : game::data::AIActionSubCondition_Reco
     static constexpr const char* NAME = "gamedataAIExtendTargetCirclingCond_Record";
     static constexpr const char* ALIAS = "AIExtendTargetCirclingCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x78 - 0x58]; // 58
+#else
     uint8_t unk58[0x80 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIExtendTargetCirclingCond_Record, 0x78);
+#else
 RED4EXT_ASSERT_SIZE(AIExtendTargetCirclingCond_Record, 0x80);
+#endif
 } // namespace game::data
 using gamedataAIExtendTargetCirclingCond_Record = game::data::AIExtendTargetCirclingCond_Record;
 using AIExtendTargetCirclingCond_Record = game::data::AIExtendTargetCirclingCond_Record;

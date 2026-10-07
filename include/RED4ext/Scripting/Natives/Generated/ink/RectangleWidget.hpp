@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) RectangleWidget : ink::BaseShapeWidget
     static constexpr const char* NAME = "inkRectangleWidget";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk220[0x230 - 0x220]; // 220
+#else
     uint8_t unk230[0x240 - 0x230]; // 230
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RectangleWidget, 0x230);
+#else
 RED4EXT_ASSERT_SIZE(RectangleWidget, 0x240);
+#endif
 } // namespace ink
 using inkRectangleWidget = ink::RectangleWidget;
 } // namespace RED4ext

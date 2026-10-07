@@ -17,9 +17,17 @@ struct SourceShootComponent : ent::IComponent
     static constexpr const char* NAME = "gameSourceShootComponent";
     static constexpr const char* ALIAS = "SourceShootComponent";
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x120 - 0x8D]; // 8D
+#else
     uint8_t unk90[0x120 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SourceShootComponent, 0x120);
+#else
+RED4EXT_ASSERT_SIZE(SourceShootComponent, 0x120);
+#endif
 } // namespace game
 using gameSourceShootComponent = game::SourceShootComponent;
 using SourceShootComponent = game::SourceShootComponent;

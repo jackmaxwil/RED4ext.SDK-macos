@@ -20,9 +20,19 @@ struct BlockoutResource : CResource
     static constexpr const char* NAME = "worldBlockoutResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     Handle<world::BlockoutData> blockoutData; // 40
+#else
+    Handle<world::BlockoutData> blockoutData; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(BlockoutResource, 0x50);
+RED4EXT_ASSERT_OFFSET(BlockoutResource, blockoutData, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(BlockoutResource, 0x50);
+#endif
 } // namespace world
 using worldBlockoutResource = world::BlockoutResource;
 } // namespace RED4ext

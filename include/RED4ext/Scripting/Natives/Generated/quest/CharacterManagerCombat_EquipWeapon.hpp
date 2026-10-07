@@ -18,6 +18,16 @@ struct CharacterManagerCombat_EquipWeapon : quest::ICharacterManagerCombat_NodeS
     static constexpr const char* NAME = "questCharacterManagerCombat_EquipWeapon";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool equip; // 69
+    uint8_t unk6A[0x6C - 0x6A]; // 6A
+    TweakDBID weaponID; // 6C
+    TweakDBID slotID; // 74
+    bool forceFirstEquip; // 7C
+    bool equipLastWeapon; // 7D
+    bool instant; // 7E
+    bool ignoreStateMachine; // 7F
+#else
     bool equip; // 70
     uint8_t unk71[0x74 - 0x71]; // 71
     TweakDBID weaponID; // 74
@@ -26,8 +36,20 @@ struct CharacterManagerCombat_EquipWeapon : quest::ICharacterManagerCombat_NodeS
     bool equipLastWeapon; // 85
     bool instant; // 86
     bool ignoreStateMachine; // 87
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CharacterManagerCombat_EquipWeapon, 0x80);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, equip, 0x69);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, weaponID, 0x6C);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, slotID, 0x74);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, forceFirstEquip, 0x7C);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, equipLastWeapon, 0x7D);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, instant, 0x7E);
+RED4EXT_ASSERT_OFFSET(CharacterManagerCombat_EquipWeapon, ignoreStateMachine, 0x7F);
+#else
 RED4EXT_ASSERT_SIZE(CharacterManagerCombat_EquipWeapon, 0x88);
+#endif
 } // namespace quest
 using questCharacterManagerCombat_EquipWeapon = quest::CharacterManagerCombat_EquipWeapon;
 } // namespace RED4ext

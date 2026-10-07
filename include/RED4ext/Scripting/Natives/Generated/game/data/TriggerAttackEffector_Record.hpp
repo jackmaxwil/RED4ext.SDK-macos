@@ -17,9 +17,17 @@ struct TriggerAttackEffector_Record : game::data::Effector_Record
     static constexpr const char* NAME = "gamedataTriggerAttackEffector_Record";
     static constexpr const char* ALIAS = "TriggerAttackEffector_Record";
 
+#ifdef __APPLE__
+    uint8_t unk88[0x90 - 0x88]; // 88
+#else
     uint8_t unk88[0x98 - 0x88]; // 88
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TriggerAttackEffector_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(TriggerAttackEffector_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataTriggerAttackEffector_Record = game::data::TriggerAttackEffector_Record;
 using TriggerAttackEffector_Record = game::data::TriggerAttackEffector_Record;

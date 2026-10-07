@@ -20,9 +20,19 @@ struct CharacterState_ConditionType : quest::ICharacterConditionType
     static constexpr const char* NAME = "questCharacterState_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk71[0x78 - 0x71]; // 71
     Handle<quest::ICharacterConditionSubType> subType; // 78
+#else
+    Handle<quest::ICharacterConditionSubType> subType; // 78
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CharacterState_ConditionType, 0x88);
+RED4EXT_ASSERT_OFFSET(CharacterState_ConditionType, subType, 0x78);
+#else
+RED4EXT_ASSERT_SIZE(CharacterState_ConditionType, 0x88);
+#endif
 } // namespace quest
 using questCharacterState_ConditionType = quest::CharacterState_ConditionType;
 } // namespace RED4ext

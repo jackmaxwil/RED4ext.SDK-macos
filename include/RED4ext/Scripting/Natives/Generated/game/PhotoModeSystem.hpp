@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) PhotoModeSystem : game::IPhotoModeSystem
     static constexpr const char* NAME = "gamePhotoModeSystem";
     static constexpr const char* ALIAS = "PhotoModeSystem";
 
+#ifdef __APPLE__
+    uint8_t unk48[0xBC0 - 0x48]; // 48
+#else
     uint8_t unk48[0xBA0 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PhotoModeSystem, 0xBC0);
+#else
 RED4EXT_ASSERT_SIZE(PhotoModeSystem, 0xBA0);
+#endif
 } // namespace game
 using gamePhotoModeSystem = game::PhotoModeSystem;
 using PhotoModeSystem = game::PhotoModeSystem;

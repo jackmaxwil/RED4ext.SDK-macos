@@ -17,9 +17,17 @@ struct AICalculateLineOfSightVector_Record : game::data::AIActionSubCondition_Re
     static constexpr const char* NAME = "gamedataAICalculateLineOfSightVector_Record";
     static constexpr const char* ALIAS = "AICalculateLineOfSightVector_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x90 - 0x58]; // 58
+#else
     uint8_t unk58[0x98 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AICalculateLineOfSightVector_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(AICalculateLineOfSightVector_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataAICalculateLineOfSightVector_Record = game::data::AICalculateLineOfSightVector_Record;
 using AICalculateLineOfSightVector_Record = game::data::AICalculateLineOfSightVector_Record;

@@ -21,6 +21,8 @@ struct JournalBulkUpdate_NodeType : quest::IJournal_NodeType
     static constexpr const char* NAME = "questJournalBulkUpdate_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     Handle<game::JournalPath> path; // 50
     CName requiredEntryType; // 60
     CName requiredEntryState; // 68
@@ -28,8 +30,27 @@ struct JournalBulkUpdate_NodeType : quest::IJournal_NodeType
     bool sendNotification; // 78
     bool propagateChange; // 79
     uint8_t unk7A[0x80 - 0x7A]; // 7A
+#else
+    Handle<game::JournalPath> path; // 50
+    CName requiredEntryType; // 60
+    CName requiredEntryState; // 68
+    CName newEntryState; // 70
+    bool sendNotification; // 78
+    bool propagateChange; // 79
+    uint8_t unk7A[0x80 - 0x7A]; // 7A
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(JournalBulkUpdate_NodeType, 0x80);
+RED4EXT_ASSERT_OFFSET(JournalBulkUpdate_NodeType, path, 0x50);
+RED4EXT_ASSERT_OFFSET(JournalBulkUpdate_NodeType, requiredEntryType, 0x60);
+RED4EXT_ASSERT_OFFSET(JournalBulkUpdate_NodeType, requiredEntryState, 0x68);
+RED4EXT_ASSERT_OFFSET(JournalBulkUpdate_NodeType, newEntryState, 0x70);
+RED4EXT_ASSERT_OFFSET(JournalBulkUpdate_NodeType, sendNotification, 0x78);
+RED4EXT_ASSERT_OFFSET(JournalBulkUpdate_NodeType, propagateChange, 0x79);
+#else
+RED4EXT_ASSERT_SIZE(JournalBulkUpdate_NodeType, 0x80);
+#endif
 } // namespace quest
 using questJournalBulkUpdate_NodeType = quest::JournalBulkUpdate_NodeType;
 } // namespace RED4ext

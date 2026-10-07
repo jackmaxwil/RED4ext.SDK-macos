@@ -20,9 +20,19 @@ struct RecordingNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questRecordingNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IRecordingNodeType> type; // 48
+#else
+    Handle<quest::IRecordingNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RecordingNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(RecordingNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(RecordingNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questRecordingNodeDefinition = quest::RecordingNodeDefinition;
 } // namespace RED4ext

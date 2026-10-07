@@ -17,9 +17,17 @@ struct WeatherPreset_Record : game::data::SpawnableObject_Record
     static constexpr const char* NAME = "gamedataWeatherPreset_Record";
     static constexpr const char* ALIAS = "WeatherPreset_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x100 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x108 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(WeatherPreset_Record, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(WeatherPreset_Record, 0x108);
+#endif
 } // namespace game::data
 using gamedataWeatherPreset_Record = game::data::WeatherPreset_Record;
 using WeatherPreset_Record = game::data::WeatherPreset_Record;

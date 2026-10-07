@@ -24,6 +24,8 @@ struct EntityNode : world::Node
     static constexpr const char* NAME = "worldEntityNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x38 - 0x32]; // 32
     RaRef<ent::EntityTemplate> entityTemplate; // 38
     Handle<ent::EntityInstanceData> instanceData; // 40
     CName appearanceName; // 50
@@ -31,8 +33,26 @@ struct EntityNode : world::Node
     uint8_t unk59[0x5A - 0x59]; // 59
     uint16_t entityLod; // 5A
     uint8_t unk5C[0x60 - 0x5C]; // 5C
+#else
+    RaRef<ent::EntityTemplate> entityTemplate; // 38
+    Handle<ent::EntityInstanceData> instanceData; // 40
+    CName appearanceName; // 50
+    ent::EntitySpawnPriority ioPriority; // 58
+    uint8_t unk59[0x5A - 0x59]; // 59
+    uint16_t entityLod; // 5A
+    uint8_t unk5C[0x60 - 0x5C]; // 5C
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EntityNode, 0x60);
+RED4EXT_ASSERT_OFFSET(EntityNode, entityTemplate, 0x38);
+RED4EXT_ASSERT_OFFSET(EntityNode, instanceData, 0x40);
+RED4EXT_ASSERT_OFFSET(EntityNode, appearanceName, 0x50);
+RED4EXT_ASSERT_OFFSET(EntityNode, ioPriority, 0x58);
+RED4EXT_ASSERT_OFFSET(EntityNode, entityLod, 0x5A);
+#else
+RED4EXT_ASSERT_SIZE(EntityNode, 0x60);
+#endif
 } // namespace world
 using worldEntityNode = world::EntityNode;
 } // namespace RED4ext

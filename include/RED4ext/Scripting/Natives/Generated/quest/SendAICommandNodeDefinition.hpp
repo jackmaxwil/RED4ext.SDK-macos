@@ -21,10 +21,22 @@ struct SendAICommandNodeDefinition : quest::AICommandNodeBase
     static constexpr const char* NAME = "questSendAICommandNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference puppet; // 48
     Handle<quest::AICommandParams> commandParams; // 80
+#else
+    game::EntityReference puppet; // 48
+    Handle<quest::AICommandParams> commandParams; // 80
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SendAICommandNodeDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(SendAICommandNodeDefinition, puppet, 0x48);
+RED4EXT_ASSERT_OFFSET(SendAICommandNodeDefinition, commandParams, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(SendAICommandNodeDefinition, 0x90);
+#endif
 } // namespace quest
 using questSendAICommandNodeDefinition = quest::SendAICommandNodeDefinition;
 } // namespace RED4ext

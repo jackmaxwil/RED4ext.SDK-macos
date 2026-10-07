@@ -17,9 +17,17 @@ struct GameNotificationsLayer : ink::FullScreenLayer
     static constexpr const char* NAME = "inkGameNotificationsLayer";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk150[0x1A0 - 0x150]; // 150
+#else
     uint8_t unk150[0x1A8 - 0x150]; // 150
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(GameNotificationsLayer, 0x1A0);
+#else
 RED4EXT_ASSERT_SIZE(GameNotificationsLayer, 0x1A8);
+#endif
 } // namespace ink
 using inkGameNotificationsLayer = ink::GameNotificationsLayer;
 } // namespace RED4ext

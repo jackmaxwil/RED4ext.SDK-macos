@@ -21,13 +21,29 @@ struct GarmentLayerParams : CResource
     static constexpr const char* NAME = "garmentGarmentLayerParams";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x3C - 0x39]; // 39
+    garment::BendingParams bending; // 3C
+    garment::SmoothingParams smoothing; // 40
+    garment::CollarAreaParams collarArea; // 54
+    garment::HiddenTrianglesRemovalParams hiddenTrianglesRemoval; // 70
+#else
     garment::BendingParams bending; // 40
     garment::SmoothingParams smoothing; // 44
     garment::CollarAreaParams collarArea; // 58
     garment::HiddenTrianglesRemovalParams hiddenTrianglesRemoval; // 74
     uint8_t unk84[0x88 - 0x84]; // 84
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(GarmentLayerParams, 0x80);
+RED4EXT_ASSERT_OFFSET(GarmentLayerParams, bending, 0x3C);
+RED4EXT_ASSERT_OFFSET(GarmentLayerParams, smoothing, 0x40);
+RED4EXT_ASSERT_OFFSET(GarmentLayerParams, collarArea, 0x54);
+RED4EXT_ASSERT_OFFSET(GarmentLayerParams, hiddenTrianglesRemoval, 0x70);
+#else
 RED4EXT_ASSERT_SIZE(GarmentLayerParams, 0x88);
+#endif
 } // namespace garment
 using garmentGarmentLayerParams = garment::GarmentLayerParams;
 } // namespace RED4ext

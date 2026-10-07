@@ -17,9 +17,17 @@ struct StaticPositionProvider : ent::IPositionProvider
     static constexpr const char* NAME = "entStaticPositionProvider";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk50[0x58 - 0x50]; // 50
+#else
     uint8_t unk50[0x60 - 0x50]; // 50
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(StaticPositionProvider, 0x58);
+#else
 RED4EXT_ASSERT_SIZE(StaticPositionProvider, 0x60);
+#endif
 } // namespace ent
 using entStaticPositionProvider = ent::StaticPositionProvider;
 } // namespace RED4ext

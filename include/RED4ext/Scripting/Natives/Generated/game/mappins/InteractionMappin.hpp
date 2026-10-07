@@ -17,9 +17,17 @@ struct InteractionMappin : game::mappins::RuntimeMappin
     static constexpr const char* NAME = "gamemappinsInteractionMappin";
     static constexpr const char* ALIAS = "InteractionMappin";
 
+#ifdef __APPLE__
+    uint8_t unkFC[0x118 - 0xFC]; // FC
+#else
     uint8_t unk108[0x128 - 0x108]; // 108
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(InteractionMappin, 0x118);
+#else
 RED4EXT_ASSERT_SIZE(InteractionMappin, 0x128);
+#endif
 } // namespace game::mappins
 using gamemappinsInteractionMappin = game::mappins::InteractionMappin;
 using InteractionMappin = game::mappins::InteractionMappin;

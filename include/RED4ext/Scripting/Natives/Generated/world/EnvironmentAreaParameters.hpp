@@ -18,11 +18,24 @@ struct EnvironmentAreaParameters : CResource
     static constexpr const char* NAME = "worldEnvironmentAreaParameters";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     WorldRenderAreaSettings renderAreaSettings; // 40
     uint8_t resourceVersion; // 50
     uint8_t unk51[0x58 - 0x51]; // 51
+#else
+    WorldRenderAreaSettings renderAreaSettings; // 40
+    uint8_t resourceVersion; // 50
+    uint8_t unk51[0x58 - 0x51]; // 51
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EnvironmentAreaParameters, 0x58);
+RED4EXT_ASSERT_OFFSET(EnvironmentAreaParameters, renderAreaSettings, 0x40);
+RED4EXT_ASSERT_OFFSET(EnvironmentAreaParameters, resourceVersion, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(EnvironmentAreaParameters, 0x58);
+#endif
 } // namespace world
 using worldEnvironmentAreaParameters = world::EnvironmentAreaParameters;
 } // namespace RED4ext

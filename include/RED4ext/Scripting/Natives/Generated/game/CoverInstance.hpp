@@ -17,9 +17,17 @@ struct CoverInstance : game::SmartObjectWorkspotInstance
     static constexpr const char* NAME = "gameCoverInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk80[0x100 - 0x80]; // 80
+#else
     uint8_t unk80[0x108 - 0x80]; // 80
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CoverInstance, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(CoverInstance, 0x108);
+#endif
 } // namespace game
 using gameCoverInstance = game::CoverInstance;
 } // namespace RED4ext

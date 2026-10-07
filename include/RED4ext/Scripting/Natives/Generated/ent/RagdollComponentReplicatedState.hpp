@@ -19,11 +19,24 @@ struct RagdollComponentReplicatedState : net::IComponentState
     static constexpr const char* NAME = "entRagdollComponentReplicatedState";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk1C[0x20 - 0x1C]; // 1C
     DynArray<Transform> transforms; // 20
     bool isSleeping; // 30
     uint8_t unk31[0x38 - 0x31]; // 31
+#else
+    DynArray<Transform> transforms; // 20
+    bool isSleeping; // 30
+    uint8_t unk31[0x38 - 0x31]; // 31
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RagdollComponentReplicatedState, 0x38);
+RED4EXT_ASSERT_OFFSET(RagdollComponentReplicatedState, transforms, 0x20);
+RED4EXT_ASSERT_OFFSET(RagdollComponentReplicatedState, isSleeping, 0x30);
+#else
+RED4EXT_ASSERT_SIZE(RagdollComponentReplicatedState, 0x38);
+#endif
 } // namespace ent
 using entRagdollComponentReplicatedState = ent::RagdollComponentReplicatedState;
 } // namespace RED4ext

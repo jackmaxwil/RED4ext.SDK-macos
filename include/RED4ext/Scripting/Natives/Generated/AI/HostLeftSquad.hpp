@@ -20,9 +20,19 @@ struct HostLeftSquad : AI::AIEvent
     static constexpr const char* NAME = "AIHostLeftSquad";
     static constexpr const char* ALIAS = "HostLeftSquad";
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     WeakHandle<AI::SquadScriptInterface> squadInterface; // 50
+#else
+    WeakHandle<AI::SquadScriptInterface> squadInterface; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(HostLeftSquad, 0x60);
+RED4EXT_ASSERT_OFFSET(HostLeftSquad, squadInterface, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(HostLeftSquad, 0x60);
+#endif
 } // namespace AI
 using AIHostLeftSquad = AI::HostLeftSquad;
 using HostLeftSquad = AI::HostLeftSquad;

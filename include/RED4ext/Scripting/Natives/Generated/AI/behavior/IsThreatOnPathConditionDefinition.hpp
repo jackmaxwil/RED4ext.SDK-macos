@@ -20,10 +20,22 @@ struct IsThreatOnPathConditionDefinition : AI::behavior::ConditionDefinition
     static constexpr const char* NAME = "AIbehaviorIsThreatOnPathConditionDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<AI::ArgumentMapping> threatObject; // 38
     Handle<AI::ArgumentMapping> threatRadius; // 48
+#else
+    Handle<AI::ArgumentMapping> threatObject; // 38
+    Handle<AI::ArgumentMapping> threatRadius; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(IsThreatOnPathConditionDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(IsThreatOnPathConditionDefinition, threatObject, 0x38);
+RED4EXT_ASSERT_OFFSET(IsThreatOnPathConditionDefinition, threatRadius, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(IsThreatOnPathConditionDefinition, 0x58);
+#endif
 } // namespace AI::behavior
 using AIbehaviorIsThreatOnPathConditionDefinition = AI::behavior::IsThreatOnPathConditionDefinition;
 } // namespace RED4ext

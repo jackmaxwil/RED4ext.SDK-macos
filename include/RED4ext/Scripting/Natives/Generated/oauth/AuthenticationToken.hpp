@@ -23,7 +23,11 @@ struct AuthenticationToken
     uint64_t tokenExpiresIn; // 60
     uint64_t authorizationExpiresIn; // 68
 };
+#ifdef __APPLE__
+// oauthAuthenticationToken is not in the macOS RTTI dump: no macOS layout to assert
+#else
 RED4EXT_ASSERT_SIZE(AuthenticationToken, 0x70);
+#endif
 } // namespace oauth
 using oauthAuthenticationToken = oauth::AuthenticationToken;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct AIPercentageChanceCond_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAIPercentageChanceCond_Record";
     static constexpr const char* ALIAS = "AIPercentageChanceCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AIPercentageChanceCond_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AIPercentageChanceCond_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAIPercentageChanceCond_Record = game::data::AIPercentageChanceCond_Record;
 using AIPercentageChanceCond_Record = game::data::AIPercentageChanceCond_Record;

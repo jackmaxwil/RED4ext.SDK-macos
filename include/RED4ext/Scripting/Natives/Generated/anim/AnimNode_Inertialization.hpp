@@ -19,14 +19,31 @@ struct AnimNode_Inertialization : anim::AnimNode_OnePoseInput
     static constexpr const char* NAME = "animAnimNode_Inertialization";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint32_t transformsCountUpperBound; // 60
+    uint32_t tracksCountUpperBound; // 64
+    bool safeMode; // 68
+    uint8_t unk69[0x70 - 0x69]; // 69
+    DynArray<anim::InertializationRotationLimit> rotationLimits; // 70
+    uint8_t unk80[0x1C0 - 0x80]; // 80
+#else
     uint32_t transformsCountUpperBound; // 60
     uint32_t tracksCountUpperBound; // 64
     bool safeMode; // 68
     uint8_t unk69[0x70 - 0x69]; // 69
     DynArray<anim::InertializationRotationLimit> rotationLimits; // 70
     uint8_t unk80[0x200 - 0x80]; // 80
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_Inertialization, 0x1C0);
+RED4EXT_ASSERT_OFFSET(AnimNode_Inertialization, transformsCountUpperBound, 0x60);
+RED4EXT_ASSERT_OFFSET(AnimNode_Inertialization, tracksCountUpperBound, 0x64);
+RED4EXT_ASSERT_OFFSET(AnimNode_Inertialization, safeMode, 0x68);
+RED4EXT_ASSERT_OFFSET(AnimNode_Inertialization, rotationLimits, 0x70);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_Inertialization, 0x200);
+#endif
 } // namespace anim
 using animAnimNode_Inertialization = anim::AnimNode_Inertialization;
 } // namespace RED4ext

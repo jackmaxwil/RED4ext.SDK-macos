@@ -22,12 +22,28 @@ struct __declspec(align(0x10)) HeatmapResource : CResource
     static constexpr const char* NAME = "worldHeatmapResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     world::HeatmapSetup setup; // 40
     CString name; // 70
     DynArray<CString> layerNames; // 90
     DynArray<RaRef<world::HeatmapLayer>> layers; // A0
+#else
+    world::HeatmapSetup setup; // 40
+    CString name; // 70
+    DynArray<CString> layerNames; // 90
+    DynArray<RaRef<world::HeatmapLayer>> layers; // A0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(HeatmapResource, 0xB0);
+RED4EXT_ASSERT_OFFSET(HeatmapResource, setup, 0x40);
+RED4EXT_ASSERT_OFFSET(HeatmapResource, name, 0x70);
+RED4EXT_ASSERT_OFFSET(HeatmapResource, layerNames, 0x90);
+RED4EXT_ASSERT_OFFSET(HeatmapResource, layers, 0xA0);
+#else
+RED4EXT_ASSERT_SIZE(HeatmapResource, 0xB0);
+#endif
 } // namespace world
 using worldHeatmapResource = world::HeatmapResource;
 } // namespace RED4ext

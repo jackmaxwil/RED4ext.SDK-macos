@@ -17,12 +17,26 @@ struct AnimNode_LookAtPose360Direction : anim::AnimNode_FloatValue
     static constexpr const char* NAME = "animAnimNode_LookAtPose360Direction";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    float defaultValue; // 44
+    float angleOffset; // 48
+    bool negateOutput; // 4C
+    uint8_t unk4D[0x60 - 0x4D]; // 4D
+#else
     float defaultValue; // 48
     float angleOffset; // 4C
     bool negateOutput; // 50
     uint8_t unk51[0x68 - 0x51]; // 51
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_LookAtPose360Direction, 0x60);
+RED4EXT_ASSERT_OFFSET(AnimNode_LookAtPose360Direction, defaultValue, 0x44);
+RED4EXT_ASSERT_OFFSET(AnimNode_LookAtPose360Direction, angleOffset, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_LookAtPose360Direction, negateOutput, 0x4C);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_LookAtPose360Direction, 0x68);
+#endif
 } // namespace anim
 using animAnimNode_LookAtPose360Direction = anim::AnimNode_LookAtPose360Direction;
 } // namespace RED4ext

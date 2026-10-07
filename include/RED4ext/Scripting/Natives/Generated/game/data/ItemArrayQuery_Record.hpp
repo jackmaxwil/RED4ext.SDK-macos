@@ -17,9 +17,17 @@ struct ItemArrayQuery_Record : game::data::ItemQuery_Record
     static constexpr const char* NAME = "gamedataItemArrayQuery_Record";
     static constexpr const char* ALIAS = "ItemArrayQuery_Record";
 
+#ifdef __APPLE__
+    uint8_t unk90[0xA8 - 0x90]; // 90
+#else
     uint8_t unk98[0xB0 - 0x98]; // 98
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ItemArrayQuery_Record, 0xA8);
+#else
 RED4EXT_ASSERT_SIZE(ItemArrayQuery_Record, 0xB0);
+#endif
 } // namespace game::data
 using gamedataItemArrayQuery_Record = game::data::ItemArrayQuery_Record;
 using ItemArrayQuery_Record = game::data::ItemArrayQuery_Record;

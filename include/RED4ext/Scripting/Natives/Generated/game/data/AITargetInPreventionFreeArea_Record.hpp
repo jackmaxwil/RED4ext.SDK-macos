@@ -17,9 +17,17 @@ struct AITargetInPreventionFreeArea_Record : game::data::AIActionSubCondition_Re
     static constexpr const char* NAME = "gamedataAITargetInPreventionFreeArea_Record";
     static constexpr const char* ALIAS = "AITargetInPreventionFreeArea_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AITargetInPreventionFreeArea_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AITargetInPreventionFreeArea_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAITargetInPreventionFreeArea_Record = game::data::AITargetInPreventionFreeArea_Record;
 using AITargetInPreventionFreeArea_Record = game::data::AITargetInPreventionFreeArea_Record;

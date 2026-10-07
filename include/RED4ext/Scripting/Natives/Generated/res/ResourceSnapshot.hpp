@@ -21,9 +21,19 @@ struct ResourceSnapshot : CResource
     static constexpr const char* NAME = "resResourceSnapshot";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<RaRef<CResource>> resources; // 40
+#else
+    DynArray<RaRef<CResource>> resources; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ResourceSnapshot, 0x50);
+RED4EXT_ASSERT_OFFSET(ResourceSnapshot, resources, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(ResourceSnapshot, 0x50);
+#endif
 } // namespace res
 using resResourceSnapshot = res::ResourceSnapshot;
 } // namespace RED4ext

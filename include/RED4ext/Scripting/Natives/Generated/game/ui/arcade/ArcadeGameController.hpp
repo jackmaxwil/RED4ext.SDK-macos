@@ -20,6 +20,18 @@ struct ArcadeGameController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiarcadeArcadeGameController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkDC[0x130 - 0xDC]; // DC
+    ink::ImageWidgetReference screenTransitionWidget; // 130
+    ink::WidgetReference menu; // 148
+    ink::WidgetReference gameplay; // 160
+    ink::WidgetReference scoreboard; // 178
+    uint8_t unk190[0x204 - 0x190]; // 190
+    float defaultScreenTransitionTotalTime; // 204
+    uint8_t unk208[0x228 - 0x208]; // 208
+    game::ui::arcade::ArcadeMinigame minigame; // 228
+    uint8_t unk22C[0x238 - 0x22C]; // 22C
+#else
     uint8_t unkE0[0x130 - 0xE0]; // E0
     ink::ImageWidgetReference screenTransitionWidget; // 130
     ink::WidgetReference menu; // 148
@@ -30,8 +42,19 @@ struct ArcadeGameController : game::ui::WidgetGameController
     uint8_t unk208[0x228 - 0x208]; // 208
     game::ui::arcade::ArcadeMinigame minigame; // 228
     uint8_t unk22C[0x238 - 0x22C]; // 22C
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ArcadeGameController, 0x238);
+RED4EXT_ASSERT_OFFSET(ArcadeGameController, screenTransitionWidget, 0x130);
+RED4EXT_ASSERT_OFFSET(ArcadeGameController, menu, 0x148);
+RED4EXT_ASSERT_OFFSET(ArcadeGameController, gameplay, 0x160);
+RED4EXT_ASSERT_OFFSET(ArcadeGameController, scoreboard, 0x178);
+RED4EXT_ASSERT_OFFSET(ArcadeGameController, defaultScreenTransitionTotalTime, 0x204);
+RED4EXT_ASSERT_OFFSET(ArcadeGameController, minigame, 0x228);
+#else
+RED4EXT_ASSERT_SIZE(ArcadeGameController, 0x238);
+#endif
 } // namespace game::ui::arcade
 using gameuiarcadeArcadeGameController = game::ui::arcade::ArcadeGameController;
 } // namespace RED4ext

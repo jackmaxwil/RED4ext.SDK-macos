@@ -21,9 +21,19 @@ struct FoliageDestructionResource : CResource
     static constexpr const char* NAME = "worldFoliageDestructionResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Handle<world::FoliageDestructionMapping>> mappings; // 40
+#else
+    DynArray<Handle<world::FoliageDestructionMapping>> mappings; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(FoliageDestructionResource, 0x50);
+RED4EXT_ASSERT_OFFSET(FoliageDestructionResource, mappings, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(FoliageDestructionResource, 0x50);
+#endif
 } // namespace world
 using worldFoliageDestructionResource = world::FoliageDestructionResource;
 } // namespace RED4ext

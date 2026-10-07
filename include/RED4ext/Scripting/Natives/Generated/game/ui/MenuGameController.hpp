@@ -17,9 +17,17 @@ struct MenuGameController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiMenuGameController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkDC[0xF0 - 0xDC]; // DC
+#else
     uint8_t unkE0[0xF0 - 0xE0]; // E0
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MenuGameController, 0xF0);
+#else
+RED4EXT_ASSERT_SIZE(MenuGameController, 0xF0);
+#endif
 } // namespace game::ui
 using gameuiMenuGameController = game::ui::MenuGameController;
 } // namespace RED4ext

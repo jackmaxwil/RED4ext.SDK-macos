@@ -18,9 +18,19 @@ struct __declspec(align(0x10)) MachineeventPostponedParameterVector : game::stat
     static constexpr const char* NAME = "gamestateMachineeventPostponedParameterVector";
     static constexpr const char* ALIAS = "PSMPostponedParameterVector";
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     Vector4 value; // 50
+#else
+    Vector4 value; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MachineeventPostponedParameterVector, 0x60);
+RED4EXT_ASSERT_OFFSET(MachineeventPostponedParameterVector, value, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(MachineeventPostponedParameterVector, 0x60);
+#endif
 } // namespace game::state
 using gamestateMachineeventPostponedParameterVector = game::state::MachineeventPostponedParameterVector;
 using PSMPostponedParameterVector = game::state::MachineeventPostponedParameterVector;

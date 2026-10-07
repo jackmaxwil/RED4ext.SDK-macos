@@ -22,6 +22,8 @@ struct ShowBracket_NodeSubType : quest::ITutorial_NodeSubType
     static constexpr const char* NAME = "questShowBracket_NodeSubType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     CName bracketID; // 38
     bool visible; // 40
     uint8_t unk41[0x44 - 0x41]; // 41
@@ -33,8 +35,33 @@ struct ShowBracket_NodeSubType : quest::ITutorial_NodeSubType
     Vector2 size; // 54
     bool ignoreDisabledTutorials; // 5C
     uint8_t unk5D[0x60 - 0x5D]; // 5D
+#else
+    CName bracketID; // 38
+    bool visible; // 40
+    uint8_t unk41[0x44 - 0x41]; // 41
+    game::TutorialBracketType bracketType; // 44
+    ink::EAnchor anchor; // 48
+    ink::ELayerType visibleOnUILayer; // 49
+    uint8_t unk4A[0x4C - 0x4A]; // 4A
+    Vector2 offset; // 4C
+    Vector2 size; // 54
+    bool ignoreDisabledTutorials; // 5C
+    uint8_t unk5D[0x60 - 0x5D]; // 5D
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ShowBracket_NodeSubType, 0x60);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, bracketID, 0x38);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, visible, 0x40);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, bracketType, 0x44);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, anchor, 0x48);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, visibleOnUILayer, 0x49);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, offset, 0x4C);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, size, 0x54);
+RED4EXT_ASSERT_OFFSET(ShowBracket_NodeSubType, ignoreDisabledTutorials, 0x5C);
+#else
+RED4EXT_ASSERT_SIZE(ShowBracket_NodeSubType, 0x60);
+#endif
 } // namespace quest
 using questShowBracket_NodeSubType = quest::ShowBracket_NodeSubType;
 } // namespace RED4ext

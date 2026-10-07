@@ -19,10 +19,20 @@ struct AcousticDataResource : res::StreamedResource
     static constexpr const char* NAME = "worldAcousticDataResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
+    DynArray<world::AcousticDataCell> cells; // 40
+#else
     uint8_t unk40[0x48 - 0x40]; // 40
     DynArray<world::AcousticDataCell> cells; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AcousticDataResource, 0x50);
+RED4EXT_ASSERT_OFFSET(AcousticDataResource, cells, 0x40);
+#else
 RED4EXT_ASSERT_SIZE(AcousticDataResource, 0x58);
+#endif
 } // namespace world
 using worldAcousticDataResource = world::AcousticDataResource;
 } // namespace RED4ext

@@ -19,9 +19,19 @@ struct AutoFoliageMapping : CResource
     static constexpr const char* NAME = "worldAutoFoliageMapping";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<world::AutoFoliageMappingItem> Items; // 40
+#else
+    DynArray<world::AutoFoliageMappingItem> Items; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AutoFoliageMapping, 0x50);
+RED4EXT_ASSERT_OFFSET(AutoFoliageMapping, Items, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(AutoFoliageMapping, 0x50);
+#endif
 } // namespace world
 using worldAutoFoliageMapping = world::AutoFoliageMapping;
 } // namespace RED4ext

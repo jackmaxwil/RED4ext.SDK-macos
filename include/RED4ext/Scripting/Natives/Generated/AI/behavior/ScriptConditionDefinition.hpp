@@ -20,11 +20,24 @@ struct ScriptConditionDefinition : AI::behavior::ConditionDefinition
     static constexpr const char* NAME = "AIbehaviorScriptConditionDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<AI::behavior::condition::Script> script; // 38
     bool disableLazyInitialization; // 48
     uint8_t unk49[0x50 - 0x49]; // 49
+#else
+    Handle<AI::behavior::condition::Script> script; // 38
+    bool disableLazyInitialization; // 48
+    uint8_t unk49[0x50 - 0x49]; // 49
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ScriptConditionDefinition, 0x50);
+RED4EXT_ASSERT_OFFSET(ScriptConditionDefinition, script, 0x38);
+RED4EXT_ASSERT_OFFSET(ScriptConditionDefinition, disableLazyInitialization, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(ScriptConditionDefinition, 0x50);
+#endif
 } // namespace AI::behavior
 using AIbehaviorScriptConditionDefinition = AI::behavior::ScriptConditionDefinition;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct TweakActionSystem : game::IGameSystem
     static constexpr const char* NAME = "AIbehaviortweakTweakActionSystem";
     static constexpr const char* ALIAS = "AITweakActionSystem";
 
+#ifdef __APPLE__
+    uint8_t unk48[0x610 - 0x48]; // 48
+#else
     uint8_t unk48[0x550 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TweakActionSystem, 0x610);
+#else
 RED4EXT_ASSERT_SIZE(TweakActionSystem, 0x550);
+#endif
 } // namespace AI::behavior::tweak
 using AIbehaviortweakTweakActionSystem = AI::behavior::tweak::TweakActionSystem;
 using AITweakActionSystem = AI::behavior::tweak::TweakActionSystem;

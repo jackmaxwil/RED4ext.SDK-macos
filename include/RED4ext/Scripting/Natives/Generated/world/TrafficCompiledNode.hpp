@@ -18,10 +18,20 @@ struct __declspec(align(0x10)) TrafficCompiledNode : world::Node
     static constexpr const char* NAME = "worldTrafficCompiledNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x50 - 0x32]; // 32
+    Box aabb; // 50
+#else
     uint8_t unk38[0x50 - 0x38]; // 38
     Box aabb; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TrafficCompiledNode, 0x70);
+RED4EXT_ASSERT_OFFSET(TrafficCompiledNode, aabb, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(TrafficCompiledNode, 0x70);
+#endif
 } // namespace world
 using worldTrafficCompiledNode = world::TrafficCompiledNode;
 } // namespace RED4ext

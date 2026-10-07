@@ -17,9 +17,16 @@ struct PanzerScoreBonus : game::ui::PanzerBonus
     static constexpr const char* NAME = "gameuiPanzerScoreBonus";
     static constexpr const char* ALIAS = "PanzerScoreBonus";
 
+#ifdef __APPLE__
+#else
     uint8_t unkE8[0xF0 - 0xE8]; // E8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PanzerScoreBonus, 0xE8);
+#else
 RED4EXT_ASSERT_SIZE(PanzerScoreBonus, 0xF0);
+#endif
 } // namespace game::ui
 using gameuiPanzerScoreBonus = game::ui::PanzerScoreBonus;
 using PanzerScoreBonus = game::ui::PanzerScoreBonus;

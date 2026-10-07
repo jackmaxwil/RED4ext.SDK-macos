@@ -17,9 +17,17 @@ struct AISquadORCondition_Record : game::data::AITicketCheck_Record
     static constexpr const char* NAME = "gamedataAISquadORCondition_Record";
     static constexpr const char* ALIAS = "AISquadORCondition_Record";
 
+#ifdef __APPLE__
+    uint8_t unk60[0x70 - 0x60]; // 60
+#else
     uint8_t unk68[0x78 - 0x68]; // 68
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AISquadORCondition_Record, 0x70);
+#else
 RED4EXT_ASSERT_SIZE(AISquadORCondition_Record, 0x78);
+#endif
 } // namespace game::data
 using gamedataAISquadORCondition_Record = game::data::AISquadORCondition_Record;
 using AISquadORCondition_Record = game::data::AISquadORCondition_Record;

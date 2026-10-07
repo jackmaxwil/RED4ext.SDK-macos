@@ -17,10 +17,20 @@ struct ConditionDefinition : AI::behavior::BehaviorComponentDefinition
     static constexpr const char* NAME = "AIbehaviorConditionDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool isInverted; // 30
+    uint8_t unk31[0x34 - 0x31]; // 31
+#else
     bool isInverted; // 30
     uint8_t unk31[0x38 - 0x31]; // 31
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ConditionDefinition, 0x38);
+RED4EXT_ASSERT_OFFSET(ConditionDefinition, isInverted, 0x30);
+#else
+RED4EXT_ASSERT_SIZE(ConditionDefinition, 0x38);
+#endif
 } // namespace AI::behavior
 using AIbehaviorConditionDefinition = AI::behavior::ConditionDefinition;
 } // namespace RED4ext

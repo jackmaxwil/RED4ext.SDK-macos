@@ -20,9 +20,19 @@ struct JournalNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questJournalNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IJournal_NodeType> type; // 48
+#else
+    Handle<quest::IJournal_NodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(JournalNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(JournalNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(JournalNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questJournalNodeDefinition = quest::JournalNodeDefinition;
 } // namespace RED4ext

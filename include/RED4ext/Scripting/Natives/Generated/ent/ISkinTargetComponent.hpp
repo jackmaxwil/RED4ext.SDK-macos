@@ -20,13 +20,27 @@ struct __declspec(align(0x10)) ISkinTargetComponent : ent::IVisualComponent
     static constexpr const char* NAME = "entISkinTargetComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk13C[0x180 - 0x13C]; // 13C
+    Handle<ent::SkinningBinding> skinning; // 180
+    uint8_t unk190[0x1D0 - 0x190]; // 190
+    bool useSkinningLOD; // 1D0
+    uint8_t unk1D1[0x1D8 - 0x1D1]; // 1D1
+#else
     uint8_t unk140[0x180 - 0x140]; // 140
     Handle<ent::SkinningBinding> skinning; // 180
     uint8_t unk190[0x1D0 - 0x190]; // 190
     bool useSkinningLOD; // 1D0
     uint8_t unk1D1[0x1E0 - 0x1D1]; // 1D1
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ISkinTargetComponent, 0x1E0);
+RED4EXT_ASSERT_OFFSET(ISkinTargetComponent, skinning, 0x180);
+RED4EXT_ASSERT_OFFSET(ISkinTargetComponent, useSkinningLOD, 0x1D0);
+#else
+RED4EXT_ASSERT_SIZE(ISkinTargetComponent, 0x1E0);
+#endif
 } // namespace ent
 using entISkinTargetComponent = ent::ISkinTargetComponent;
 } // namespace RED4ext

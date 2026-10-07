@@ -18,9 +18,19 @@ struct MultiplayerTeleportPuppetNodeDefinition : quest::SignalStoppingNodeDefini
     static constexpr const char* NAME = "questMultiplayerTeleportPuppetNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     quest::MultiplayerTeleportPuppetParams params; // 48
+#else
+    quest::MultiplayerTeleportPuppetParams params; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(MultiplayerTeleportPuppetNodeDefinition, 0xD8);
+RED4EXT_ASSERT_OFFSET(MultiplayerTeleportPuppetNodeDefinition, params, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(MultiplayerTeleportPuppetNodeDefinition, 0xD8);
+#endif
 } // namespace quest
 using questMultiplayerTeleportPuppetNodeDefinition = quest::MultiplayerTeleportPuppetNodeDefinition;
 } // namespace RED4ext

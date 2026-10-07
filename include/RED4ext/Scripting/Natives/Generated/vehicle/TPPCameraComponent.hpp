@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) TPPCameraComponent : game::CameraComponent
     static constexpr const char* NAME = "vehicleTPPCameraComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk318[0x680 - 0x318]; // 318
+#else
     uint8_t unk320[0x680 - 0x320]; // 320
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TPPCameraComponent, 0x680);
+#else
+RED4EXT_ASSERT_SIZE(TPPCameraComponent, 0x680);
+#endif
 } // namespace vehicle
 using vehicleTPPCameraComponent = vehicle::TPPCameraComponent;
 } // namespace RED4ext

@@ -21,10 +21,22 @@ struct UseWorkspotNodeDefinition : quest::AICommandNodeBase
     static constexpr const char* NAME = "questUseWorkspotNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference entityReference; // 48
     Handle<quest::UseWorkspotParamsV1> paramsV1; // 80
+#else
+    game::EntityReference entityReference; // 48
+    Handle<quest::UseWorkspotParamsV1> paramsV1; // 80
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(UseWorkspotNodeDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(UseWorkspotNodeDefinition, entityReference, 0x48);
+RED4EXT_ASSERT_OFFSET(UseWorkspotNodeDefinition, paramsV1, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(UseWorkspotNodeDefinition, 0x90);
+#endif
 } // namespace quest
 using questUseWorkspotNodeDefinition = quest::UseWorkspotNodeDefinition;
 } // namespace RED4ext

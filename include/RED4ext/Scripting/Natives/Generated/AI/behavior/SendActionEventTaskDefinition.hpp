@@ -20,9 +20,19 @@ struct SendActionEventTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorSendActionEventTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<game::ActionEvent> event; // 38
+#else
+    Handle<game::ActionEvent> event; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SendActionEventTaskDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(SendActionEventTaskDefinition, event, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(SendActionEventTaskDefinition, 0x48);
+#endif
 } // namespace AI::behavior
 using AIbehaviorSendActionEventTaskDefinition = AI::behavior::SendActionEventTaskDefinition;
 } // namespace RED4ext

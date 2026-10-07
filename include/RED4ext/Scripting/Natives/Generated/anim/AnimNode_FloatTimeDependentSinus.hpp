@@ -17,13 +17,29 @@ struct AnimNode_FloatTimeDependentSinus : anim::AnimNode_FloatValue
     static constexpr const char* NAME = "animAnimNode_FloatTimeDependentSinus";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    float min; // 44
+    float max; // 48
+    float frequencyFactor; // 4C
+    float phaseFactor; // 50
+    uint8_t unk54[0x68 - 0x54]; // 54
+#else
     float min; // 48
     float max; // 4C
     float frequencyFactor; // 50
     float phaseFactor; // 54
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_FloatTimeDependentSinus, 0x68);
+RED4EXT_ASSERT_OFFSET(AnimNode_FloatTimeDependentSinus, min, 0x44);
+RED4EXT_ASSERT_OFFSET(AnimNode_FloatTimeDependentSinus, max, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_FloatTimeDependentSinus, frequencyFactor, 0x4C);
+RED4EXT_ASSERT_OFFSET(AnimNode_FloatTimeDependentSinus, phaseFactor, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_FloatTimeDependentSinus, 0x68);
+#endif
 } // namespace anim
 using animAnimNode_FloatTimeDependentSinus = anim::AnimNode_FloatTimeDependentSinus;
 } // namespace RED4ext

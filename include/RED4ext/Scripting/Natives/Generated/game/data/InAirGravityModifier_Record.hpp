@@ -17,9 +17,17 @@ struct InAirGravityModifier_Record : game::data::DriveHelper_Record
     static constexpr const char* NAME = "gamedataInAirGravityModifier_Record";
     static constexpr const char* ALIAS = "InAirGravityModifier_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0xA8 - 0x58]; // 58
+#else
     uint8_t unk58[0xB0 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(InAirGravityModifier_Record, 0xA8);
+#else
 RED4EXT_ASSERT_SIZE(InAirGravityModifier_Record, 0xB0);
+#endif
 } // namespace game::data
 using gamedataInAirGravityModifier_Record = game::data::InAirGravityModifier_Record;
 using InAirGravityModifier_Record = game::data::InAirGravityModifier_Record;

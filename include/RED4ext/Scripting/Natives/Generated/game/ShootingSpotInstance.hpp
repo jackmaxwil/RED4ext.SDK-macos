@@ -17,8 +17,15 @@ struct ShootingSpotInstance : game::CoverInstance
     static constexpr const char* NAME = "gameShootingSpotInstance";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShootingSpotInstance, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(ShootingSpotInstance, 0x108);
+#endif
 } // namespace game
 using gameShootingSpotInstance = game::ShootingSpotInstance;
 } // namespace RED4ext

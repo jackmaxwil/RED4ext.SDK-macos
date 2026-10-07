@@ -17,9 +17,17 @@ struct StickersRegisterCallbacksEvent : red::Event
     static constexpr const char* NAME = "gameuiStickersRegisterCallbacksEvent";
     static constexpr const char* ALIAS = "StickersRegisterCallbacksEvent";
 
+#ifdef __APPLE__
+    uint8_t unk40[0x80 - 0x40]; // 40
+#else
     uint8_t unk40[0xC0 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(StickersRegisterCallbacksEvent, 0x80);
+#else
 RED4EXT_ASSERT_SIZE(StickersRegisterCallbacksEvent, 0xC0);
+#endif
 } // namespace game::ui
 using gameuiStickersRegisterCallbacksEvent = game::ui::StickersRegisterCallbacksEvent;
 using StickersRegisterCallbacksEvent = game::ui::StickersRegisterCallbacksEvent;

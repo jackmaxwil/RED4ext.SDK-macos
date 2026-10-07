@@ -21,9 +21,19 @@ struct AnimNode_Container : anim::AnimNode_Base
     static constexpr const char* NAME = "animAnimNode_Container";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     DynArray<Handle<anim::AnimNode_Base>> nodes; // 48
+#else
+    DynArray<Handle<anim::AnimNode_Base>> nodes; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_Container, 0x58);
+RED4EXT_ASSERT_OFFSET(AnimNode_Container, nodes, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_Container, 0x58);
+#endif
 } // namespace anim
 using animAnimNode_Container = anim::AnimNode_Container;
 } // namespace RED4ext

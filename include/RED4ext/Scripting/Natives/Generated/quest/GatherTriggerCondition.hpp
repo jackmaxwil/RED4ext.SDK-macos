@@ -17,8 +17,15 @@ struct GatherTriggerCondition : quest::TriggerCondition
     static constexpr const char* NAME = "questGatherTriggerCondition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(GatherTriggerCondition, 0x80);
+#else
 RED4EXT_ASSERT_SIZE(GatherTriggerCondition, 0x88);
+#endif
 } // namespace quest
 using questGatherTriggerCondition = quest::GatherTriggerCondition;
 } // namespace RED4ext

@@ -17,8 +17,15 @@ struct ActionRotateToState : game::ActionRotateBaseState
     static constexpr const char* NAME = "gameActionRotateToState";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ActionRotateToState, 0x38);
+#else
 RED4EXT_ASSERT_SIZE(ActionRotateToState, 0x40);
+#endif
 } // namespace game
 using gameActionRotateToState = game::ActionRotateToState;
 } // namespace RED4ext

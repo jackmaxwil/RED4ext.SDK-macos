@@ -17,9 +17,17 @@ struct AITicketCheck_Record : game::data::AITicketCondition_Record
     static constexpr const char* NAME = "gamedataAITicketCheck_Record";
     static constexpr const char* ALIAS = "AITicketCheck_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AITicketCheck_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AITicketCheck_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAITicketCheck_Record = game::data::AITicketCheck_Record;
 using AITicketCheck_Record = game::data::AITicketCheck_Record;

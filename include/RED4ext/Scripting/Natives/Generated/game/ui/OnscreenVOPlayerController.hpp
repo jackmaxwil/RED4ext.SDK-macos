@@ -24,14 +24,32 @@ struct OnscreenVOPlayerController : game::ui::WidgetGameController
     static constexpr const char* NAME = "gameuiOnscreenVOPlayerController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unkDC[0xE0 - 0xDC]; // DC
     RaRef<ink::WidgetLibraryResource> subtitlesLibraryResource; // E0
     CName subtitlesRootName; // E8
     ink::CompoundWidgetReference subtitlesContainer; // F0
     uint8_t unk108[0x138 - 0x108]; // 108
     DynArray<game::ui::VOWithDelay> audioVOList; // 138
     uint8_t unk148[0x150 - 0x148]; // 148
+#else
+    RaRef<ink::WidgetLibraryResource> subtitlesLibraryResource; // E0
+    CName subtitlesRootName; // E8
+    ink::CompoundWidgetReference subtitlesContainer; // F0
+    uint8_t unk108[0x138 - 0x108]; // 108
+    DynArray<game::ui::VOWithDelay> audioVOList; // 138
+    uint8_t unk148[0x150 - 0x148]; // 148
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(OnscreenVOPlayerController, 0x150);
+RED4EXT_ASSERT_OFFSET(OnscreenVOPlayerController, subtitlesLibraryResource, 0xE0);
+RED4EXT_ASSERT_OFFSET(OnscreenVOPlayerController, subtitlesRootName, 0xE8);
+RED4EXT_ASSERT_OFFSET(OnscreenVOPlayerController, subtitlesContainer, 0xF0);
+RED4EXT_ASSERT_OFFSET(OnscreenVOPlayerController, audioVOList, 0x138);
+#else
+RED4EXT_ASSERT_SIZE(OnscreenVOPlayerController, 0x150);
+#endif
 } // namespace game::ui
 using gameuiOnscreenVOPlayerController = game::ui::OnscreenVOPlayerController;
 } // namespace RED4ext

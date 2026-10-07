@@ -17,9 +17,17 @@ struct TrafficPersistentLaneConnectionsResource : res::StreamedResource
     static constexpr const char* NAME = "worldTrafficPersistentLaneConnectionsResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x70 - 0x39]; // 39
+#else
     uint8_t unk40[0x70 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TrafficPersistentLaneConnectionsResource, 0x70);
+#else
+RED4EXT_ASSERT_SIZE(TrafficPersistentLaneConnectionsResource, 0x70);
+#endif
 } // namespace world
 using worldTrafficPersistentLaneConnectionsResource = world::TrafficPersistentLaneConnectionsResource;
 } // namespace RED4ext

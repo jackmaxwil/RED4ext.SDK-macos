@@ -17,9 +17,17 @@ struct WetnessComponent : ent::IComponent
     static constexpr const char* NAME = "entWetnessComponent";
     static constexpr const char* ALIAS = "WetnessComponent";
 
+#ifdef __APPLE__
+    uint8_t unk8D[0xF8 - 0x8D]; // 8D
+#else
     uint8_t unk90[0xF8 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(WetnessComponent, 0xF8);
+#else
+RED4EXT_ASSERT_SIZE(WetnessComponent, 0xF8);
+#endif
 } // namespace ent
 using entWetnessComponent = ent::WetnessComponent;
 using WetnessComponent = ent::WetnessComponent;

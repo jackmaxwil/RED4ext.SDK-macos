@@ -17,9 +17,17 @@ struct AILoSPositionCond_Record : game::data::AIActionSubCondition_Record
     static constexpr const char* NAME = "gamedataAILoSPositionCond_Record";
     static constexpr const char* ALIAS = "AILoSPositionCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x90 - 0x58]; // 58
+#else
     uint8_t unk58[0x98 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AILoSPositionCond_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(AILoSPositionCond_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataAILoSPositionCond_Record = game::data::AILoSPositionCond_Record;
 using AILoSPositionCond_Record = game::data::AILoSPositionCond_Record;

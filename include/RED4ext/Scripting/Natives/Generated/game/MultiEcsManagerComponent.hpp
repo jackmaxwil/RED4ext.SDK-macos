@@ -17,9 +17,17 @@ struct MultiEcsManagerComponent : ent::IComponent
     static constexpr const char* NAME = "gameMultiEcsManagerComponent";
     static constexpr const char* ALIAS = "MultiEcsManagerComponent";
 
+#ifdef __APPLE__
+    uint8_t unk8D[0xB8 - 0x8D]; // 8D
+#else
     uint8_t unk90[0xC0 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MultiEcsManagerComponent, 0xB8);
+#else
 RED4EXT_ASSERT_SIZE(MultiEcsManagerComponent, 0xC0);
+#endif
 } // namespace game
 using gameMultiEcsManagerComponent = game::MultiEcsManagerComponent;
 using MultiEcsManagerComponent = game::MultiEcsManagerComponent;

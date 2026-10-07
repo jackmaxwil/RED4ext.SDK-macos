@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) ShooterAIRescueTransporterController : game::ui::
     static constexpr const char* NAME = "gameuiarcadeShooterAIRescueTransporterController";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterAIRescueTransporterController, 0x270);
+#else
 RED4EXT_ASSERT_SIZE(ShooterAIRescueTransporterController, 0x280);
+#endif
 } // namespace game::ui::arcade
 using gameuiarcadeShooterAIRescueTransporterController = game::ui::arcade::ShooterAIRescueTransporterController;
 } // namespace RED4ext

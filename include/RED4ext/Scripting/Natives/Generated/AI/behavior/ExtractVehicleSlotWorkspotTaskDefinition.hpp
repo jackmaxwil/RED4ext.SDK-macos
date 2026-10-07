@@ -20,9 +20,19 @@ struct ExtractVehicleSlotWorkspotTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorExtractVehicleSlotWorkspotTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> outWorkspotData; // 38
+#else
+    Handle<AI::ArgumentMapping> outWorkspotData; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ExtractVehicleSlotWorkspotTaskDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(ExtractVehicleSlotWorkspotTaskDefinition, outWorkspotData, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(ExtractVehicleSlotWorkspotTaskDefinition, 0x48);
+#endif
 } // namespace AI::behavior
 using AIbehaviorExtractVehicleSlotWorkspotTaskDefinition = AI::behavior::ExtractVehicleSlotWorkspotTaskDefinition;
 } // namespace RED4ext

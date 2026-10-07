@@ -17,10 +17,19 @@ struct SetPlayerMinimapIconRotationAdjustment_NodeType : quest::IUIManagerNodeTy
     static constexpr const char* NAME = "questSetPlayerMinimapIconRotationAdjustment_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    float rotationAdjustment; // 34
+#else
     float rotationAdjustment; // 38
     uint8_t unk3C[0x40 - 0x3C]; // 3C
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SetPlayerMinimapIconRotationAdjustment_NodeType, 0x38);
+RED4EXT_ASSERT_OFFSET(SetPlayerMinimapIconRotationAdjustment_NodeType, rotationAdjustment, 0x34);
+#else
 RED4EXT_ASSERT_SIZE(SetPlayerMinimapIconRotationAdjustment_NodeType, 0x40);
+#endif
 } // namespace quest
 using questSetPlayerMinimapIconRotationAdjustment_NodeType = quest::SetPlayerMinimapIconRotationAdjustment_NodeType;
 } // namespace RED4ext

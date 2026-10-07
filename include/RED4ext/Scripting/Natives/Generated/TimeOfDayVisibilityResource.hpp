@@ -15,9 +15,17 @@ struct TimeOfDayVisibilityResource : CResource
     static constexpr const char* NAME = "TimeOfDayVisibilityResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x80 - 0x39]; // 39
+#else
     uint8_t unk40[0x88 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TimeOfDayVisibilityResource, 0x80);
+#else
 RED4EXT_ASSERT_SIZE(TimeOfDayVisibilityResource, 0x88);
+#endif
 } // namespace RED4ext
 
 // clang-format on

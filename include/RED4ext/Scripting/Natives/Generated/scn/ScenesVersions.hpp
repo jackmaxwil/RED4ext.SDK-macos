@@ -19,11 +19,23 @@ struct ScenesVersions : CResource
     static constexpr const char* NAME = "scnScenesVersions";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x3C - 0x39]; // 39
+    uint32_t currentVersion; // 3C
+    DynArray<scn::ScenesVersionsSceneChanges> scenes; // 40
+#else
     uint32_t currentVersion; // 40
     uint8_t unk44[0x48 - 0x44]; // 44
     DynArray<scn::ScenesVersionsSceneChanges> scenes; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ScenesVersions, 0x50);
+RED4EXT_ASSERT_OFFSET(ScenesVersions, currentVersion, 0x3C);
+RED4EXT_ASSERT_OFFSET(ScenesVersions, scenes, 0x40);
+#else
 RED4EXT_ASSERT_SIZE(ScenesVersions, 0x58);
+#endif
 } // namespace scn
 using scnScenesVersions = scn::ScenesVersions;
 } // namespace RED4ext

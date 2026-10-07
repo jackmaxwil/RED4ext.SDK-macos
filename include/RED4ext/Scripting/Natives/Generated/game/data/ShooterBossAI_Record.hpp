@@ -17,9 +17,17 @@ struct ShooterBossAI_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterBossAI_Record";
     static constexpr const char* ALIAS = "ShooterBossAI_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x108 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x110 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterBossAI_Record, 0x108);
+#else
 RED4EXT_ASSERT_SIZE(ShooterBossAI_Record, 0x110);
+#endif
 } // namespace game::data
 using gamedataShooterBossAI_Record = game::data::ShooterBossAI_Record;
 using ShooterBossAI_Record = game::data::ShooterBossAI_Record;

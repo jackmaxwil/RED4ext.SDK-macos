@@ -18,11 +18,24 @@ struct CharacterAttack_ConditionType : quest::ICharacterConditionType
     static constexpr const char* NAME = "questCharacterAttack_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk71[0x78 - 0x71]; // 71
     game::EntityReference targetRef; // 78
     bool isTargetPlayer; // B0
     uint8_t unkB1[0xB8 - 0xB1]; // B1
+#else
+    game::EntityReference targetRef; // 78
+    bool isTargetPlayer; // B0
+    uint8_t unkB1[0xB8 - 0xB1]; // B1
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(CharacterAttack_ConditionType, 0xB8);
+RED4EXT_ASSERT_OFFSET(CharacterAttack_ConditionType, targetRef, 0x78);
+RED4EXT_ASSERT_OFFSET(CharacterAttack_ConditionType, isTargetPlayer, 0xB0);
+#else
+RED4EXT_ASSERT_SIZE(CharacterAttack_ConditionType, 0xB8);
+#endif
 } // namespace quest
 using questCharacterAttack_ConditionType = quest::CharacterAttack_ConditionType;
 } // namespace RED4ext

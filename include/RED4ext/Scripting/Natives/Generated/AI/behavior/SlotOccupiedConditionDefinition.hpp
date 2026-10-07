@@ -20,9 +20,19 @@ struct SlotOccupiedConditionDefinition : AI::behavior::ConditionDefinition
     static constexpr const char* NAME = "AIbehaviorSlotOccupiedConditionDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     Handle<AI::ArgumentMapping> slot; // 38
+#else
+    Handle<AI::ArgumentMapping> slot; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SlotOccupiedConditionDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(SlotOccupiedConditionDefinition, slot, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(SlotOccupiedConditionDefinition, 0x48);
+#endif
 } // namespace AI::behavior
 using AIbehaviorSlotOccupiedConditionDefinition = AI::behavior::SlotOccupiedConditionDefinition;
 } // namespace RED4ext

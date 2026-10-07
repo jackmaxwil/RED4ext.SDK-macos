@@ -18,10 +18,20 @@ struct AnimNode_AnimSlot : anim::AnimNode_Base
     static constexpr const char* NAME = "animAnimNode_AnimSlot";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x98 - 0x44]; // 44
+    anim::PoseLink inputLink; // 98
+#else
     uint8_t unk48[0xA8 - 0x48]; // 48
     anim::PoseLink inputLink; // A8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AnimNode_AnimSlot, 0xB0);
+RED4EXT_ASSERT_OFFSET(AnimNode_AnimSlot, inputLink, 0x98);
+#else
 RED4EXT_ASSERT_SIZE(AnimNode_AnimSlot, 0xC0);
+#endif
 } // namespace anim
 using animAnimNode_AnimSlot = anim::AnimNode_AnimSlot;
 } // namespace RED4ext

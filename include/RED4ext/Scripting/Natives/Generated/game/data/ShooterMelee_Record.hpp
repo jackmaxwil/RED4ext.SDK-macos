@@ -17,9 +17,17 @@ struct ShooterMelee_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterMelee_Record";
     static constexpr const char* ALIAS = "ShooterMelee_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x148 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x150 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterMelee_Record, 0x148);
+#else
 RED4EXT_ASSERT_SIZE(ShooterMelee_Record, 0x150);
+#endif
 } // namespace game::data
 using gamedataShooterMelee_Record = game::data::ShooterMelee_Record;
 using ShooterMelee_Record = game::data::ShooterMelee_Record;

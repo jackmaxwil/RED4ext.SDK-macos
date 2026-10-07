@@ -20,9 +20,19 @@ struct VisionModesManagerNodeDefinition : quest::DisableableNodeDefinition
     static constexpr const char* NAME = "questVisionModesManagerNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     Handle<quest::IVisionModeNodeType> type; // 48
+#else
+    Handle<quest::IVisionModeNodeType> type; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VisionModesManagerNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(VisionModesManagerNodeDefinition, type, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(VisionModesManagerNodeDefinition, 0x58);
+#endif
 } // namespace quest
 using questVisionModesManagerNodeDefinition = quest::VisionModesManagerNodeDefinition;
 } // namespace RED4ext

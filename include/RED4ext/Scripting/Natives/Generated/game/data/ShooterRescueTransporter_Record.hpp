@@ -17,8 +17,15 @@ struct ShooterRescueTransporter_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterRescueTransporter_Record";
     static constexpr const char* ALIAS = "ShooterRescueTransporter_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterRescueTransporter_Record, 0xF0);
+#else
 RED4EXT_ASSERT_SIZE(ShooterRescueTransporter_Record, 0xF8);
+#endif
 } // namespace game::data
 using gamedataShooterRescueTransporter_Record = game::data::ShooterRescueTransporter_Record;
 using ShooterRescueTransporter_Record = game::data::ShooterRescueTransporter_Record;

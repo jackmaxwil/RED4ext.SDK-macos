@@ -18,9 +18,19 @@ struct VehicleAVArrived_ConditionType : quest::IVehicleConditionType
     static constexpr const char* NAME = "questVehicleAVArrived_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk34[0x38 - 0x34]; // 34
     game::EntityReference vehicleRef; // 38
+#else
+    game::EntityReference vehicleRef; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VehicleAVArrived_ConditionType, 0x70);
+RED4EXT_ASSERT_OFFSET(VehicleAVArrived_ConditionType, vehicleRef, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(VehicleAVArrived_ConditionType, 0x70);
+#endif
 } // namespace quest
 using questVehicleAVArrived_ConditionType = quest::VehicleAVArrived_ConditionType;
 } // namespace RED4ext

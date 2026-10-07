@@ -18,10 +18,21 @@ struct AnimNode_FloatJoin : anim::AnimNode_FloatValue
     static constexpr const char* NAME = "animAnimNode_FloatJoin";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     anim::FloatLink input; // 48
     uint8_t unk68[0x88 - 0x68]; // 68
+#else
+    anim::FloatLink input; // 48
+    uint8_t unk68[0x88 - 0x68]; // 68
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_FloatJoin, 0x88);
+RED4EXT_ASSERT_OFFSET(AnimNode_FloatJoin, input, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_FloatJoin, 0x88);
+#endif
 } // namespace anim
 using animAnimNode_FloatJoin = anim::AnimNode_FloatJoin;
 } // namespace RED4ext

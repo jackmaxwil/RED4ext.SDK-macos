@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) Window : ink::CanvasWidget
     static constexpr const char* NAME = "inkWindow";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk226[0x260 - 0x226]; // 226
+#else
     uint8_t unk230[0x270 - 0x230]; // 230
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Window, 0x260);
+#else
 RED4EXT_ASSERT_SIZE(Window, 0x270);
+#endif
 } // namespace ink
 using inkWindow = ink::Window;
 } // namespace RED4ext

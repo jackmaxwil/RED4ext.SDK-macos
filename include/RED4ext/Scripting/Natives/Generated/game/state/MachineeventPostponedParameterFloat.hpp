@@ -17,10 +17,19 @@ struct MachineeventPostponedParameterFloat : game::state::MachineeventPostponedP
     static constexpr const char* NAME = "gamestateMachineeventPostponedParameterFloat";
     static constexpr const char* ALIAS = "PSMPostponedParameterFloat";
 
+#ifdef __APPLE__
+    float value; // 4C
+#else
     float value; // 50
     uint8_t unk54[0x58 - 0x54]; // 54
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(MachineeventPostponedParameterFloat, 0x50);
+RED4EXT_ASSERT_OFFSET(MachineeventPostponedParameterFloat, value, 0x4C);
+#else
 RED4EXT_ASSERT_SIZE(MachineeventPostponedParameterFloat, 0x58);
+#endif
 } // namespace game::state
 using gamestateMachineeventPostponedParameterFloat = game::state::MachineeventPostponedParameterFloat;
 using PSMPostponedParameterFloat = game::state::MachineeventPostponedParameterFloat;

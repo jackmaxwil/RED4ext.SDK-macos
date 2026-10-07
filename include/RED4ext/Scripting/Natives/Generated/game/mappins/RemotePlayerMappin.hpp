@@ -17,11 +17,23 @@ struct RemotePlayerMappin : game::mappins::RuntimeMappin
     static constexpr const char* NAME = "gamemappinsRemotePlayerMappin";
     static constexpr const char* ALIAS = "RemotePlayerMappin";
 
+#ifdef __APPLE__
+    int32_t vitals; // FC
+    bool hasMissionData; // 100
+    uint8_t unk101[0x108 - 0x101]; // 101
+#else
     int32_t vitals; // 108
     bool hasMissionData; // 10C
     uint8_t unk10D[0x118 - 0x10D]; // 10D
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(RemotePlayerMappin, 0x108);
+RED4EXT_ASSERT_OFFSET(RemotePlayerMappin, vitals, 0xFC);
+RED4EXT_ASSERT_OFFSET(RemotePlayerMappin, hasMissionData, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(RemotePlayerMappin, 0x118);
+#endif
 } // namespace game::mappins
 using gamemappinsRemotePlayerMappin = game::mappins::RemotePlayerMappin;
 using RemotePlayerMappin = game::mappins::RemotePlayerMappin;

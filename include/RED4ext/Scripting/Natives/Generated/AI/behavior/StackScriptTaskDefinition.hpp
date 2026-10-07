@@ -20,9 +20,19 @@ struct StackScriptTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorStackScriptTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::behavior::task::StackScript> script; // 38
+#else
+    Handle<AI::behavior::task::StackScript> script; // 38
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(StackScriptTaskDefinition, 0x48);
+RED4EXT_ASSERT_OFFSET(StackScriptTaskDefinition, script, 0x38);
+#else
+RED4EXT_ASSERT_SIZE(StackScriptTaskDefinition, 0x48);
+#endif
 } // namespace AI::behavior
 using AIbehaviorStackScriptTaskDefinition = AI::behavior::StackScriptTaskDefinition;
 } // namespace RED4ext

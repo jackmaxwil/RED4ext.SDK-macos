@@ -21,11 +21,22 @@ struct ConditionNodeDefinition : AI::behavior::DecoratorNodeDefinition
     static constexpr const char* NAME = "AIbehaviorConditionNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    Handle<AI::behavior::ConditionDefinition> condition; // 40
+    AI::behavior::CompletionStatus resultIfFailed; // 50
+#else
     Handle<AI::behavior::ConditionDefinition> condition; // 40
     AI::behavior::CompletionStatus resultIfFailed; // 50
     uint8_t unk54[0x58 - 0x54]; // 54
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ConditionNodeDefinition, 0x58);
+RED4EXT_ASSERT_OFFSET(ConditionNodeDefinition, condition, 0x40);
+RED4EXT_ASSERT_OFFSET(ConditionNodeDefinition, resultIfFailed, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(ConditionNodeDefinition, 0x58);
+#endif
 } // namespace AI::behavior
 using AIbehaviorConditionNodeDefinition = AI::behavior::ConditionNodeDefinition;
 } // namespace RED4ext

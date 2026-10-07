@@ -20,13 +20,31 @@ struct RestoreSavedPatrolProgressTaskDefinition : AI::behavior::TaskDefinition
     static constexpr const char* NAME = "AIbehaviorRestoreSavedPatrolProgressTaskDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk31[0x38 - 0x31]; // 31
     Handle<AI::ArgumentMapping> path; // 38
     Handle<AI::ArgumentMapping> savedState; // 48
     Handle<AI::ArgumentMapping> patrolProgress; // 58
     Handle<AI::ArgumentMapping> destinationPosition; // 68
     Handle<AI::ArgumentMapping> destinationTangent; // 78
+#else
+    Handle<AI::ArgumentMapping> path; // 38
+    Handle<AI::ArgumentMapping> savedState; // 48
+    Handle<AI::ArgumentMapping> patrolProgress; // 58
+    Handle<AI::ArgumentMapping> destinationPosition; // 68
+    Handle<AI::ArgumentMapping> destinationTangent; // 78
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RestoreSavedPatrolProgressTaskDefinition, 0x88);
+RED4EXT_ASSERT_OFFSET(RestoreSavedPatrolProgressTaskDefinition, path, 0x38);
+RED4EXT_ASSERT_OFFSET(RestoreSavedPatrolProgressTaskDefinition, savedState, 0x48);
+RED4EXT_ASSERT_OFFSET(RestoreSavedPatrolProgressTaskDefinition, patrolProgress, 0x58);
+RED4EXT_ASSERT_OFFSET(RestoreSavedPatrolProgressTaskDefinition, destinationPosition, 0x68);
+RED4EXT_ASSERT_OFFSET(RestoreSavedPatrolProgressTaskDefinition, destinationTangent, 0x78);
+#else
+RED4EXT_ASSERT_SIZE(RestoreSavedPatrolProgressTaskDefinition, 0x88);
+#endif
 } // namespace AI::behavior
 using AIbehaviorRestoreSavedPatrolProgressTaskDefinition = AI::behavior::RestoreSavedPatrolProgressTaskDefinition;
 } // namespace RED4ext

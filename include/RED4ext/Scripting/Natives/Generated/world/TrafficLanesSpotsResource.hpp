@@ -17,9 +17,17 @@ struct TrafficLanesSpotsResource : res::StreamedResource
     static constexpr const char* NAME = "worldTrafficLanesSpotsResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x70 - 0x39]; // 39
+#else
     uint8_t unk40[0x70 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(TrafficLanesSpotsResource, 0x70);
+#else
+RED4EXT_ASSERT_SIZE(TrafficLanesSpotsResource, 0x70);
+#endif
 } // namespace world
 using worldTrafficLanesSpotsResource = world::TrafficLanesSpotsResource;
 } // namespace RED4ext

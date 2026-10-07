@@ -17,9 +17,17 @@ struct TankDestroyableObject_Record : game::data::ArcadeCollidableObject_Record
     static constexpr const char* NAME = "gamedataTankDestroyableObject_Record";
     static constexpr const char* ALIAS = "TankDestroyableObject_Record";
 
+#ifdef __APPLE__
+    uint8_t unk90[0xD0 - 0x90]; // 90
+#else
     uint8_t unk98[0xD8 - 0x98]; // 98
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TankDestroyableObject_Record, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(TankDestroyableObject_Record, 0xD8);
+#endif
 } // namespace game::data
 using gamedataTankDestroyableObject_Record = game::data::TankDestroyableObject_Record;
 using TankDestroyableObject_Record = game::data::TankDestroyableObject_Record;

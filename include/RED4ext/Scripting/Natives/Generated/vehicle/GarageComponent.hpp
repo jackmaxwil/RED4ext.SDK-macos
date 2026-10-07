@@ -17,9 +17,17 @@ struct GarageComponent : game::Component
     static constexpr const char* NAME = "vehicleGarageComponent";
     static constexpr const char* ALIAS = "GarageComponent";
 
+#ifdef __APPLE__
+    uint8_t unkA8[0x3B0 - 0xA8]; // A8
+#else
     uint8_t unkA8[0x3D0 - 0xA8]; // A8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(GarageComponent, 0x3B0);
+#else
 RED4EXT_ASSERT_SIZE(GarageComponent, 0x3D0);
+#endif
 } // namespace vehicle
 using vehicleGarageComponent = vehicle::GarageComponent;
 using GarageComponent = vehicle::GarageComponent;

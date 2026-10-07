@@ -21,10 +21,22 @@ struct RotateToNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questRotateToNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference entityReference; // 48
     Handle<quest::RotateToParams> params; // 80
+#else
+    game::EntityReference entityReference; // 48
+    Handle<quest::RotateToParams> params; // 80
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(RotateToNodeDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(RotateToNodeDefinition, entityReference, 0x48);
+RED4EXT_ASSERT_OFFSET(RotateToNodeDefinition, params, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(RotateToNodeDefinition, 0x90);
+#endif
 } // namespace quest
 using questRotateToNodeDefinition = quest::RotateToNodeDefinition;
 } // namespace RED4ext

@@ -19,11 +19,24 @@ struct UnequipItemNodeDefinition : quest::SignalStoppingNodeDefinition
     static constexpr const char* NAME = "questUnequipItemNodeDefinition";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk42[0x48 - 0x42]; // 42
     game::EntityReference entityReference; // 48
     quest::UnequipItemParams params; // 80
     uint8_t unk8C[0x90 - 0x8C]; // 8C
+#else
+    game::EntityReference entityReference; // 48
+    quest::UnequipItemParams params; // 80
+    uint8_t unk8C[0x90 - 0x8C]; // 8C
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(UnequipItemNodeDefinition, 0x90);
+RED4EXT_ASSERT_OFFSET(UnequipItemNodeDefinition, entityReference, 0x48);
+RED4EXT_ASSERT_OFFSET(UnequipItemNodeDefinition, params, 0x80);
+#else
+RED4EXT_ASSERT_SIZE(UnequipItemNodeDefinition, 0x90);
+#endif
 } // namespace quest
 using questUnequipItemNodeDefinition = quest::UnequipItemNodeDefinition;
 } // namespace RED4ext

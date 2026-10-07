@@ -21,12 +21,25 @@ struct AreaShapeNode : world::Node
     static constexpr const char* NAME = "worldAreaShapeNode";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk32[0x40 - 0x32]; // 32
+    Handle<AreaShapeOutline> outline; // 40
+    Color color; // 50
+    uint8_t unk54[0x60 - 0x54]; // 54
+#else
     uint8_t unk38[0x40 - 0x38]; // 38
     Handle<AreaShapeOutline> outline; // 40
     Color color; // 50
     uint8_t unk54[0x60 - 0x54]; // 54
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AreaShapeNode, 0x60);
+RED4EXT_ASSERT_OFFSET(AreaShapeNode, outline, 0x40);
+RED4EXT_ASSERT_OFFSET(AreaShapeNode, color, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(AreaShapeNode, 0x60);
+#endif
 } // namespace world
 using worldAreaShapeNode = world::AreaShapeNode;
 } // namespace RED4ext

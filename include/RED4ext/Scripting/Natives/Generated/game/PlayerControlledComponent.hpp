@@ -17,9 +17,17 @@ struct PlayerControlledComponent : ent::IComponent
     static constexpr const char* NAME = "gamePlayerControlledComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0x90 - 0x8D]; // 8D
+#else
     uint8_t unk90[0x98 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PlayerControlledComponent, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(PlayerControlledComponent, 0x98);
+#endif
 } // namespace game
 using gamePlayerControlledComponent = game::PlayerControlledComponent;
 } // namespace RED4ext

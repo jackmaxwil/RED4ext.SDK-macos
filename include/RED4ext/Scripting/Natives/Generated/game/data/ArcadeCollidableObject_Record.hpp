@@ -17,9 +17,17 @@ struct ArcadeCollidableObject_Record : game::data::ArcadeObject_Record
     static constexpr const char* NAME = "gamedataArcadeCollidableObject_Record";
     static constexpr const char* ALIAS = "ArcadeCollidableObject_Record";
 
+#ifdef __APPLE__
+    uint8_t unk88[0x90 - 0x88]; // 88
+#else
     uint8_t unk88[0x98 - 0x88]; // 88
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ArcadeCollidableObject_Record, 0x90);
+#else
 RED4EXT_ASSERT_SIZE(ArcadeCollidableObject_Record, 0x98);
+#endif
 } // namespace game::data
 using gamedataArcadeCollidableObject_Record = game::data::ArcadeCollidableObject_Record;
 using ArcadeCollidableObject_Record = game::data::ArcadeCollidableObject_Record;

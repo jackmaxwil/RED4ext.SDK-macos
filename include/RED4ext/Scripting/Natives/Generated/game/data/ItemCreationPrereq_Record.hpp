@@ -17,8 +17,15 @@ struct ItemCreationPrereq_Record : game::data::StatPrereq_Record
     static constexpr const char* NAME = "gamedataItemCreationPrereq_Record";
     static constexpr const char* ALIAS = "ItemCreationPrereq_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ItemCreationPrereq_Record, 0xA8);
+#else
 RED4EXT_ASSERT_SIZE(ItemCreationPrereq_Record, 0xB0);
+#endif
 } // namespace game::data
 using gamedataItemCreationPrereq_Record = game::data::ItemCreationPrereq_Record;
 using ItemCreationPrereq_Record = game::data::ItemCreationPrereq_Record;

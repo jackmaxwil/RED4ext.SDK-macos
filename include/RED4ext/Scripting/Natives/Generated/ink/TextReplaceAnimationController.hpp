@@ -19,6 +19,15 @@ struct TextReplaceAnimationController : ink::TextAnimationController
     static constexpr const char* NAME = "inkTextReplaceAnimationController";
     static constexpr const char* ALIAS = "inkTextReplaceController";
 
+#ifdef __APPLE__
+    ink::TextReplaceAnimationControllerWidgetTextUsage widgetTextUsage; // E9
+    uint8_t unkEA[0x110 - 0xEA]; // EA
+    CString targetText; // 110
+    LocalizationString baseTextLocalized; // 130
+    LocalizationString targetTextLocalized; // 158
+    uint8_t unk180[0x1C4 - 0x180]; // 180
+    float timeToSkip; // 1C4
+#else
     ink::TextReplaceAnimationControllerWidgetTextUsage widgetTextUsage; // F0
     uint8_t unkF1[0x118 - 0xF1]; // F1
     CString targetText; // 118
@@ -26,8 +35,18 @@ struct TextReplaceAnimationController : ink::TextAnimationController
     LocalizationString targetTextLocalized; // 160
     uint8_t unk188[0x1CC - 0x188]; // 188
     float timeToSkip; // 1CC
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TextReplaceAnimationController, 0x1C8);
+RED4EXT_ASSERT_OFFSET(TextReplaceAnimationController, widgetTextUsage, 0xE9);
+RED4EXT_ASSERT_OFFSET(TextReplaceAnimationController, targetText, 0x110);
+RED4EXT_ASSERT_OFFSET(TextReplaceAnimationController, baseTextLocalized, 0x130);
+RED4EXT_ASSERT_OFFSET(TextReplaceAnimationController, targetTextLocalized, 0x158);
+RED4EXT_ASSERT_OFFSET(TextReplaceAnimationController, timeToSkip, 0x1C4);
+#else
 RED4EXT_ASSERT_SIZE(TextReplaceAnimationController, 0x1D0);
+#endif
 } // namespace ink
 using inkTextReplaceAnimationController = ink::TextReplaceAnimationController;
 using inkTextReplaceController = ink::TextReplaceAnimationController;

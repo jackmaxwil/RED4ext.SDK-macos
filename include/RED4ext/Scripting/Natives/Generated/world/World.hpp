@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) World : world::Prefab
     static constexpr const char* NAME = "worldWorld";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(World, 0x380);
+#else
 RED4EXT_ASSERT_SIZE(World, 0x2C0);
+#endif
 } // namespace world
 using worldWorld = world::World;
 } // namespace RED4ext

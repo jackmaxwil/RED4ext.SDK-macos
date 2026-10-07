@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) ShooterBossNinja : game::ui::arcade::ShooterBossC
     static constexpr const char* NAME = "gameuiarcadeShooterBossNinja";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk280[0x2A0 - 0x280]; // 280
+#else
     uint8_t unk280[0x2B0 - 0x280]; // 280
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterBossNinja, 0x2A0);
+#else
 RED4EXT_ASSERT_SIZE(ShooterBossNinja, 0x2B0);
+#endif
 } // namespace game::ui::arcade
 using gameuiarcadeShooterBossNinja = game::ui::arcade::ShooterBossNinja;
 } // namespace RED4ext

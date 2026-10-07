@@ -18,9 +18,19 @@ struct EntityReuseEvent : AI::AIEvent
     static constexpr const char* NAME = "AIEntityReuseEvent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk4C[0x50 - 0x4C]; // 4C
     world::GlobalNodeID destination; // 50
+#else
+    world::GlobalNodeID destination; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EntityReuseEvent, 0x58);
+RED4EXT_ASSERT_OFFSET(EntityReuseEvent, destination, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(EntityReuseEvent, 0x58);
+#endif
 } // namespace AI
 using AIEntityReuseEvent = AI::EntityReuseEvent;
 } // namespace RED4ext

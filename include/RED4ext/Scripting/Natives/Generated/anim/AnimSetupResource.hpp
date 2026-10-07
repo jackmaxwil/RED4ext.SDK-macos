@@ -21,9 +21,19 @@ struct AnimSetupResource : CResource
     static constexpr const char* NAME = "animAnimSetupResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<Ref<anim::AnimSet>> dependencies; // 40
+#else
+    DynArray<Ref<anim::AnimSet>> dependencies; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimSetupResource, 0x50);
+RED4EXT_ASSERT_OFFSET(AnimSetupResource, dependencies, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(AnimSetupResource, 0x50);
+#endif
 } // namespace anim
 using animAnimSetupResource = anim::AnimSetupResource;
 } // namespace RED4ext

@@ -17,9 +17,17 @@ struct EffectAttachmentComponent : ent::IComponent
     static constexpr const char* NAME = "entEffectAttachmentComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk8D[0xB0 - 0x8D]; // 8D
+#else
     uint8_t unk90[0xB0 - 0x90]; // 90
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(EffectAttachmentComponent, 0xB0);
+#else
+RED4EXT_ASSERT_SIZE(EffectAttachmentComponent, 0xB0);
+#endif
 } // namespace ent
 using entEffectAttachmentComponent = ent::EffectAttachmentComponent;
 } // namespace RED4ext

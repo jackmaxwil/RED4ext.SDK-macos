@@ -20,10 +20,22 @@ struct StreamingBlock : CResource
     static constexpr const char* NAME = "worldStreamingBlock";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<world::StreamingSectorDescriptor> descriptors; // 40
     world::StreamingBlockIndex index; // 50
+#else
+    DynArray<world::StreamingSectorDescriptor> descriptors; // 40
+    world::StreamingBlockIndex index; // 50
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(StreamingBlock, 0x58);
+RED4EXT_ASSERT_OFFSET(StreamingBlock, descriptors, 0x40);
+RED4EXT_ASSERT_OFFSET(StreamingBlock, index, 0x50);
+#else
+RED4EXT_ASSERT_SIZE(StreamingBlock, 0x58);
+#endif
 } // namespace world
 using worldStreamingBlock = world::StreamingBlock;
 } // namespace RED4ext

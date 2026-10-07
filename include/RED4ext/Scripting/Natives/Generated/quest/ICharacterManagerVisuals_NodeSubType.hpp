@@ -17,8 +17,16 @@ struct ICharacterManagerVisuals_NodeSubType : quest::ICharacterManager_NodeSubTy
     static constexpr const char* NAME = "questICharacterManagerVisuals_NodeSubType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk69[0x6C - 0x69]; // 69
+#else
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ICharacterManagerVisuals_NodeSubType, 0x70);
+#else
+RED4EXT_ASSERT_SIZE(ICharacterManagerVisuals_NodeSubType, 0x70);
+#endif
 } // namespace quest
 using questICharacterManagerVisuals_NodeSubType = quest::ICharacterManagerVisuals_NodeSubType;
 } // namespace RED4ext

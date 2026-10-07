@@ -19,9 +19,19 @@ struct JournalDescriptorResource : game::JournalBaseResource
     static constexpr const char* NAME = "gameJournalDescriptorResource";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk39[0x40 - 0x39]; // 39
     DynArray<CString> entriesActivatedAtStart; // 40
+#else
+    DynArray<CString> entriesActivatedAtStart; // 40
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(JournalDescriptorResource, 0x50);
+RED4EXT_ASSERT_OFFSET(JournalDescriptorResource, entriesActivatedAtStart, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(JournalDescriptorResource, 0x50);
+#endif
 } // namespace game
 using gameJournalDescriptorResource = game::JournalDescriptorResource;
 } // namespace RED4ext

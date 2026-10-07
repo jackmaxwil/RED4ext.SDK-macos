@@ -18,10 +18,20 @@ struct PhoneCallPhase_ConditionType : quest::IPhoneConditionType
     static constexpr const char* NAME = "questPhoneCallPhase_ConditionType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    quest::PhoneCallPhase callPhase; // 38
+    uint8_t unk3C[0x40 - 0x3C]; // 3C
+#else
     quest::PhoneCallPhase callPhase; // 40
     uint8_t unk44[0x48 - 0x44]; // 44
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(PhoneCallPhase_ConditionType, 0x40);
+RED4EXT_ASSERT_OFFSET(PhoneCallPhase_ConditionType, callPhase, 0x38);
+#else
 RED4EXT_ASSERT_SIZE(PhoneCallPhase_ConditionType, 0x48);
+#endif
 } // namespace quest
 using questPhoneCallPhase_ConditionType = quest::PhoneCallPhase_ConditionType;
 } // namespace RED4ext

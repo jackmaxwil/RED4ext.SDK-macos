@@ -17,9 +17,17 @@ struct AITargetInUnmountingRangeCond_Record : game::data::AIActionSubCondition_R
     static constexpr const char* NAME = "gamedataAITargetInUnmountingRangeCond_Record";
     static constexpr const char* ALIAS = "AITargetInUnmountingRangeCond_Record";
 
+#ifdef __APPLE__
+    uint8_t unk58[0x60 - 0x58]; // 58
+#else
     uint8_t unk58[0x68 - 0x58]; // 58
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AITargetInUnmountingRangeCond_Record, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(AITargetInUnmountingRangeCond_Record, 0x68);
+#endif
 } // namespace game::data
 using gamedataAITargetInUnmountingRangeCond_Record = game::data::AITargetInUnmountingRangeCond_Record;
 using AITargetInUnmountingRangeCond_Record = game::data::AITargetInUnmountingRangeCond_Record;

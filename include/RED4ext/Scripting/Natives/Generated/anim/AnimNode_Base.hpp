@@ -17,11 +17,21 @@ struct AnimNode_Base : ISerializable
     static constexpr const char* NAME = "animAnimNode_Base";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk30[0x40 - 0x30]; // 30
+    uint32_t id; // 40
+#else
     uint8_t unk30[0x40 - 0x30]; // 30
     uint32_t id; // 40
     uint8_t unk44[0x48 - 0x44]; // 44
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(AnimNode_Base, 0x48);
+RED4EXT_ASSERT_OFFSET(AnimNode_Base, id, 0x40);
+#else
+RED4EXT_ASSERT_SIZE(AnimNode_Base, 0x48);
+#endif
 } // namespace anim
 using animAnimNode_Base = anim::AnimNode_Base;
 } // namespace RED4ext

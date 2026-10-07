@@ -18,9 +18,19 @@ struct ChangeStateEvent : ink::anim::Event
     static constexpr const char* NAME = "inkanimChangeStateEvent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk44[0x48 - 0x44]; // 44
     CName state; // 48
+#else
+    CName state; // 48
+#endif
 };
+#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(ChangeStateEvent, 0x50);
+RED4EXT_ASSERT_OFFSET(ChangeStateEvent, state, 0x48);
+#else
+RED4EXT_ASSERT_SIZE(ChangeStateEvent, 0x50);
+#endif
 } // namespace ink::anim
 using inkanimChangeStateEvent = ink::anim::ChangeStateEvent;
 } // namespace RED4ext

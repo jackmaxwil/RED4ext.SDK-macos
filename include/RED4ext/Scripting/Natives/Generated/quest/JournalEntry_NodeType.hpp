@@ -17,10 +17,20 @@ struct JournalEntry_NodeType : quest::IJournal_NodeType
     static constexpr const char* NAME = "questJournalEntry_NodeType";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    bool sendNotification; // 4C
+    uint8_t unk4D[0x50 - 0x4D]; // 4D
+#else
     bool sendNotification; // 50
     uint8_t unk51[0x58 - 0x51]; // 51
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(JournalEntry_NodeType, 0x50);
+RED4EXT_ASSERT_OFFSET(JournalEntry_NodeType, sendNotification, 0x4C);
+#else
 RED4EXT_ASSERT_SIZE(JournalEntry_NodeType, 0x58);
+#endif
 } // namespace quest
 using questJournalEntry_NodeType = quest::JournalEntry_NodeType;
 } // namespace RED4ext

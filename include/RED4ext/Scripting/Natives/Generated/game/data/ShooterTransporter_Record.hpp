@@ -17,9 +17,17 @@ struct ShooterTransporter_Record : game::data::ShooterAI_Record
     static constexpr const char* NAME = "gamedataShooterTransporter_Record";
     static constexpr const char* ALIAS = "ShooterTransporter_Record";
 
+#ifdef __APPLE__
+    uint8_t unkF0[0x100 - 0xF0]; // F0
+#else
     uint8_t unkF8[0x108 - 0xF8]; // F8
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ShooterTransporter_Record, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(ShooterTransporter_Record, 0x108);
+#endif
 } // namespace game::data
 using gamedataShooterTransporter_Record = game::data::ShooterTransporter_Record;
 using ShooterTransporter_Record = game::data::ShooterTransporter_Record;
