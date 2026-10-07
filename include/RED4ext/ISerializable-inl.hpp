@@ -84,12 +84,22 @@ RED4EXT_INLINE bool RED4ext::ISerializable::sub_70()
     return true;
 }
 
+#ifdef __APPLE__
+RED4EXT_INLINE RED4ext::Handle<RED4ext::ISerializable> RED4ext::ISerializable::sub_78(int64_t a2, uint8_t a3, int64_t a4,
+                                                                                      int64_t a5)
+{
+    using func_t = Handle<ISerializable> (*)(ISerializable*, int64_t, uint8_t, int64_t, int64_t);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ISerializable_sub_78);
+    return func(this, a2, a3, a4, a5);
+}
+#else
 RED4EXT_INLINE int64_t RED4ext::ISerializable::sub_78(int64_t a1, int64_t a2, uint8_t a3, int64_t a4, int64_t a5)
 {
     using func_t = int64_t (*)(ISerializable*, int64_t, int64_t, uint8_t, int64_t, int64_t);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ISerializable_sub_78);
     return func(this, a1, a2, a3, a4, a5);
 }
+#endif
 
 RED4EXT_INLINE bool RED4ext::ISerializable::sub_80()
 {
@@ -123,11 +133,18 @@ RED4EXT_INLINE RED4ext::CClass* RED4ext::ISerializable::sub_A8()
     return GetType();
 }
 
+#ifdef __APPLE__
+RED4EXT_INLINE RED4ext::Unk20 RED4ext::ISerializable::sub_B0()
+{
+    return {};
+}
+#else
 RED4EXT_INLINE void RED4ext::ISerializable::sub_B0(void* a1)
 {
     // This set a struct to 0.
     std::memset(a1, 0, 0x20);
 }
+#endif
 
 RED4EXT_INLINE RED4ext::CString RED4ext::ISerializable::sub_B8()
 {
@@ -138,17 +155,31 @@ RED4EXT_INLINE RED4ext::CString RED4ext::ISerializable::sub_B8()
 
 RED4EXT_INLINE void* RED4ext::ISerializable::sub_C0(void* a1)
 {
+#ifdef __APPLE__
+    // macOS: takes only `this`; a1 is not used by the game.
+    using func_t = void* (*)(ISerializable*);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ISerializable_sub_C0);
+    return func(this);
+#else
     using func_t = void* (*)(ISerializable*, void*);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::ISerializable_sub_C0);
     return func(this, a1);
+#endif
 }
 
+#ifdef __APPLE__
+RED4EXT_INLINE RED4ext::Unk10 RED4ext::ISerializable::sub_C8()
+{
+    return {};
+}
+#else
 RED4EXT_INLINE void* RED4ext::ISerializable::sub_C8(void* a1)
 {
     // This set a struct to 0.
     std::memset(a1, 0, 0x10);
     return a1;
 }
+#endif
 
 RED4EXT_INLINE bool RED4ext::ISerializable::CanBeDestructed()
 {

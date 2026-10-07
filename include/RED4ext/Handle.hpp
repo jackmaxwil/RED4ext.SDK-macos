@@ -24,11 +24,30 @@ public:
     {
     }
 
+#ifdef __APPLE__
+    // The macOS game has no out-of-line Handle(T*); every caller inlines it (e.g. at 0x1021863B4). Same steps: a new
+    // RefCnt {1, 1}, then the object's weak self-reference is replaced by one to this handle and the old one released.
+    explicit Handle(T* aPtr)
+    {
+        BaseType::instance = aPtr;
+        BaseType::refCount = Memory::New<RefCnt>();
+        if (aPtr)
+        {
+            BaseType::refCount->IncWeakRef();
+            decltype(aPtr->ref) previous;
+            previous.instance = aPtr->ref.instance;
+            previous.refCount = aPtr->ref.refCount;
+            aPtr->ref.instance = aPtr;
+            aPtr->ref.refCount = BaseType::refCount;
+        }
+    }
+#else
     explicit Handle(T* aPtr)
     {
         static UniversalRelocFunc<Handle* (*)(Handle*, T*)> ctor(Detail::AddressHashes::Handle_ctor);
         ctor(this, aPtr);
     }
+#endif
 
     Handle(const Handle& aOther) noexcept
     {
