@@ -3,10 +3,10 @@
   "game_version": "2.3.1",
   "uuid": "A6656ADC-FBE2-36A4-9B9D-B4A9DE645089",
   "stats": {
-    "total": 581,
-    "resolved": 577,
+    "total": 637,
+    "resolved": 633,
     "unresolved": 4,
-    "verified": 490
+    "verified": 546
   },
   "Addresses": [
     {
@@ -2821,6 +2821,286 @@
     {
       "hash": "3747497049",
       "offset": "3:0x1D47A68",
+      "verified": true
+    },
+    {
+      "hash": "3453960501",
+      "offset": "3:0x1C52BA8",
+      "verified": true
+    },
+    {
+      "hash": "2830528191",
+      "offset": "3:0x1C52BE8",
+      "verified": true
+    },
+    {
+      "hash": "1291678250",
+      "offset": "3:0x1C52C18",
+      "verified": true
+    },
+    {
+      "hash": "718092015",
+      "offset": "3:0x1C69470",
+      "verified": true
+    },
+    {
+      "hash": "2331398874",
+      "offset": "3:0x1C694A0",
+      "verified": true
+    },
+    {
+      "hash": "2822971916",
+      "offset": "3:0x1C694D0",
+      "verified": true
+    },
+    {
+      "hash": "2123277913",
+      "offset": "3:0x1C69500",
+      "verified": true
+    },
+    {
+      "hash": "106415816",
+      "offset": "3:0x1C69530",
+      "verified": true
+    },
+    {
+      "hash": "864649396",
+      "offset": "3:0x1C69560",
+      "verified": true
+    },
+    {
+      "hash": "2257380238",
+      "offset": "3:0x1C69590",
+      "verified": true
+    },
+    {
+      "hash": "2589849416",
+      "offset": "3:0x1C695C0",
+      "verified": true
+    },
+    {
+      "hash": "2961422557",
+      "offset": "3:0x1C695F0",
+      "verified": true
+    },
+    {
+      "hash": "2073438637",
+      "offset": "3:0x1C69620",
+      "verified": true
+    },
+    {
+      "hash": "2578426145",
+      "offset": "3:0x1C69650",
+      "verified": true
+    },
+    {
+      "hash": "3775726605",
+      "offset": "3:0x1C69680",
+      "verified": true
+    },
+    {
+      "hash": "1661459731",
+      "offset": "3:0x1C696B0",
+      "verified": true
+    },
+    {
+      "hash": "4261741031",
+      "offset": "3:0x1C696E0",
+      "verified": true
+    },
+    {
+      "hash": "2059569944",
+      "offset": "3:0x1C69710",
+      "verified": true
+    },
+    {
+      "hash": "2825091938",
+      "offset": "3:0x1C69740",
+      "verified": true
+    },
+    {
+      "hash": "1156867868",
+      "offset": "3:0x1C69770",
+      "verified": true
+    },
+    {
+      "hash": "1886099929",
+      "offset": "3:0x1C697A0",
+      "verified": true
+    },
+    {
+      "hash": "150214724",
+      "offset": "3:0x1C697D0",
+      "verified": true
+    },
+    {
+      "hash": "3007129710",
+      "offset": "3:0x1C69800",
+      "verified": true
+    },
+    {
+      "hash": "1383610914",
+      "offset": "3:0x1C69830",
+      "verified": true
+    },
+    {
+      "hash": "2820769977",
+      "offset": "3:0x1C69860",
+      "verified": true
+    },
+    {
+      "hash": "2311513403",
+      "offset": "3:0x1C69890",
+      "verified": true
+    },
+    {
+      "hash": "2827546102",
+      "offset": "3:0x1C698C0",
+      "verified": true
+    },
+    {
+      "hash": "729787691",
+      "offset": "3:0x1C698F0",
+      "verified": true
+    },
+    {
+      "hash": "478348523",
+      "offset": "3:0x1C69920",
+      "verified": true
+    },
+    {
+      "hash": "1328643453",
+      "offset": "3:0x1C69950",
+      "verified": true
+    },
+    {
+      "hash": "52879055",
+      "offset": "3:0x1C69980",
+      "verified": true
+    },
+    {
+      "hash": "3640651778",
+      "offset": "3:0x1C699B0",
+      "verified": true
+    },
+    {
+      "hash": "4080898953",
+      "offset": "3:0x1C699E0",
+      "verified": true
+    },
+    {
+      "hash": "1955980450",
+      "offset": "3:0x1C69A10",
+      "verified": true
+    },
+    {
+      "hash": "2899158894",
+      "offset": "3:0x1C69A40",
+      "verified": true
+    },
+    {
+      "hash": "822035665",
+      "offset": "3:0x1C69A70",
+      "verified": true
+    },
+    {
+      "hash": "1606896499",
+      "offset": "3:0x1C69AA0",
+      "verified": true
+    },
+    {
+      "hash": "725019825",
+      "offset": "3:0x1C69AD0",
+      "verified": true
+    },
+    {
+      "hash": "2429087120",
+      "offset": "3:0x1C69B00",
+      "verified": true
+    },
+    {
+      "hash": "4067503188",
+      "offset": "3:0x1C69B30",
+      "verified": true
+    },
+    {
+      "hash": "314712842",
+      "offset": "3:0x1C69B60",
+      "verified": true
+    },
+    {
+      "hash": "1502487326",
+      "offset": "3:0x1C69B90",
+      "verified": true
+    },
+    {
+      "hash": "3493083554",
+      "offset": "3:0x1C69BC0",
+      "verified": true
+    },
+    {
+      "hash": "1028780548",
+      "offset": "3:0x1C69BF0",
+      "verified": true
+    },
+    {
+      "hash": "3926653452",
+      "offset": "3:0x1C69C20",
+      "verified": true
+    },
+    {
+      "hash": "3629091567",
+      "offset": "3:0x1C6B7A0",
+      "verified": true
+    },
+    {
+      "hash": "4095436033",
+      "offset": "3:0x1C6B7D0",
+      "verified": true
+    },
+    {
+      "hash": "871284607",
+      "offset": "3:0x1C6B850",
+      "verified": true
+    },
+    {
+      "hash": "2484855215",
+      "offset": "3:0x1C6B890",
+      "verified": true
+    },
+    {
+      "hash": "3234369044",
+      "offset": "3:0x1C6B8C0",
+      "verified": true
+    },
+    {
+      "hash": "831340625",
+      "offset": "3:0x1C6B900",
+      "verified": true
+    },
+    {
+      "hash": "1174100937",
+      "offset": "3:0x1C6B940",
+      "verified": true
+    },
+    {
+      "hash": "3784190201",
+      "offset": "3:0x1C6B970",
+      "verified": true
+    },
+    {
+      "hash": "3767412582",
+      "offset": "3:0x1C6B9B0",
+      "verified": true
+    },
+    {
+      "hash": "227837809",
+      "offset": "3:0x1C6B9F0",
+      "verified": true
+    },
+    {
+      "hash": "3360514727",
+      "offset": "3:0x1C6BA20",
       "verified": true
     }
   ]
