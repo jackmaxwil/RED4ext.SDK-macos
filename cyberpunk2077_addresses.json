@@ -3,10 +3,10 @@
   "game_version": "2.3.1",
   "uuid": "A6656ADC-FBE2-36A4-9B9D-B4A9DE645089",
   "stats": {
-    "total": 637,
-    "resolved": 633,
+    "total": 658,
+    "resolved": 654,
     "unresolved": 4,
-    "verified": 546
+    "verified": 567
   },
   "Addresses": [
     {
@@ -3101,6 +3101,111 @@
     {
       "hash": "3360514727",
       "offset": "3:0x1C6BA20",
+      "verified": true
+    },
+    {
+      "hash": "4045196960",
+      "offset": "3:0x1A39068",
+      "verified": true
+    },
+    {
+      "hash": "1161620954",
+      "offset": "3:0x1A390A8",
+      "verified": true
+    },
+    {
+      "hash": "1426857557",
+      "offset": "3:0x1A390E8",
+      "verified": true
+    },
+    {
+      "hash": "937896921",
+      "offset": "3:0x1A39128",
+      "verified": true
+    },
+    {
+      "hash": "1789323884",
+      "offset": "3:0x1A39258",
+      "verified": true
+    },
+    {
+      "hash": "120593977",
+      "offset": "3:0x1A39288",
+      "verified": true
+    },
+    {
+      "hash": "1289831674",
+      "offset": "3:0x1C56070",
+      "verified": true
+    },
+    {
+      "hash": "2906894766",
+      "offset": "3:0x1C560A0",
+      "verified": true
+    },
+    {
+      "hash": "306225536",
+      "offset": "3:0x1C560D0",
+      "verified": true
+    },
+    {
+      "hash": "4238559994",
+      "offset": "3:0x1C56100",
+      "verified": true
+    },
+    {
+      "hash": "3472383603",
+      "offset": "3:0x1C56130",
+      "verified": true
+    },
+    {
+      "hash": "2350453190",
+      "offset": "3:0x1C56170",
+      "verified": true
+    },
+    {
+      "hash": "2927916207",
+      "offset": "3:0x1C561B0",
+      "verified": true
+    },
+    {
+      "hash": "827454770",
+      "offset": "3:0x1C561F0",
+      "verified": true
+    },
+    {
+      "hash": "1043824250",
+      "offset": "3:0x1C56230",
+      "verified": true
+    },
+    {
+      "hash": "4021427115",
+      "offset": "3:0x1C56270",
+      "verified": true
+    },
+    {
+      "hash": "1477477253",
+      "offset": "3:0x1C562B0",
+      "verified": true
+    },
+    {
+      "hash": "791741616",
+      "offset": "3:0x1C6BBB0",
+      "verified": true
+    },
+    {
+      "hash": "1710828204",
+      "offset": "3:0x1C6BBE0",
+      "verified": true
+    },
+    {
+      "hash": "422489218",
+      "offset": "3:0x1C6BC20",
+      "verified": true
+    },
+    {
+      "hash": "870767282",
+      "offset": "3:0x1C6BC60",
       "verified": true
     }
   ]
