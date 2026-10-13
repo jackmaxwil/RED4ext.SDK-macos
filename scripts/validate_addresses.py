@@ -45,6 +45,9 @@ SEGS = {1: "__TEXT", 2: "__DATA_CONST", 3: "__DATA"}
 ALLOW_ZERO = {
     1239944840: "g_DeviceData: D3D12 device data, no Metal equivalent",
     2508272872: "Allocator_CreateResource: D3D12MA, no Metal equivalent",
+    2203918127: "Global_ExecuteProcess: CProcessRunner::Run, the Windows process runner, no macOS twin found",
+    2875532677: "CBaseEngine_InitScripts: inlined into its caller (0x3D9E5E8); the out-of-line copy 0x3D9ED9C has no callers",
+    2508398574: "ResourceToken_DestructUnk38: inlined into its callers on macOS",
 }
 # frozenset of hashes -> justification. Hashes that may legitimately share one address.
 ALLOW_SHARED: dict[frozenset[int], str] = {}
