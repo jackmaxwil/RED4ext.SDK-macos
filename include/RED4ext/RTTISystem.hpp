@@ -24,8 +24,16 @@ struct IRTTISystem
     virtual CClass* GetClass(CName aName) = 0;                                                   // 10
     virtual CEnum* GetEnum(CName aName) = 0;                                                     // 18
     virtual CBitfield* GetBitfield(CName aName) = 0;                                             // 20
+#ifdef __APPLE__
+    // macOS: the full-name search over funcs (+0xA0) is the slot at +0x28 and the search over funcsByHash
+    // (+0xD0) is at +0x30, the other way round from Windows (2.3.1: vptr 0x6FFBD70, +0x28 = 0x2194FB0,
+    // +0x30 = 0x2195024).
+    virtual CGlobalFunction* GetFunction(CName aName) = 0; // 28
+    virtual void sub_28() = 0;                             // 30
+#else
     virtual void sub_28() = 0;                                                                   // 28
     virtual CGlobalFunction* GetFunction(CName aName) = 0;                                       // 30
+#endif
     virtual void sub_38() = 0;                                                                   // 38
     virtual void GetNativeTypes(DynArray<rtti::IType*>& aTypes) = 0;                             // 40
     virtual void GetGlobalFunctions(DynArray<CBaseFunction*>& aFunctions) = 0;                   // 48
