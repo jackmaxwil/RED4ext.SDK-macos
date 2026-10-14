@@ -243,7 +243,12 @@ struct CEnum : rtti::IType
     void Assign(void* aLhs, const void* aRhs) const final;                          // 50
     bool Unserialize(BaseStream* aStream, void* aInstance, int64_t a3) const final; // 60
     bool ToString(const void* aInstance, CString& aOut) const final;                // 68
+#ifdef __APPLE__
+    using rtti::IType::FromString;                                        // the CString overload
+    bool FromString(void* aInstance, FromStringText aString) const final; // 70
+#else
     bool FromString(void* aInstance, const CString& aString) const final;           // 70
+#endif
 
     CName name;                       // 10
     CName computedName;               // 18
@@ -286,7 +291,12 @@ struct CBitfield : rtti::IType
     void Assign(void* aLhs, const void* aRhs) const final;                          // 50
     bool Unserialize(BaseStream* aStream, void* aInstance, int64_t a3) const final; // 60
     bool ToString(const void* aInstance, CString& aOut) const final;                // 68
+#ifdef __APPLE__
+    using rtti::IType::FromString;                                        // the CString overload
+    bool FromString(void* aInstance, FromStringText aString) const final; // 70
+#else
     bool FromString(void* aInstance, const CString& aString) const final;           // 70
+#endif
 
     CName name;         // 10
     CName computedName; // 18

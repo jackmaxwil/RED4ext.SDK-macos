@@ -112,7 +112,11 @@ RED4EXT_INLINE bool RED4ext::rtti::IType::ToString(const void* aInstance, CStrin
     return false;
 }
 
+#ifdef __APPLE__
+RED4EXT_INLINE bool RED4ext::rtti::IType::FromString(void* aInstance, FromStringText aString) const
+#else
 RED4EXT_INLINE bool RED4ext::rtti::IType::FromString(void* aInstance, const CString& aString) const
+#endif
 {
     RED4EXT_UNUSED_PARAMETER(aInstance);
     RED4EXT_UNUSED_PARAMETER(aString);
