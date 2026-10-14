@@ -126,10 +126,22 @@ struct IEntityStubSystem : IGameSystem
     static constexpr const char* NAME = "gameIEntityStubSystem";
     static constexpr const char* ALIAS = NAME;
 
+#if defined(__APPLE__)
+    // macOS: the 16-byte token comes back through the indirect result register x8, the request is in x1 and the
+    // callback in x2 (2.3.1 Mac: CreateStub 0x101FD71BC and RestoreStub 0x101FD74B0, consecutive slots of the stub
+    // system vtable at 0x106FBFF70; `mov x19, x8` ... `str x23, [x19]; str x0, [x19, #0x8]`). With the Windows form the
+    // token pointer lands in x1, every argument shifts by one register and the game writes the token through a stray x8
+    // (the first dynamic spawn crashed with SIGBUS). The callback is moved like the SDK's Callback: its handler table
+    // at +0x80, move at handler+0x10 (dst x0, src x1), destruct at handler+0x18.
+    virtual EntityStubTokenPtr CreateStub(EntityStubCreateRequest& aRequest, EntityStubCallback&& aCallback) = 0; // 1B0
+    virtual EntityStubTokenPtr RestoreStub(EntityStubRestoreRequest& aRequest,
+                                           EntityStubCallback&& aCallback) = 0; // 1B8
+#else
     virtual void* CreateStub(EntityStubTokenPtr& aToken, EntityStubCreateRequest& aRequest,
                              EntityStubCallback&& aCallback) = 0; // 1B0
     virtual void* RestoreStub(EntityStubTokenPtr& aToken, EntityStubRestoreRequest& aRequest,
                               EntityStubCallback&& aCallback) = 0; // 1B8
+#endif
     virtual void CancelStub(EntityStubTokenPtr& aToken) = 0;       // 1C0
     virtual void DeleteStub(UniquePtr<EntityStub>&& aStub) = 0;    // 1C8
     virtual EntityStub* FindStub(EntityID aEntityID) = 0;          // 1D0

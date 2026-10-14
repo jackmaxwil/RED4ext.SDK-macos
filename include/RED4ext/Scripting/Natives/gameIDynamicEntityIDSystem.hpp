@@ -13,8 +13,17 @@ struct IDynamicEntityIDSystem : IGameSystem
     static constexpr const char* NAME = "gameIDynamicEntityIDSystem";
     static constexpr const char* ALIAS = NAME;
 
+    // clang-format off
+#ifdef __APPLE__
+    // macOS: no out argument; the 8-byte EntityID comes back in x0 (game functions 0x1035EDD9C and 0x1035EDDD8, twins of
+    // Windows RVA 0x4D513C and 0x1288AD8). The Windows declarations would leave aOut unwritten.
+    virtual ent::EntityID GetNextTransientID() = 0;
+    virtual ent::EntityID GetNextPersistableID() = 0;
+#else
     virtual void* GetNextTransientID(ent::EntityID& aOut) = 0;   // 1A8
     virtual void* GetNextPersistableID(ent::EntityID& aOut) = 0; // 1B0
+#endif
+    // clang-format on
     virtual void sub_1B8() = 0;                                  // 1B8
     virtual void sub_1C0() = 0;                                  // 1C0
     virtual void sub_1C8() = 0;                                  // 1C8

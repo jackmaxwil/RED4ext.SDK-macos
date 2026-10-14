@@ -21,8 +21,17 @@ struct IPersistencySystem : IGameSystem
     static constexpr const char* NAME = "gameIPersistencySystem";
     static constexpr const char* ALIAS = "IGamePersistencySystem";
 
+    // clang-format off
+#ifdef __APPLE__
+    // macOS: the Handle comes back through x8 and the three arguments follow `this` in x1..x3 (the game's
+    // implementation 0x103FED0B4, twin of Windows RVA 0x217908). The Windows declaration would pass &aState in x1.
+    virtual Handle<PersistentState> GetPersistentState(const PersistentID& aPersistentID, CClass* aPersistentStateType,
+                                                       bool aCreateState) = 0;
+#else
     virtual void* GetPersistentState(Handle<PersistentState>& aState, const PersistentID& aPersistentID,
                                      CClass* aPersistentStateType, bool aCreateState) = 0;      // 1A8
+#endif
+    // clang-format on
     virtual void sub_1B0() = 0;                                                                 // 1B0
     virtual void sub_1B8() = 0;                                                                 // 1B8
     virtual void sub_1C0() = 0;                                                                 // 1C0

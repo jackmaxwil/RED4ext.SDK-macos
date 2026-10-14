@@ -53,6 +53,11 @@ GENERATED = INCLUDE / "RED4ext/Scripting/Natives/Generated"
 CPP_KEYWORDS = {"auto", "double", "enum", "float", "operator", "struct", "void"}
 MAX_ALIGN = 16  # no game type is aligned to more than 16, so tail padding is shorter than that
 HOLDER = 1 << 0x15  # CProperty::Flags inValueHolder: the value lives in the script holder, not in the instance
+# Headers whose macOS block is written by hand: the rules below cannot derive it, so they are left as they are.
+#   rendRenderMorphTargetMeshBlobTextureData: the planner sizes a field with the dump's type, and the game's
+#   StaticArray<Vector4, 3> is 64 bytes (its Vector4 is 16-aligned). The SDK's is 52 (Vector4 is 4-aligned), so behind
+#   the alignas(16) member clang places the next field at 0x74, not at the dump's 0x80, and the block needs a pad.
+HAND_WRITTEN = {"rendRenderMorphTargetMeshBlobTextureData"}
 
 NAME = re.compile(r'static constexpr const char\* NAME = "([^"]+)";')
 STRUCT = re.compile(r"^struct (?:__declspec\(align\((0x[0-9A-Fa-f]+)\)\) )?(\w+)(?:\s*:\s*([\w:<>, ]+))?\s*$", re.M)
@@ -438,6 +443,8 @@ def main() -> int:
             planner.clang(rtti)
         changed = set()
         for rtti, hdr in headers.items():
+            if rtti in HAND_WRITTEN:
+                continue
             if (new := render(hdr, planner.plans.get(rtti))) != hdr.text:
                 changed.add(rtti)
                 if not args.check:

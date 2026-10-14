@@ -40,7 +40,15 @@ struct IPopulationSystem : IGameSystem
     static constexpr const char* NAME = "gameIPopulationSystem";
     static constexpr const char* ALIAS = NAME;
 
+    // clang-format off
+#ifdef __APPLE__
+    // macOS: the Handle comes back through x8 and the id is in w1 (game function 0x10155C9D4, twin of Windows RVA
+    // 0x5F1BE8). The Windows declaration would pass &aOut in x1 and the id in w2.
+    virtual Handle<Entity> FindEntity(uint32_t aDynamicEntityID) = 0;
+#else
     virtual void* FindEntity(Handle<Entity>& aOut, uint32_t aDynamicEntityID) = 0; // 1A8
+#endif
+    // clang-format on
     virtual void sub_1B0() = 0;                                                    // 1B0
     virtual void sub_1B8() = 0;                                                    // 1B8
     virtual void sub_1C0() = 0;                                                    // 1C0

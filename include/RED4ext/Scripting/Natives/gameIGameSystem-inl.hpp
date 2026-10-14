@@ -68,6 +68,17 @@ RED4EXT_INLINE void RED4ext::game::IGameSystem::OnGameResumed()
 {
 }
 
+#ifdef __APPLE__
+// macOS: the game collects the save locks in a GameInstance method (0x103314DDC) that calls this slot (+0x178) on every
+// system as SaveLock(this in x0, bool in w1) with the result buffer in x8. The game's own base implementation
+// (0x103317828: `mov x0, x8; str wzr, [x0], #8; b <CString ctor>`) returns an empty lock, which is what this does.
+RED4EXT_INLINE RED4ext::game::SaveLock RED4ext::game::IGameSystem::IsSavingLocked(bool a2)
+{
+    RED4EXT_UNUSED_PARAMETER(a2);
+
+    return {};
+}
+#else
 RED4EXT_INLINE void* RED4ext::game::IGameSystem::IsSavingLocked(RED4ext::game::SaveLock* aLock, bool a2)
 {
     RED4EXT_UNUSED_PARAMETER(a2);
@@ -75,6 +86,7 @@ RED4EXT_INLINE void* RED4ext::game::IGameSystem::IsSavingLocked(RED4ext::game::S
     *aLock = {};
     return aLock;
 }
+#endif
 
 RED4EXT_INLINE void RED4ext::game::IGameSystem::OnStreamingWorldLoaded(RED4ext::world::RuntimeScene* aScene,
                                                                        uint64_t a2, const RED4ext::JobGroup& aJobGroup)

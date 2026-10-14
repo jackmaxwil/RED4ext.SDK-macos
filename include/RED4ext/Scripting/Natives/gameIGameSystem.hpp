@@ -34,7 +34,14 @@ struct IGameSystem : IUpdatableSystem
     virtual void OnGamePrepared();                                                                            // 158
     virtual void OnGamePaused();                                                                              // 160
     virtual void OnGameResumed();                                                                             // 168
+    // clang-format off
+#ifdef __APPLE__
+    // macOS: the 40-byte SaveLock comes back through x8 and the bool is in w1 (see IsSavingLocked in the -inl file).
+    virtual SaveLock IsSavingLocked(bool a2);
+#else
     virtual void* IsSavingLocked(SaveLock* aLock, bool a2);                                                   // 170
+#endif
+    // clang-format on
     virtual void OnStreamingWorldLoaded(world::RuntimeScene* aScene, uint64_t a2, const JobGroup& aJobGroup); // 178
     virtual void sub_180();                                                                                   // 180
     virtual void sub_188();                                                                                   // 188
