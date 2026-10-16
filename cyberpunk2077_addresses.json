@@ -3,10 +3,10 @@
   "game_version": "2.3.1",
   "uuid": "A6656ADC-FBE2-36A4-9B9D-B4A9DE645089",
   "stats": {
-    "total": 681,
-    "resolved": 677,
+    "total": 694,
+    "resolved": 690,
     "unresolved": 4,
-    "verified": 590
+    "verified": 603
   },
   "Addresses": [
     {
@@ -80,6 +80,11 @@
     {
       "hash": "140387944",
       "offset": "1:0x42A71A4",
+      "verified": true
+    },
+    {
+      "hash": "188748408",
+      "offset": "1:0x3F106C8",
       "verified": true
     },
     {
@@ -271,6 +276,11 @@
       "verified": true
     },
     {
+      "hash": "836113218",
+      "offset": "1:0x3449908",
+      "verified": true
+    },
+    {
       "hash": "837162664",
       "offset": "1:0x1EA3410",
       "verified": true
@@ -322,6 +332,11 @@
       "verified": true
     },
     {
+      "hash": "1002050525",
+      "offset": "1:0x3F2D4D0",
+      "verified": true
+    },
+    {
       "hash": "1003499294",
       "offset": "1:0x370E9AC"
     },
@@ -359,6 +374,11 @@
     {
       "hash": "1186798404",
       "offset": "1:0x3CD7234",
+      "verified": true
+    },
+    {
+      "hash": "1194333091",
+      "offset": "1:0x344993C",
       "verified": true
     },
     {
@@ -422,6 +442,11 @@
     {
       "hash": "1350901460",
       "offset": "1:0x21AC670"
+    },
+    {
+      "hash": "1357913210",
+      "offset": "1:0x3F339B8",
+      "verified": true
     },
     {
       "hash": "1365841885",
@@ -528,6 +553,11 @@
       "verified": true
     },
     {
+      "hash": "1617892594",
+      "offset": "1:0x2EF9D9C",
+      "verified": true
+    },
+    {
       "hash": "1632836642",
       "offset": "1:0xCAAB24",
       "verified": true
@@ -593,6 +623,11 @@
     {
       "hash": "1894391003",
       "offset": "1:0x1000580"
+    },
+    {
+      "hash": "1917464012",
+      "offset": "1:0x170E538",
+      "verified": true
     },
     {
       "hash": "1926836641",
@@ -726,6 +761,11 @@
       "verified": true
     },
     {
+      "hash": "2393518559",
+      "offset": "1:0x245733C",
+      "verified": true
+    },
+    {
       "hash": "2396396482",
       "offset": "1:0x3228"
     },
@@ -815,6 +855,11 @@
     {
       "hash": "2630817091",
       "offset": "3:0x1C774F8",
+      "verified": true
+    },
+    {
+      "hash": "2635337807",
+      "offset": "3:0x19C9830",
       "verified": true
     },
     {
@@ -1158,6 +1203,11 @@
       "verified": true
     },
     {
+      "hash": "3788966949",
+      "offset": "3:0x1C6F1F8",
+      "verified": true
+    },
+    {
       "hash": "3791200470",
       "offset": "1:0x2172BF4",
       "verified": true
@@ -1183,6 +1233,11 @@
     {
       "hash": "3904113489",
       "offset": "1:0x2AACC",
+      "verified": true
+    },
+    {
+      "hash": "3923848734",
+      "offset": "1:0x2CE34D0",
       "verified": true
     },
     {
@@ -1227,6 +1282,11 @@
     {
       "hash": "4051123539",
       "offset": "1:0x2451620",
+      "verified": true
+    },
+    {
+      "hash": "4051576167",
+      "offset": "1:0x170EC50",
       "verified": true
     },
     {
@@ -1306,6 +1366,11 @@
     {
       "hash": "4292220681",
       "offset": "1:0x3452F08",
+      "verified": true
+    },
+    {
+      "hash": "4293661415",
+      "offset": "1:0x170CFE0",
       "verified": true
     },
     {
