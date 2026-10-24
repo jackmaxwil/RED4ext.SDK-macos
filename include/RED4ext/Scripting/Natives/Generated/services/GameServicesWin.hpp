@@ -17,13 +17,9 @@ struct GameServicesWin : services::GameServices
     static constexpr const char* NAME = "servicesGameServicesWin";
     static constexpr const char* ALIAS = NAME;
 
-    uint8_t unk6C8[0x850 - 0x6C8]; // 6C8
+    uint8_t unk7D8[0x950 - 0x7D8]; // 7D8
 };
-#ifdef __APPLE__
-// servicesGameServicesWin is not in the macOS RTTI dump: no macOS layout to assert
-#else
-RED4EXT_ASSERT_SIZE(GameServicesWin, 0x850);
-#endif
+RED4EXT_ASSERT_SIZE(GameServicesWin, 0x950);
 } // namespace services
 using servicesGameServicesWin = services::GameServicesWin;
 } // namespace RED4ext

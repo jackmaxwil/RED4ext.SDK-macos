@@ -17,17 +17,9 @@ struct OverrideRangedAttackPackageEffector_Record : game::data::Effector_Record
     static constexpr const char* NAME = "gamedataOverrideRangedAttackPackageEffector_Record";
     static constexpr const char* ALIAS = "OverrideRangedAttackPackageEffector_Record";
 
-#ifdef __APPLE__
-    uint8_t unk88[0x90 - 0x88]; // 88
-#else
-    uint8_t unk88[0x98 - 0x88]; // 88
-#endif
+    uint8_t unk88[0xA0 - 0x88]; // 88
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(OverrideRangedAttackPackageEffector_Record, 0x90);
-#else
-RED4EXT_ASSERT_SIZE(OverrideRangedAttackPackageEffector_Record, 0x98);
-#endif
+RED4EXT_ASSERT_SIZE(OverrideRangedAttackPackageEffector_Record, 0xA0);
 } // namespace game::data
 using gamedataOverrideRangedAttackPackageEffector_Record = game::data::OverrideRangedAttackPackageEffector_Record;
 using OverrideRangedAttackPackageEffector_Record = game::data::OverrideRangedAttackPackageEffector_Record;

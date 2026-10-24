@@ -17,16 +17,9 @@ struct CurrentTargetPrereqState : game::PrereqState
     static constexpr const char* NAME = "gameCurrentTargetPrereqState";
     static constexpr const char* ALIAS = "CurrentTargetPrereqState";
 
-#ifdef __APPLE__
-#else
-    uint8_t unkC0[0xC8 - 0xC0]; // C0
-#endif
+    uint8_t unk100[0x108 - 0x100]; // 100
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(CurrentTargetPrereqState, 0xC0);
-#else
-RED4EXT_ASSERT_SIZE(CurrentTargetPrereqState, 0xC8);
-#endif
+RED4EXT_ASSERT_SIZE(CurrentTargetPrereqState, 0x108);
 } // namespace game
 using gameCurrentTargetPrereqState = game::CurrentTargetPrereqState;
 using CurrentTargetPrereqState = game::CurrentTargetPrereqState;

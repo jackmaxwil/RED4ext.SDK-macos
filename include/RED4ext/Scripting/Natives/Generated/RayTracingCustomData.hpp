@@ -15,17 +15,9 @@ struct __declspec(align(0x10)) RayTracingCustomData : ICameraStorageCustomData
     static constexpr const char* NAME = "RayTracingCustomData";
     static constexpr const char* ALIAS = NAME;
 
-#ifdef __APPLE__
-    uint8_t unk18[0x8820 - 0x18]; // 18
-#else
-    uint8_t unk18[0x8610 - 0x18]; // 18
-#endif
+    uint8_t unk18[0x8830 - 0x18]; // 18
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(RayTracingCustomData, 0x8820);
-#else
-RED4EXT_ASSERT_SIZE(RayTracingCustomData, 0x8610);
-#endif
+RED4EXT_ASSERT_SIZE(RayTracingCustomData, 0x8830);
 } // namespace RED4ext
 
 // clang-format on

@@ -17,13 +17,9 @@ struct InputSystemWin32Game : input::InputSystemWin32Base
     static constexpr const char* NAME = "inputInputSystemWin32Game";
     static constexpr const char* ALIAS = NAME;
 
-    uint8_t unk190[0x1330 - 0x190]; // 190
+    uint8_t unk1E8[0x17D8 - 0x1E8]; // 1E8
 };
-#ifdef __APPLE__
-// inputInputSystemWin32Game is not in the macOS RTTI dump: no macOS layout to assert
-#else
-RED4EXT_ASSERT_SIZE(InputSystemWin32Game, 0x1330);
-#endif
+RED4EXT_ASSERT_SIZE(InputSystemWin32Game, 0x17D8);
 } // namespace input
 using inputInputSystemWin32Game = input::InputSystemWin32Game;
 } // namespace RED4ext

@@ -15,17 +15,9 @@ struct DebugGameEngine : CGameEngine
     static constexpr const char* NAME = "DebugGameEngine";
     static constexpr const char* ALIAS = NAME;
 
-#ifdef __APPLE__
-    uint8_t unk380[0x3F0 - 0x380]; // 380
-#else
-    uint8_t unk350[0x400 - 0x350]; // 350
-#endif
+    uint8_t unk390[0x440 - 0x390]; // 390
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(DebugGameEngine, 0x3F0);
-#else
-RED4EXT_ASSERT_SIZE(DebugGameEngine, 0x400);
-#endif
+RED4EXT_ASSERT_SIZE(DebugGameEngine, 0x440);
 } // namespace RED4ext
 
 // clang-format on

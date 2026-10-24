@@ -16,17 +16,9 @@ struct IsQuickhackPanelOpenedPrereqState
     static constexpr const char* NAME = "gameIsQuickhackPanelOpenedPrereqState";
     static constexpr const char* ALIAS = "IsQuickhackPanelOpenedPrereqState";
 
-#ifdef __APPLE__
-    uint8_t unk00[0xC0 - 0x0]; // 0
-#else
-    uint8_t unk00[0xC8 - 0x0]; // 0
-#endif
+    uint8_t unk00[0x108 - 0x0]; // 0
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(IsQuickhackPanelOpenedPrereqState, 0xC0);
-#else
-RED4EXT_ASSERT_SIZE(IsQuickhackPanelOpenedPrereqState, 0xC8);
-#endif
+RED4EXT_ASSERT_SIZE(IsQuickhackPanelOpenedPrereqState, 0x108);
 } // namespace game
 using gameIsQuickhackPanelOpenedPrereqState = game::IsQuickhackPanelOpenedPrereqState;
 using IsQuickhackPanelOpenedPrereqState = game::IsQuickhackPanelOpenedPrereqState;

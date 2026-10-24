@@ -17,17 +17,10 @@ struct __declspec(align(0x10)) CrowdMemberComponent : ent::IComponent
     static constexpr const char* NAME = "gameCrowdMemberComponent";
     static constexpr const char* ALIAS = "CrowdMemberComponent";
 
-#ifdef __APPLE__
-    uint8_t unk8D[0x1F0 - 0x8D]; // 8D
-#else
-    uint8_t unk90[0x210 - 0x90]; // 90
-#endif
+    bool forceCrowdToIgnore; // 90
+    uint8_t unk91[0x220 - 0x91]; // 91
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(CrowdMemberComponent, 0x1F0);
-#else
-RED4EXT_ASSERT_SIZE(CrowdMemberComponent, 0x210);
-#endif
+RED4EXT_ASSERT_SIZE(CrowdMemberComponent, 0x220);
 } // namespace game
 using gameCrowdMemberComponent = game::CrowdMemberComponent;
 using CrowdMemberComponent = game::CrowdMemberComponent;

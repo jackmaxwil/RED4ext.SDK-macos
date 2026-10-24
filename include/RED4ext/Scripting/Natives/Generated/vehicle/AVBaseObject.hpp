@@ -17,15 +17,8 @@ struct __declspec(align(0x10)) AVBaseObject : vehicle::BaseObject
     static constexpr const char* NAME = "vehicleAVBaseObject";
     static constexpr const char* ALIAS = "AVObject";
 
-#ifdef __APPLE__
-#else
-#endif
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(AVBaseObject, 0xB80);
-#else
-RED4EXT_ASSERT_SIZE(AVBaseObject, 0xBA0);
-#endif
+RED4EXT_ASSERT_SIZE(AVBaseObject, 0xBC0);
 } // namespace vehicle
 using vehicleAVBaseObject = vehicle::AVBaseObject;
 using AVObject = vehicle::AVBaseObject;

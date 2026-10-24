@@ -17,13 +17,9 @@ struct InputSystemEditor : input::InputSystemWin32Base
     static constexpr const char* NAME = "inputInputSystemEditor";
     static constexpr const char* ALIAS = NAME;
 
-    uint8_t unk190[0xE70 - 0x190]; // 190
+    uint8_t unk1E8[0xEC8 - 0x1E8]; // 1E8
 };
-#ifdef __APPLE__
-// inputInputSystemEditor is not in the macOS RTTI dump: no macOS layout to assert
-#else
-RED4EXT_ASSERT_SIZE(InputSystemEditor, 0xE70);
-#endif
+RED4EXT_ASSERT_SIZE(InputSystemEditor, 0xEC8);
 } // namespace input
 using inputInputSystemEditor = input::InputSystemEditor;
 } // namespace RED4ext

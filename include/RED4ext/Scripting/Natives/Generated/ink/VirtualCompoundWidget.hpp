@@ -17,17 +17,9 @@ struct __declspec(align(0x10)) VirtualCompoundWidget : ink::CompoundWidget
     static constexpr const char* NAME = "inkVirtualCompoundWidget";
     static constexpr const char* ALIAS = NAME;
 
-#ifdef __APPLE__
-    uint8_t unk226[0x230 - 0x226]; // 226
-#else
-    uint8_t unk230[0x240 - 0x230]; // 230
-#endif
+    uint8_t unk240[0x250 - 0x240]; // 240
 };
-#ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(VirtualCompoundWidget, 0x230);
-#else
-RED4EXT_ASSERT_SIZE(VirtualCompoundWidget, 0x240);
-#endif
+RED4EXT_ASSERT_SIZE(VirtualCompoundWidget, 0x250);
 } // namespace ink
 using inkVirtualCompoundWidget = ink::VirtualCompoundWidget;
 } // namespace RED4ext

@@ -17,17 +17,9 @@ struct __declspec(align(0x10)) VirtualWindow : ink::Window
     static constexpr const char* NAME = "inkVirtualWindow";
     static constexpr const char* ALIAS = NAME;
 
-#ifdef __APPLE__
-    uint8_t unk260[0x5B0 - 0x260]; // 260
-#else
-    uint8_t unk270[0x5B0 - 0x270]; // 270
-#endif
+    uint8_t unk280[0x5B0 - 0x280]; // 280
 };
-#ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(VirtualWindow, 0x5B0);
-#else
-RED4EXT_ASSERT_SIZE(VirtualWindow, 0x5B0);
-#endif
 } // namespace ink
 using inkVirtualWindow = ink::VirtualWindow;
 } // namespace RED4ext
