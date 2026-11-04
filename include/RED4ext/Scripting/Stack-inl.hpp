@@ -5,8 +5,10 @@
 #endif
 
 #include <bit>
+#include <cstring>
 
 #include <RED4ext/Detail/AddressHashes.hpp>
+#include <RED4ext/Memory/Allocators.hpp>
 #include <RED4ext/RTTISystem.hpp>
 #include <RED4ext/Relocation.hpp>
 
@@ -65,4 +67,28 @@ RED4EXT_INLINE RED4ext::CStackFrame::CStackFrame(IScriptable* aContext, char* aC
     paramFlags = 0;
     currentParam = 0;
     useDirectData = false;
+    isRoot = true;
+
+    // Same initialization as the game's call map constructor.
+    std::memset(unk68, 0, sizeof(unk68));
+    *reinterpret_cast<uint32_t*>(&unk68[0x20]) = 0xFFFFFFFF;
+#ifdef __APPLE__
+    // macOS: +0x28 holds a PoolScript allocator object (a bare vptr) that the frame dtor 0x1011AB310 frees through
+    // (vt+0x20 with x0 = &unk68[0x28]). The SDK's Allocator<PoolScript> has the same vtable shape and forwards to the
+    // game's exported PoolStorageProxy<PoolScript>, so its vptr stands in for the game's (docs/re/port_2.5.0.md).
+    *reinterpret_cast<void**>(&unk68[0x28]) = *reinterpret_cast<void**>(Memory::Allocator<Memory::PoolScript>::Get());
+#else
+    static UniversalRelocVtbl poolScriptVtbl(Detail::AddressHashes::Memory_PoolScript_vtbl);
+    *reinterpret_cast<uintptr_t*>(&unk68[0x28]) = reinterpret_cast<uintptr_t>(static_cast<uintptr_t*>(poolScriptVtbl));
+#endif
+
+    unk98 = unk68;
+    unkA0 = 0;
+}
+
+RED4EXT_INLINE RED4ext::CStackFrame::~CStackFrame()
+{
+    using func_t = void (*)(CStackFrame*);
+    static UniversalRelocFunc<func_t> dtor(Detail::AddressHashes::CStackFrame_dtor);
+    dtor(this);
 }
