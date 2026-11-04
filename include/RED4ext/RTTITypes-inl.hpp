@@ -383,9 +383,16 @@ RED4EXT_INLINE bool RED4ext::CEnum::ToString(const void* aInstance, CString& aOu
 
 RED4EXT_INLINE bool RED4ext::CEnum::FromString(void* aInstance, const CString& aString) const
 {
+#ifdef __APPLE__
+    // macOS: the game takes a StringView by value (x2 = ptr, x3 = length); see docs/re/port_2.5.0_codeware.md.
+    using func_t = bool (*)(const CEnum*, void*, const char*, uint64_t);
+    static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CEnum_FromString);
+    return func(this, aInstance, aString.c_str(), aString.Length());
+#else
     using func_t = bool (*)(const CEnum*, void*, const CString&);
     static UniversalRelocFunc<func_t> func(Detail::AddressHashes::CEnum_FromString);
     return func(this, aInstance, aString);
+#endif
 }
 
 RED4EXT_INLINE RED4ext::CBitfield::CBitfield(CName aName, int8_t aActualSize, Flags aFlags)

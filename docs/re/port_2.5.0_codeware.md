@@ -1,0 +1,94 @@
+# 2.5.0 macOS port: Codeware addresses (batch 8)
+
+Static analysis of the 2.5.0 binary (UUID 7D7382D0-EADD-36F0-BA1C-CEBEC1D5BEBC). Nothing was launched. The main session spot-checked the CEnum (0x107831578) and IType (0x107833200) vtable slots, the job-descriptor strings and the Entity_Assemble body. CEnum_FromString is published together with the SDK func_t fix (StringView by value).
+
+
+| hash | name | new address (vmaddr) | DB offset (seg:0xOFF) | FOUND/NOT FOUND | signature same? |
+| --- | --- | --- | --- | --- | --- |
+| 68817558 | CEnum_ToString | 0x1010CF304 | 1:0x10CF304 | FOUND | yes: `bool(CEnum* x0, const void* x1, CString& x2)` |
+| 364779332 | CBaseRTTIType_sub_88 | 0x1010DBE68 | 1:0x10DBE68 | FOUND | yes: `bool(IType* x0, a1 x1, inst x2)` |
+| 566894273 | CEnum_FromString | 0x1010CF45C | 1:0x10CF45C | FOUND, **held out of JSON** | same as 2.3.1, but **the SDK func_t is wrong**: the game takes a StringView by value (x2 = ptr, x3 = len), not `const CString&` |
+| 1087575974 | CEnum_Unserialize | 0x1010CF100 | 1:0x10CF100 | FOUND | yes: `bool(CEnum* x0, BaseStream* x1, void* x2, int64 x3)` (x3 unused) |
+| 2396396482 | CBaseRTTIType_sub_A0 | 0x1010DC240 | 1:0x10DC240 | FOUND | yes. It reads only x0 and x1; x2/x3 (`CString&`, `bool*`) are unused |
+| 2757309857 | CBaseRTTIType_sub_90 | 0x1010DBF30 | 1:0x10DBF30 | FOUND | yes: x0..x4 used |
+| 2930319133 | CBaseRTTIType_sub_98 | 0x1010DC0DC | 1:0x10DC0DC | FOUND | yes: x0..x4 used (x4 is dereferenced `ldr w8,[x4]`, as in 2.3.1); w5 unused |
+| 3832485534 | CBaseRTTIType_sub_80 | 0x1010DBDA8 | 1:0x10DBDA8 | FOUND | yes: `bool(IType* x0, a1 x1, inst x2)` |
+| 4007601841 | CGameFramework_InitializeGameInstance | 0x101578050 | 1:0x1578050 | FOUND | yes: `void(closure* x0, jobctx* x1)` |
+| 2182550867 | Entity_Assemble | 0x1019AA048 | 1:0x19AA048 | FOUND | args yes `(Entity* x0, AssembleParams* x1)`. Return: **void**. w0 is not set, and both callers ignore it |
+| 2601784524 | ISerializable_Clone | - | - | NOT FOUND | - |
+
+Re-check helpers are in `re2/b8/`. `find.py new|old OFF=TARGET...` votes on vtable slots over all vtables that match the given slot values. `dump.py new|old VT` prints the vtable slots (and the fmap entry for old). `asm_scan.py new|old` runs the Entity_Assemble field-copy scan over every function start.
+
+## CEnum vtable (group 1 anchor)
+- **2.3.1 CEnum vtable 0x106FFC2B8** (archivexl_port.md) has GetType +0x28 = 0x1007D3EF0 `mov w0,#5; ret`.
+- **2.5.0 CEnum vtable 0x107831578.** Its GetType +0x28 is 0x100B4F7FC, `mov w0,#5; ret` (Enum).
+  - The CEnum ctor 0x1010CEB90 stores this vtable: `adrp/add x8,0x107831578; str x8,[x0]`, then name at +0x10, actualSize at +0x20 and flags at +0x21. That matches the `CEnum(CName, int8, Flags)` layout.
+  - Its sibling 0x107831188 has GetType 13 (CBitfield). The same pair exists in 2.3.1: 0x106FFC2B8 and 0x106FFBEC8, both with GetName 0x10030F8DC → 0x10089BA4C.
+- **Only one CEnum vtable exists.** CEnum is not templated, so each of the slot values Unserialize/ToString/FromString occurs exactly once in the rebase fixups, in both builds. The "many vtables" premise does not hold for CEnum.
+
+## CEnum_Unserialize 0x1010CF100, ToString 0x1010CF304, FromString 0x1010CF45C
+- **Evidence 1, vtable slot.** The CEnum vtable holds them at +0x68, +0x70 and +0x78 (SDK 0x60/0x68/0x70 + 8), in the same positions as 2.3.1's 0x1021A39B0, 0x1021A3BC0 and 0x1021A3D4C.
+- **Evidence 2, the bodies match 2.3.1** (`re2/b8/{o,n}_{unser,tostr,from}.s`). The prologues are the same, and so are the field offsets:
+  - actualSize `ldrb [x0,#0x20]` (a jump table in 2.3.1, a compare chain in 2.5.0);
+  - hashList count `[+0x34]`, valueList `[+0x38]` and hashList `[+0x28]`;
+  - Unserialize tests the stream flag `ldrb [x1,#8]; tbnz #1`.
+
+  CEnum field offsets are unchanged.
+- **FromString ABI.** Both builds start with `stp x2,x3,[sp]; mov x0,sp; mov w1,#'.'`, then compare against "None" (`cmp w8,#0x4e`).
+  - Caller 0x101DD0CE0 passes `x2 = c_str()` and `w3 = length`.
+  - So arg 2 is a StringView passed by value. The SDK's `bool(const CEnum*, void*, const CString&)` func_t is wrong on macOS.
+  - The address is correct. It is held out of the JSON until the SDK fixes the wrapper (StringView{ptr,len}), as archivexl_port.md already required for 2.3.1.
+
+## CBaseRTTIType_sub_80/88/90/98/A0 = 0x1010DBDA8 / 0x1010DBE68 / 0x1010DBF30 / 0x1010DC0DC / 0x1010DC240
+- **Evidence 1, the base vtable.** The 2.5.0 abstract IType vtable is 0x107833200, the only vtable with `__cxa_pure_virtual` at +0x10..+0x28 and the ported +0x88. Its shape matches 2.3.1's 0x106FFDF40 slot for slot.
+  - +0x88/+0x90/+0x98/+0xA0/+0xA8 hold these five values.
+  - The same values sit in CEnum 0x107831578 and CBitfield 0x107831188.
+- **Evidence 1b, the slot vote** (`find.py new 0x88=0x1010dbda8`).
+  - 34 RTTI vtables carry the base sub_80. The counts per slot are +0x88 34/34, +0x90 34/34, +0x98 20/34, +0xA0 12/34 and +0xA8 34/34.
+  - 2.3.1 has exactly the same counts (34; 34/34/20/12/34) with 0x1021AFD4C/E0C/ED4/B007C/B01E0.
+  - These are the non-overriding values. They are not the CClass overrides (0x1010C5B40 etc.).
+- **Evidence 2, bodies are opcode-identical to 2.3.1** (`re2/b8/{ob,nb}{0..4}.s`).
+  - sub_80, sub_88, sub_98 and sub_A0 have 0 opcode differences.
+  - sub_90 differs only by a 16-byte copy (`ldp/stp` became `ldr q0/str q0`) and the GOT offset.
+  - sub_A0 references the unique string "Type does not contain any properties" (0x1074D7632; 2.3.1 0x106CC3871). It tail-calls `a1->vt[+0x10](a1, this, str)`.
+  - sub_80 calls `this->vt[+0x70]` (ToString). sub_88 calls `a1->vt[+0x60]`.
+- **The independent fmap agrees:** 0x1021AFD4C→0x1010DBDA8, …, 0x1021B01E0→0x1010DC240.
+
+## CGameFramework_InitializeGameInstance 0x101578050 (twin decided)
+- **Evidence 1** is from batch3: the shape of Codeware's Windows pattern (TLS job scope from `[x1+0x20]`, then closure field 0).
+- **Evidence 2, the job-descriptor name string.** The framework init is 0x101577BA8.
+  - It builds a job from lambda 0x101578050 (`adrp/add` at 0x101577C88) with descriptor 0x108323170 (0x101577CC4..CCC).
+  - The static initializer 0x101578388 names that descriptor `"CGameFramework/GameInstance"` (0x1074FF4F1).
+  - The twin 0x1015780D4 (0x101577D04) uses descriptor 0x1083231B0. Initializer 0x1015783C0 names it `"CGameFramework/RuntimeScene"` (0x1074FF50D).
+  - A third descriptor is "CGameFramework/StateMachine" (lambda 0x101578150).
+- **Evidence 3, body.** 0x101578050 loads `framework+0x10` (GameInstance) and makes a virtual call through `vt+0x28`. The twin loads `+0x18` (RuntimeScene) and calls 0x101BC4D44 directly.
+
+## Entity_Assemble 0x1019AA048
+- **Evidence 1, the Windows pattern from Codeware history (commit 4070e2a2, `Entity_OnAssemble`).** The pattern is `mov rax,[rdx]; mov [rcx+60h],rax; mov rax,[rdx+8]; mov [rcx+50h],rax; …`.
+  - A scan of all 433k function starts finds exactly one 2.5.0 function that copies `[x1]→[x0+0x60]` and `[x1+8]→[x0+0x50]`: 0x1019AA048.
+  - Its body is `ldr x8,[x1]; str x8,[x0,#0x60]; ldr x8,[x1,#8]; str x8,[x0,#0x50]; ldr x8,[x1,#0x10]; str x8,[x0,#0x58]`.
+  - It then copies tags into `this+0x138` from `params+0x60`, calls `this->vt[+0x1B8](this, params, params+0x20)`, and fills the components storage at `this+0x70`.
+  - Those offsets match Codeware Entity.hpp: AppearanceName 0x50, TemplatePath 0x60, ComponentsStorage 0x70, VisualTags 0x138.
+  - In 2.3.1 the same scan also has one unique hit, 0x100C97E28.
+- **Evidence 2, call graph.** The fmap independently maps 0x100C97E28 → 0x1019AA048 ("callee set").
+  - 2.3.1 caller 0x100CA14B8 maps to 0x1019B48D4, which calls 0x1019AA048 at 0x1019B4C14.
+  - The second caller is 0x1019BF62C (call at 0x1019BF784).
+- **Signature.** The arguments are `(Entity* x0, params* x1)`, the same as Codeware's `(Entity*, uintptr_t)`.
+  - The function is void: it ends with `ret` and does not set w0.
+  - Both callers ignore x0 (the next instructions are `ldr x8,[x20,#0xb8]` and `mov x0,sp`).
+  - Codeware's `bool` return type is harmless under HookAfter. Nothing should read the result.
+
+## ISerializable_Clone: NOT FOUND
+- **No Windows pattern exists.** Codeware added the hash after it moved to the address library (commit 793f00f0), so there is no Windows pattern or address comment.
+- **No string or symbol anchor.**
+  - The only "Clone" strings are memory-pool names ("BufferClone", "DynamicBufferClone") and "OnClone".
+  - "OnClone" is used by 0x1017A625C, a class-specific copy that fires a script `OnClone` event. That is not the generic clone.
+- **Unconfirmed lead.** It may dispatch through ISerializable's `+0x80` slot (SDK sub_78, sret Handle). This is not confirmed.
+- **ABI note.** On Windows, `(Handle& out, const Handle& obj)` is a hidden return pointer. On macOS that out pointer would be in x8 and obj in x0, so Codeware's decl would need to change once the address is found.
+
+## Summary
+1. 10 of 11 FOUND, 1 NOT FOUND (ISerializable_Clone). 9 go into the JSON, because CEnum_FromString is found but held.
+2. CEnum_FromString 0x1010CF45C takes `StringView` by value (x2 ptr, x3 len) on macOS, in both 2.3.1 and 2.5.0. The SDK `CEnum::FromString` func_t (`const CString&`) must change before its address is published.
+3. The CBaseRTTIType base slots are the abstract IType vtable values (0x107833200), not the CClass overrides. Their bodies are opcode-identical to 2.3.1, so no SDK signature changes are needed. sub_A0 ignores x2/x3.
+4. Entity_Assemble returns void on macOS; Codeware's `bool` return type must not be relied on (HookAfter is fine). CEnum and Entity field offsets (0x20/0x28/0x34/0x38, 0x50/0x58/0x60/0x70/0x138) are unchanged.
+5. InitializeGameInstance is 0x101578050, settled by its job name "CGameFramework/GameInstance". The twin 0x1015780D4 is "CGameFramework/RuntimeScene". No Codeware change is needed.
