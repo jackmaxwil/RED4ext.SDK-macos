@@ -194,3 +194,84 @@ Re-check helpers are in `re2/b8/`. `find.py new|old OFF=TARGET...` votes on vtab
   - Calibration: with `--no-plugin-aliases` it finds 753 of the 765 logged mismatches and nothing extra. The other 12 are on classes the dump lacks (Codeware-registered `world*InnerNode`, `worlduiWidgetComponent`, `inkWidgetLibraryResource`, `Dynamic/StaticEntitySpec`), and all 12 are aliases.
   - On Codeware before 233fe79b it reports the 8 missing types that commit removed, plus MemInt.
 - **inkWorldLayer.** The macOS size is 0x1B0 (SDK 0x1B8). `components`, at 0x170 on Windows, is not a reflected property, so its macOS offset is unverified. On macOS, Codeware's GetWorldWidgets returns an empty array. sdk_layout_diff.py now skips the `#else` side of `#ifdef __APPLE__` in plugin sources.
+
+## UpdateRegistrar_RegisterGroupUpdate / RegisterBucketUpdate (2.5.0)
+- **Addresses.**
+  - RegisterGroupUpdate, hash 0xFDDF4607 (4259268103): **0x104D74AB0** (`1:0x4D74AB0`).
+  - RegisterBucketUpdate, hash 0x197D4EA4 (427642532): **0x104D74C20** (`1:0x4D74C20`).
+  - Both are LC_FUNCTION_STARTS entries with an `sub sp` prologue. They sit 0x170 apart and both end in a call to the same store, 0x104D6F884 `(*registrar, record*)`.
+- **Signatures match the SDK.**
+  - Group: `(x0 registrar, w1 group, x2 CClass*, x3 name, x4 GroupUpdateCallback*, w5 uint32)`.
+  - Bucket: `(x0 registrar, w1 mask, w2 stage, x3 CClass*, x4 name, x5 BucketUpdateCallback*, w6 uint32)`.
+  - The callback is a pointer to a stack Callback: a 0x40-byte inline buffer, then the handler pointer at +0x40. Callers fill it through handler +0x08 (copy) and destroy it through handler +0x18. Both bodies read cb+0x40, zero it, and move the closure through handler +0x10. This is the SDK `Callback` layout (InlineSize 64, CallbackHandler copy/move/destruct at +0x08/+0x10/+0x18).
+  - The game passes 10 as the last argument to the group variant and 13 to the bucket variant. The SDK passes 0. Both bodies store it at record +0xA8 without reading it.
+- **Evidence for RegisterGroupUpdate (0x104D74AB0).**
+  - 128 direct `bl` callers, no tail calls. All 128 load a cstring into x3 just before the call, and every one starts with `[U]/`: `[U]/PlayerSystem/Tick`, `[U]/CameraSystem/Tick`, `[U]/DelaySystem/Tick`, `[U]/WeatherSystem/Tick`, and so on.
+  - The group in w1 matches the tick name. PlayerSystem/Tick passes 3 (PreBuckets). CameraSystem/Tick passes 6 (CameraUpdate). CameraSystem/PlayerAimUpdateTick passes 7 (PlayerAimUpdate). The class in x2 is `system->GetNativeType()`, either the cached `[sys+0x30]` or vtable slot 0.
+  - The body checks the name prefix. It builds a string from x3 (0x10002CCAC), compares its first 4 characters with `"[U]/"` (0x10763C086, via 0x10002B90C), and on a mismatch calls `printf(">FIX<: %s\n", name)` (string 0x10763C08B, stub 0x1052A9428). It does not abort. SDK plugins that pass a name without `[U]/` will print this line and still register.
+  - The record it builds has byte +0 = group, byte +1 = 12 (UpdateBucketStage::Unknown), byte +2 = 0 (no buckets), the callback at +0x08, the class and name at +0x98/+0xA0, and the uint32 at +0xA8.
+- **Evidence for RegisterBucketUpdate (0x104D74C20).**
+  - 64 direct `bl` callers, no tail calls. 52 of them load a `System/Name` string into x4 just before the call, for example `Entities/PreTick`, `PuppetUpdaterSystem/PreTick`, `ProjectileSystem/Tick`, `ScriptableSystems/Tick`, `Physics/UpdateInBucket`. None has the `[U]/` prefix, and the body has no prefix check.
+  - The stage in w2 matches the tick name. The four Entities registrations at 0x101A3D210..0x101A3D3CC all pass mask 7 (Everything) with stage 0 for `Entities/PreTick` (Entities_PreTick), 10 for `Entities/PostTick` (Entities_PostTick), 1 for `Entities/ServiceEvents` and 11 for `Entities/PostServiceEvents`.
+  - The record it builds has byte +0 = 4 (UpdateTickGroup::Buckets), byte +1 = stage, byte +2 = mask, the callback at +0x50, the class and name at +0x98/+0xA0, and the uint32 at +0xA8. The record has two callback slots, +0x08 for a group callback and +0x50 for a bucket callback, each with its handler 0x40 bytes later. So a bucket update is a group update in the Buckets group, with the same record and the same store.
+- **Method.** One pass over `__text` paired each ADRP+ADD into x3 (and x4) with the next `bl` and counted callees. Every `[U]/` name in x3 goes to 0x104D74AB0, and every `<System>/<Tick>` name in x4 goes to 0x104D74C20.
+
+## IRTTISystem::GetFunction on 2.5.0 (InitializeScripts lookup)
+- **Symptom.** Codeware's after-hook on the ScriptBundle dtor (0x10111CC00) calls `Red::GetGlobalFunction("InitializeScripts;")` and gets null. In Codeware's lib this is `CRTTISystem::Get()->GetFunction(aName)` (lib/Red/TypeInfo/Invocation.hpp:213-245), a plain virtual call. The SDK declares GetFunction(CName) at IRTTISystem slot +0x30 and leaves +0x28 as `sub_28`.
+- **Cause.** On macOS, slots +0x28 and +0x30 are swapped relative to the SDK. +0x28 is the lookup by name. +0x30 is a lookup by signature hash. The SDK call therefore searches the wrong map. This is the same in 2.3.1, so it is not a 2.5.0 regression.
+
+### The 2.5.0 CRTTISystem vtable
+- The singleton guard is 0x108055E80. 0x1010C0E98 constructs the object at 0x108055E98 with ctor 0x1010B3384, then registers dtor 0x1010B3C94 with atexit (0x1010C0EC0..0x1010C0ED4). Get (0x1010B3CAC) runs the post-init 0x1010B3D14 under guard byte 0x108055E78.
+- The ctor stores vptr **0x107831010** (`adrp/add x8,0x107831000+0x10; str x8,[x0]` at 0x1010B33B0..0x1010B33B8). It zeroes six 0x30-byte maps at +0x10, +0x40, +0x70, +0xA0, +0xD0 and +0x100, the same as 2.3.1.
+- The vtable has 43 function slots, +0x00 to +0x150. D1 0x1010B3C94 is at +0x158 and D0 0x1010B3C98 is at +0x160. The slot count matches the SDK's 2.5 header (sub_138..sub_150, dtor at +0x158). No slot was inserted.
+- The abstract IRTTISystem vtable sits just before it: pure virtuals up to 0x107830FE8, then dtors 0x105299720/0x105299724 at 0x107830FF0/0x107830FF8.
+
+| slot | 2.5.0 fn | body | SDK name | match |
+| --- | --- | --- | --- | --- |
+| +0x00 | 0x1010BC990 | flush 0x1010BBDE4, lookup 0x1010BCEB0, then the provider list at +0x130 | GetType(CName) | yes |
+| +0x08 | 0x1010BD1EC | flush, lock +0x220, map +0x40 keyed by a u64 (FNV-1a over 8 bytes) | GetTypeByAsyncId | yes (shape) |
+| +0x10 | 0x1010BC958 | `GetType` then `vt[+0x28]()==2` | GetClass | yes |
+| +0x18 | 0x1010BCA5C | `GetType` then `==5` | GetEnum | yes |
+| +0x20 | 0x1010BCA94 | `GetType` then `==0xD` | GetBitfield | yes |
+| **+0x28** | **0x1010BF2A8** | map **+0xA0**, key CName (bucket hash `hi32^lo32`, compares node+8 with x1), returns node+0x10 | sub_28 | **this is GetFunction(CName)** |
+| **+0x30** | **0x1010BF31C** | map **+0xD0**, key u64 (FNV-1a over 8 bytes), returns node+0x10 | GetFunction(CName) | **no: lookup by signature hash** |
+| +0x38 | 0x1010BCBE0 | takes an IType*, lock +0x220, `type->GetName()`, searches map +0x40 | sub_38 | not identified |
+| +0x40 | 0x1010BD314 | reserves `[this+0x48]` entries, copies map +0x40 | GetNativeTypes | yes |
+
+- **2.3.1 is the same.** In vtable 0x106FFBD70, +0x28 is 0x102194FB0 (map +0xA0, `hi^lo`) and +0x30 is 0x102195024 (map +0xD0, FNV). reflection_layout.md checked only +0x00/+0x10/+0x40/+0x60/+0x70, so it missed this swap.
+- **What the two maps hold.** RegisterFunction (+0xA0, 0x1010BE6E4):
+  - inserts `func->+0x08` (fullName) → func into map +0xA0 (0x1010BE6FC..0x1010BE714);
+  - inserts `0x101098268(func)` → func into map +0xD0 (0x1010BE71C..0x1010BE734).
+  
+  UnregisterFunction (+0xA8, 0x1010BE75C) removes the same two keys.
+- **The signature hash 0x101098268** starts from `func->+0x10` (shortName). For each parameter (array +0x28, count +0x34) it mixes in `rtti->vt[+0x118](param type name)` with the Murmur constant 0xC6A4A7935BD1E995. A function with no parameters hashes to its shortName's CName hash.
+- **Game code agrees.** A scan of every `bl CRTTISystem_Get (0x1010B3288)` followed by a `vt+` load finds 12 by-name callers of +0x28 and one caller of +0x30.
+  - 0x10109CF68 resolves by name. It tries the script environment (0x1011E4D28), otherwise `rtti->vt[+0x28](name)` at 0x10109CFA0.
+  - Its twin 0x10109CFCC resolves by hash. It tries 0x1011E4D64, otherwise `rtti->vt[+0x30](hash)` at 0x10109D004.
+  - The global-function validator 0x1011A8E58 does `rtti->vt[+0x28](def->+0x08)` at 0x1011A8E84..0x1011A8E94, then `cbnz`.
+- **Why Windows differs.** This is an inference. MSVC places overloaded virtuals together in reverse declaration order, and Itanium keeps declaration order. Two `GetFunction` overloads (by CName and by u64 hash) would give exactly this swap. Every SDK slot that plugins use and that has a distinct name is unchanged.
+- **Why RED4ext's self-check passes anyway.** `CHECK native_function_registration` in StateSystem.cpp:130 calls the SDK GetFunction (+0x30) on "RED4extSelfCheck_Ping". That function has fullName == shortName and no parameters. Its signature hash is therefore its CName hash, and the wrong slot finds it by coincidence. "InitializeScripts;" fails because its shortName is "InitializeScripts" (FNV-1a64 0x7A57C4994E425CFD), not "InitializeScripts;" (0x257FD67FFAC3A472).
+
+### Keying and timing of "InitializeScripts;"
+- **Keyed by full name.** The loader itself looks the function up after a successful bind. At 0x1011E76A4..0x1011E76C0 it does `CRTTISystem::Get()->vt[+0x28](0x257FD67FFAC3A472)`. That constant is FNV-1a64("InitializeScripts;"). It then builds a frame (0x10109D428) and calls the function (0x10109B220, likely Execute) at 0x1011E76F0.
+- **Registered before the dtor.** That block is on the bind-success path only. Bind is 0x101113E44, called at 0x1011E7434. On success `tbz w0` at 0x1011E743C falls through to 0x1011E7440 and reaches 0x1011E76A4. On failure it goes to 0x1011E748C and skips to 0x1011E76FC.
+- **The dtor runs after the lookup.** The two ScriptBundle dtor calls are at 0x1011E7788 (`sp+0x60`) and 0x1011E7790 (`sp+0x270`). Both go through thunk 0x10111D434 (`b 0x10111CC00`) and come after the game's own lookup. So when Codeware's after-hook runs, "InitializeScripts;" is in map +0xA0 under its full name.
+- **Not found.** I did not find the exact site where bind inserts scripted globals. A call-graph walk of 201 functions, depth 5 from bind, has no `bl` to the RegisterFunction wrapper 0x1010B30E0 and no direct +0xA0 call on the RTTI system. The insert is probably behind one of bind's 21 virtual calls. The game's own +0x28 lookup above is the proof that the function is present.
+
+### Bottom line and fix
+- **Reason.** On macOS, SDK `IRTTISystem::GetFunction` (+0x30) calls the signature-hash lookup with a CName. Any global whose fullName differs from its shortName, or that has parameters, returns null. Timing and name are correct: the game resolves the same CName at the same point via +0x28.
+- **Other callers hit the same bug:**
+  - Codeware `Reflection::GetGlobalFunction` (src/App/Reflection/Reflection.hpp:133);
+  - `LogChannel` (lib/Red/Engine/LogChannel.hpp:8; it has parameters, so it needs the name lookup);
+  - SDK `ExecuteGlobalFunction` (Scripting/Utils-inl.hpp:86);
+  - CET `RTTIHelper::FindFunction` (cp2077-cet/src/reverse/RTTIHelper.cpp:193).
+
+  The CET case was not traced further.
+- **Minimal fix.** Add an `#ifdef __APPLE__` variant in RTTISystem.hpp:
+  - +0x28 `CGlobalFunction* GetFunction(CName)`;
+  - +0x30 `CGlobalFunction* GetFunctionBySignatureHash(uint64_t)` (or `sub_30`);
+  - the Windows `sub_28`/`GetFunction` order stays in the `#else`.
+
+  The slot count does not change, so no other slot moves.
+- **Where it must go.** Plugins build against their own SDK copies, so the fix must land in each one: RED4ext.SDK, RED4ext/deps/red4ext.sdk, cp2077-codeware/vendor/RED4ext.SDK and cp2077-tweak-xl/vendor/RED4ext.SDK.
+- **Do not use the short name instead.** `GetGlobalFunction("InitializeScripts")` would hit through +0x30, but only because the function has no parameters. Treat it as a stopgap only.

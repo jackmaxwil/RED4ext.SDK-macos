@@ -24,8 +24,16 @@ struct IRTTISystem
     virtual CClass* GetClass(CName aName) = 0;                                                   // 10
     virtual CEnum* GetEnum(CName aName) = 0;                                                     // 18
     virtual CBitfield* GetBitfield(CName aName) = 0;                                             // 20
+#ifdef __APPLE__
+    // macOS: the name lookup is at +0x28 and a lookup by signature hash at +0x30, the reverse of the Windows order
+    // (MSVC orders overloaded virtuals differently). Evidence: docs/re/port_2.5.0_codeware.md, "IRTTISystem::GetFunction
+    // on 2.5.0"; the loader itself finds "InitializeScripts;" through +0x28 (0x1011E76AC).
+    virtual CGlobalFunction* GetFunction(CName aName) = 0;                                       // 28
+    virtual CGlobalFunction* GetFunctionBySignatureHash(uint64_t aHash) = 0;                     // 30
+#else
     virtual void sub_28() = 0;                                                                   // 28
     virtual CGlobalFunction* GetFunction(CName aName) = 0;                                       // 30
+#endif
     virtual void sub_38() = 0;                                                                   // 38
     virtual void GetNativeTypes(DynArray<rtti::IType*>& aTypes) = 0;                             // 40
     virtual void GetGlobalFunctions(DynArray<CBaseFunction*>& aFunctions) = 0;                   // 48
