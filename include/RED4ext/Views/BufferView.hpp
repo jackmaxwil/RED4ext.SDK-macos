@@ -14,6 +14,17 @@ struct BufferView
         , m_dataSize(aDataSize)
         , m_elementSize(aElementSize > 0 ? aElementSize : sizeof(T))
     {
+#ifdef __APPLE__
+        // macOS: the cooked world node headers take the buffer and element size from native members the RTTI dump
+        // cannot confirm. An implausible combination means the layout is wrong, so the view is empty (fail closed).
+        if ((m_dataSize && !m_data) || m_elementSize < sizeof(T) || m_elementSize > 0x1000 ||
+            m_dataSize % m_elementSize != 0)
+        {
+            m_data = 0;
+            m_dataSize = 0;
+            m_elementSize = sizeof(T);
+        }
+#endif
     }
 
     T& operator*()
