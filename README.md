@@ -1,8 +1,8 @@
 # RED4ext.SDK (macOS arm64 fork)
 
 C++20 headers for writing [RED4ext](https://github.com/jackmaxwil/RED4ext-macos) plugins for Cyberpunk 2077. This fork of
-[WopsS/RED4ext.SDK](https://github.com/WopsS/RED4ext.SDK) adds macOS arm64 support for Cyberpunk 2077 **2.3.1** (game
-binary UUID `A6656ADC-FBE2-36A4-9B9D-B4A9DE645089`). The Windows build is kept; CI still builds it.
+[WopsS/RED4ext.SDK](https://github.com/WopsS/RED4ext.SDK) adds macOS arm64 support for Cyberpunk 2077 **2.5.0** (game
+binary UUID `7D7382D0-EADD-36F0-BA1C-CEBEC1D5BEBC`; 2.3.1 is no longer supported). The Windows build is kept; CI still builds it.
 
 What the fork adds:
 
@@ -60,9 +60,10 @@ The full procedure, with checks for each step, is in [docs/PORTING_A_PLUGIN.md](
 `segment:offset` (1 = `__TEXT`, 2 = `__DATA_CONST`, 3 = `__DATA`). At runtime the SDK reads it from
 `$RED4EXT_SDK_ADDRESS_DB` or `<game>/red4ext/bin/x64/cyberpunk2077_addresses.json` (installed by RED4ext).
 
-**Verified** means the address was identified in the 2.3.1 binary by static analysis, with the evidence written down in
-[docs/ADDRESS_AUDIT.md](docs/ADDRESS_AUDIT.md) or [docs/re/](docs/README.md). Currently 187 of 278 entries are
-verified, including every address TweakXL, ArchiveXL and ModMenu use. Unverified entries are kept for later work but do
+**Verified** means the address was identified in the game binary by static analysis, with the evidence written down in
+[docs/ADDRESS_AUDIT.md](docs/ADDRESS_AUDIT.md) or [docs/re/](docs/README.md). Currently 488 of 706 entries are
+verified for 2.5.0. That covers every address RED4ext's core and ModMenu use. TweakXL and ArchiveXL are still being
+ported (docs/re/port_2.5.0.md). Unverified entries are kept for later work but do
 not resolve.
 
 ```bash
@@ -76,8 +77,16 @@ A game update invalidates every address and the layout dump.
 
 1. In RED4ext, run `tools/cp-run rttidump` and copy `logs/rtti_layout_macos.json` to `data/` here.
 2. Run `python3 scripts/gen_macos_layouts.py --verify` to regenerate the macOS layouts.
-3. Re-verify each verified DB entry against the new binary using the evidence in `docs/`. Update offsets and the `uuid`
-   field, and set `"verified": false` on anything not re-confirmed.
+3. Port the DB. First keep a copy of the stock old binary, because Steam replaces it. Then run:
+
+   ```bash
+   python3 scripts/port_addresses.py OLD NEW --out DB --report REPORT.md
+   ```
+
+   The script carries over every verified entry it can match (by body, strings, call graph and vtables) and writes the
+   new `uuid`. It drops `verified` from the rest; RE those by hand from the evidence in `docs/`, as in
+   [docs/re/port_2.5.0.md](docs/re/port_2.5.0.md). Then re-run the generators: `config_var_dump.py --db` and
+   `upscaler_scale_table.py --db`.
 4. In RED4ext, run `tools/cp-gate`. It checks the UUID, the DB, the layouts and every plugin's required hashes.
 
 ## Build and test

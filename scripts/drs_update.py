@@ -154,9 +154,11 @@ def main():
         entries = {e["hash"]: e for e in db["Addresses"]}
         for name, offset in entries_new:
             entry = {"hash": str(fnv1a32(name)), "offset": offset, "verified": True}
-            if entry["hash"] in entries and entries[entry["hash"]] != entry:
+            if entry["hash"] in entries and entries[entry["hash"]].get("verified") and entries[entry["hash"]] != entry:
                 sys.exit(f"hash {entry['hash']} already in the DB as {entries[entry['hash']]}")
-            if entry["hash"] not in entries:
+            if entry["hash"] in entries:
+                entries[entry["hash"]].update(entry)
+            else:
                 db["Addresses"].append(entry)
             print(f"address DB: {name} {entry}")
         if True:

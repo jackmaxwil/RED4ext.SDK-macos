@@ -90,15 +90,17 @@ def main():
             sys.exit(f"address DB is for {db.get('uuid')}, the binary is {L.get('uuid')}")
         entry = {"hash": str(fnv1a32(NAME)), "offset": f"1:0x{table - tvm:X}", "verified": True}
         entries = {e["hash"]: e for e in db["Addresses"]}
-        if entry["hash"] in entries and entries[entry["hash"]] != entry:
+        if entry["hash"] in entries and entries[entry["hash"]].get("verified") and entries[entry["hash"]] != entry:
             sys.exit(f"hash {entry['hash']} already in the DB as {entries[entry['hash']]}")
-        if entry["hash"] not in entries:
+        if entry["hash"] in entries:
+            entries[entry["hash"]].update(entry)
+        else:
             db["Addresses"].append(entry)
-            if "stats" in db:
-                db["stats"]["total"] = len(db["Addresses"])
-                db["stats"]["resolved"] = sum(1 for e in db["Addresses"] if not e["offset"].endswith(":0x0"))
-                db["stats"]["verified"] = sum(1 for e in db["Addresses"] if e.get("verified"))
-            json.dump(db, open(args.db, "w"), indent=2)
+        if "stats" in db:
+            db["stats"]["total"] = len(db["Addresses"])
+            db["stats"]["resolved"] = sum(1 for e in db["Addresses"] if not e["offset"].endswith(":0x0"))
+            db["stats"]["verified"] = sum(1 for e in db["Addresses"] if e.get("verified"))
+        json.dump(db, open(args.db, "w"), indent=2)
         print(f"address DB: {entry}")
 
 

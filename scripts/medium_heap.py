@@ -125,9 +125,11 @@ def main():
         entries = {e["hash"]: e for e in db["Addresses"]}
         for name, fn in found.items():
             entry = {"hash": str(fnv1a32(name)), "offset": f"1:0x{fn - seg_addr:X}", "verified": True}
-            if entry["hash"] in entries and entries[entry["hash"]] != entry:
+            if entry["hash"] in entries and entries[entry["hash"]].get("verified") and entries[entry["hash"]] != entry:
                 sys.exit(f"hash {entry['hash']} already in the DB as {entries[entry['hash']]}")
-            if entry["hash"] not in entries:
+            if entry["hash"] in entries:
+                entries[entry["hash"]].update(entry)
+            else:
                 db["Addresses"].append(entry)
                 print(f"added {name}: {entry}")
         db["stats"]["total"] = len(db["Addresses"])

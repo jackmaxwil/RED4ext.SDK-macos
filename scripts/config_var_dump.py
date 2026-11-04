@@ -223,8 +223,9 @@ def add_to_db(args, L, results):
         h = str(fnv1a32(f"ConfigVar/{r['group']}/{r['name']}"))
         entry = {"hash": h, "offset": f"3:0x{int(r['data_offset'], 16):X}", "verified": True}
         if h in entries:
-            if entries[h] != entry:
+            if entries[h].get("verified") and entries[h] != entry:
                 sys.exit(f"hash {h} ({r['group']}/{r['name']}) already in the DB as {entries[h]}")
+            entries[h].update(entry)
         else:
             db["Addresses"].append(entry)  # existing entries keep their order
             entries[h] = entry
@@ -237,9 +238,11 @@ def add_to_db(args, L, results):
         seg, base = (2, data_const) if data_const <= addr < data else (3, data)
         h = str(fnv1a32(f"ConfigVar/@{kind}"))
         entry = {"hash": h, "offset": f"{seg}:0x{addr - base:X}", "verified": True}
-        if h in entries and entries[h] != entry:
+        if h in entries and entries[h].get("verified") and entries[h] != entry:
             sys.exit(f"vtable hash {h} ({kind}) already in the DB as {entries[h]}")
-        if h not in entries:
+        if h in entries:
+            entries[h].update(entry)
+        else:
             db["Addresses"].append(entry)
             entries[h] = entry
         count = sum(1 for r in results if r["vtable"] == vt)

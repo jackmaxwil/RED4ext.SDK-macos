@@ -1,7 +1,7 @@
 # Agent rules: RED4ext.SDK (macOS arm64 fork)
 
-C++20 headers for RED4ext plugins, targeting Cyberpunk 2077 2.3.1 on macOS arm64 (binary UUID
-`A6656ADC-FBE2-36A4-9B9D-B4A9DE645089`). Windows must keep building as upstream does. Read README.md first.
+C++20 headers for RED4ext plugins, targeting Cyberpunk 2077 2.5.0 on macOS arm64 (binary UUID
+`7D7382D0-EADD-36F0-BA1C-CEBEC1D5BEBC`). Windows must keep building as upstream does. Read README.md first.
 
 ## Hard rules
 
