@@ -170,3 +170,27 @@ Re-check helpers are in `re2/b8/`. `find.py new|old OFF=TARGET...` votes on vtab
     - generated value names whose native name contains spaces or punctuation (`_228x128` for "228x128", `Very_dense` for "Very dense"). These are the same on Windows.
   - **Base classes.** For every dumped native class, the declared base matches the native parent, except two that OnValidateScripts patches before Validate (gameuiBaseUIData, scnChatter → ISerializable) and structs whose parent OnValidateScripts fills in. Script-alias parents were not resolved.
   - **Global native functions.** All are registered by Codeware (RTTI_FUNCTION, @addMethod statics).
+
+## Script type aliases: checked offline, applied to the validator's verdict (Codeware, RED4ext tools/script_type_check.py)
+- **Run 20261104-111828-boot.** With the validator messages visible (06596b94), the report holds 765 property messages and "Validation failed for 374 types". All but one are names Codeware's OnValidateTypeName accepts on Windows: `ResourceRef` for `rRef:*` (192, plus 22 in arrays), `ResourceAsyncRef` for `raRef:*` (303, plus 30 in arrays), `ResRef` for `raRef:CResource` (2), and `CurveData*` for `curveData:*` (212, some as static arrays `CurveDataFloat[8]` vs `[8]curveData:Float`). The one exception is `toolsMessage.created`, `Int64` in the script but `MemInt` natively; nothing reads that field.
+- **Why Codeware's alias hooks do not act on macOS.** On Windows the aliases are applied in the hooked CompareTypeName. On macOS that function is inlined into the property and type validators, so the existing OnValidateProperty and CompareType hooks never see these comparisons.
+- **Validate has no side effects beyond its report and its result.**
+  - Validate (0x1011A7E28) and its type validators (0x1011A803C, 0x1011A8128, 0x1011A8314, 0x1011A84B4, 0x1011A8E58, helper 0x1011A8F30) contain 111 stores. Every one targets `sp` or `x29`.
+  - The direct callees that store write only to stack objects the caller passes in. 0x10002DBEC formats a string into a stack sret. 0x104E33920 sets a vtable at `sp+0x18`. 0x100028564 and 0x10002858C initialize and free the local DynArray at `sp+0x8`.
+  - The virtual calls fall into three groups. Calls on the RTTI system (0x1010B3288 returns it) are by-name lookups at slots +0x20/+0x28/+0x108/+0x110/+0x120, each followed by `cbz x0` to the "missing" report. Calls on a definition read its type (+0x18) and native flag (+0x38). The rest are the report's +0x10.
+  - After the definition loop, the only difference between a pass and a failure is the "Validation failed" message and w19.
+- **The loader after Validate (0x1011E7114).**
+  - `cbz w0` at 0x1011E71DC goes to the failure path 0x1011E727C. Otherwise the loader continues into the bind at 0x101113E44, and bind's result decides the load.
+  - Windows Codeware leaves bind alone and only widens the validator's name check. So after a pass forced by the alias check, bind receives the same bundle it receives on Windows.
+- **Codeware change (macOS only).**
+  - OnValidateScriptsLogged parses the recorded messages (`src/App/Scripting/ValidationReport.hpp`). If every message is an `Imported property ... type 'S' ... native one 'N'.` line that IsTypeNameAlias(S, N) accepts (array and static-array element types compared), it returns true. The final count line is ignored.
+  - IsTypeNameAlias is OnValidateTypeName's table, unchanged. Any other message ("Missing native class", a non-alias type, an unparsed line) keeps the result false.
+  - stderr shows `Script validation passed (type aliases only)`.
+  - `tests/macos/validation_report_check` runs the parser on this run's log: all 765 messages minus MemInt pass, and with MemInt the check fails.
+- **toolsMessage.created** is removed from Codeware's imports. It is the only non-alias mismatch.
+- **Offline check (RED4ext `tools/script_type_check.py`, run by cp-gate and by cp-dev before a build).**
+  - Inputs: the RTTI dump, the plugin's `.reds` native and importonly declarations, and the script names from the SDK's generated headers (ALIAS).
+  - It reports native types missing from the dump that the plugin's sources don't register, and property type mismatches that the game's names and Codeware's alias table don't cover.
+  - Calibration: with `--no-plugin-aliases` it finds 753 of the 765 logged mismatches and nothing extra. The other 12 are on classes the dump lacks (Codeware-registered `world*InnerNode`, `worlduiWidgetComponent`, `inkWidgetLibraryResource`, `Dynamic/StaticEntitySpec`), and all 12 are aliases.
+  - On Codeware before 233fe79b it reports the 8 missing types that commit removed, plus MemInt.
+- **inkWorldLayer.** The macOS size is 0x1B0 (SDK 0x1B8). `components`, at 0x170 on Windows, is not a reflected property, so its macOS offset is unverified. On macOS, Codeware's GetWorldWidgets returns an empty array. sdk_layout_diff.py now skips the `#else` side of `#ifdef __APPLE__` in plugin sources.

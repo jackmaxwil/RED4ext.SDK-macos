@@ -81,6 +81,7 @@ def diff_class(sdk: dict, mac: dict | None, inherited: dict[str, set[int]] | Non
 
 def used_by(sources: list[Path], sdk: dict[str, dict]) -> set[str]:
     text = "\n".join(p.read_text(errors="ignore") for d in sources for p in d.rglob("*") if p.suffix in (".hpp", ".cpp", ".h"))
+    text = APPLE.sub(lambda m: m.group(1), text)  # the #else side of an `#ifdef __APPLE__` is not built on macOS
     tokens = set(re.findall(r"[A-Za-z_][\w:]*", text))
     tails = {t.split("::", 1)[1] for t in tokens if t.startswith(("Red::", "RED4ext::"))}
     return {rtti for rtti, s in sdk.items() if s["cpp"] & tails or rtti in tails}
