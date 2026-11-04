@@ -92,3 +92,36 @@ Re-check helpers are in `re2/b8/`. `find.py new|old OFF=TARGET...` votes on vtab
 3. The CBaseRTTIType base slots are the abstract IType vtable values (0x107833200), not the CClass overrides. Their bodies are opcode-identical to 2.3.1, so no SDK signature changes are needed. sub_A0 ignores x2/x3.
 4. Entity_Assemble returns void on macOS; Codeware's `bool` return type must not be relied on (HookAfter is fine). CEnum and Entity field offsets (0x20/0x28/0x34/0x38, 0x50/0x58/0x60/0x70/0x138) are unchanged.
 5. InitializeGameInstance is 0x101578050, settled by its job name "CGameFramework/GameInstance". The twin 0x1015780D4 is "CGameFramework/RuntimeScene". No Codeware change is needed.
+
+## Script load assert "Failed to initialize scripts data!" (Codeware 343c7241, redscript 0.5.32)
+- **Symptom.** Booting TweakXL + ArchiveXL + Codeware stops on the EXC_BREAKPOINT assert at 0x104D8316C ("Failed to initialize scripts data!"). redscript compiles and saves `final.redscripts` without errors (runs 20261104-093152-boot, 20261104-093655-boot). CET-only runs on the same redscript pass script init, so the 0.5.32 bundle format is not the cause.
+- **Load path.**
+  1. 0x104D7F128 → 0x104D7A9F8 → the loaders 0x104D76544 and 0x104D766BC.
+  2. The loaders call the script loader singleton (getter 0x1011E6C1C, vtable 0x107837C80). Slot +0x8 is Load (0x1011E7114) and slot +0x10 is LoadWithMods (0x1011E914C).
+  3. Load constructs the bundle (0x10111CBFC) and deserializes it (0x10111FF98). A deserialize failure reports "Failed to load scripts" instead.
+  4. It then runs ScriptValidator::Validate (0x1011A7E28, with the validator constructor at 0x1011A7E24) and binds (0x101113E44).
+  5. The result is stored to `[x19+0x54]`. A false result reaches the assert.
+- **Validator.**
+  - Validate dispatches by definition type. For a class or struct (0x1011A84B4), it looks up the RTTI type by name through `vt+0x108`. A null result branches to 0x1011A8628, the "Missing native class '%hs'" report (string at 0x1011A8640).
+  - Failures are counted and Validate returns false.
+  - The report object (vtable 0x107CD7C40, Error 0x104D76A78) keeps messages only when `([this+0x56] | byte 0x109D0DEB1) & 1`. They go into a DynArray<String> at +0xB0, capped at 10, and are never logged. That is why the game shows only the assert.
+- **Cause.** Eight generated imports in Codeware `scripts/Base/Imports` declare `native` types that the macOS 2.5.0 binary does not contain. None of these names appears in the RTTI dump (run 20261103-220740-rttidump) or anywhere in the binary's strings:
+
+  | Import | Kind |
+  | --- | --- |
+  | oauthAuthenticationToken | online service |
+  | gsmMenuState_LoadSession | menu state |
+  | toolsJiraService | editor tool |
+  | InheritedStructs/Odyssey3DCustomData | editor |
+  | InheritedStructs/inputInputSystemEditor | editor |
+  | InheritedStructs/inputInputSystemWin32Base | Win32 |
+  | InheritedStructs/inputInputSystemWin32Game | Win32 |
+  | InheritedStructs/servicesGameServicesWin | Win32 |
+
+  Nothing in Codeware's C++ or scripts references them.
+- **Other checks, all clean.**
+  - Every other `native class/struct` declared in Codeware, TweakXL, ArchiveXL and ModMenu scripts is either in the binary's strings or registered by the plugin's own C++.
+  - Every native property declared on a dumped class is in RTTI or is registered by a Codeware `*Ex.hpp` RTTI_PROPERTY.
+  - Every native function declared on a dumped class is in RTTI or is registered by Codeware.
+  - Enum values were not checked: the dump has no enum values.
+- **Fix.** Codeware 233fe79b removes the eight imports. `cp-dev` replaces the plugin's `Scripts/` folder wholesale, so no stale copies remain in the game.
