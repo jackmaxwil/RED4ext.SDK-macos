@@ -21,8 +21,23 @@ struct IPersistencySystem : IGameSystem
     static constexpr const char* NAME = "gameIPersistencySystem";
     static constexpr const char* ALIAS = "IGamePersistencySystem";
 
+#ifdef __APPLE__
+    // macOS arm64 returns the Handle through x8 (sret); the Windows declaration below is MSVC's lowering of the same
+    // call. Evidence: docs/re/port_2.5.0_game_system_vtables.md (gamePersistencySystem slot +0x1B8, 0x102D0E588).
+    virtual Handle<PersistentState> GetPersistentState(const PersistentID& aPersistentID, CClass* aPersistentStateType,
+                                                       bool aCreateState) = 0; // 1B8 (macOS)
+
+    // The Windows-shaped call, kept for callers; non-virtual, so it takes no slot.
+    void* GetPersistentState(Handle<PersistentState>& aState, const PersistentID& aPersistentID,
+                             CClass* aPersistentStateType, bool aCreateState)
+    {
+        aState = GetPersistentState(aPersistentID, aPersistentStateType, aCreateState);
+        return &aState;
+    }
+#else
     virtual void* GetPersistentState(Handle<PersistentState>& aState, const PersistentID& aPersistentID,
                                      CClass* aPersistentStateType, bool aCreateState) = 0;      // 1A8
+#endif
     virtual void sub_1B0() = 0;                                                                 // 1B0
     virtual void sub_1B8() = 0;                                                                 // 1B8
     virtual void sub_1C0() = 0;                                                                 // 1C0
