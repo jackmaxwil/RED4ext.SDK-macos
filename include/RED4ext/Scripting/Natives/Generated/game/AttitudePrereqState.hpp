@@ -17,9 +17,16 @@ struct AttitudePrereqState : game::PrereqState
     static constexpr const char* NAME = "gameAttitudePrereqState";
     static constexpr const char* ALIAS = "AttitudePrereqState";
 
+#ifdef __APPLE__
+#else
     uint8_t unk100[0x108 - 0x100]; // 100
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(AttitudePrereqState, 0x100);
+#else
 RED4EXT_ASSERT_SIZE(AttitudePrereqState, 0x108);
+#endif
 } // namespace game
 using gameAttitudePrereqState = game::AttitudePrereqState;
 using AttitudePrereqState = game::AttitudePrereqState;

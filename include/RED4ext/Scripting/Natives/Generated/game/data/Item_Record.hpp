@@ -17,9 +17,17 @@ struct Item_Record : game::data::BaseObject_Record
     static constexpr const char* NAME = "gamedataItem_Record";
     static constexpr const char* ALIAS = "Item_Record";
 
+#ifdef __APPLE__
+    uint8_t unkA0[0x480 - 0xA0]; // A0
+#else
     uint8_t unkA0[0x488 - 0xA0]; // A0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Item_Record, 0x480);
+#else
 RED4EXT_ASSERT_SIZE(Item_Record, 0x488);
+#endif
 } // namespace game::data
 using gamedataItem_Record = game::data::Item_Record;
 using Item_Record = game::data::Item_Record;

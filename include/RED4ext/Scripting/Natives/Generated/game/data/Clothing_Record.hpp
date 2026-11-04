@@ -17,8 +17,15 @@ struct Clothing_Record : game::data::Item_Record
     static constexpr const char* NAME = "gamedataClothing_Record";
     static constexpr const char* ALIAS = "Clothing_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Clothing_Record, 0x480);
+#else
 RED4EXT_ASSERT_SIZE(Clothing_Record, 0x488);
+#endif
 } // namespace game::data
 using gamedataClothing_Record = game::data::Clothing_Record;
 using Clothing_Record = game::data::Clothing_Record;

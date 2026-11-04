@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) UIIconsGeneratorSystem : game::ui::IUIIconsGenera
     static constexpr const char* NAME = "gameuiUIIconsGeneratorSystem";
     static constexpr const char* ALIAS = "UIIconsGeneratorSystem";
 
+#ifdef __APPLE__
+    uint8_t unk48[0x620 - 0x48]; // 48
+#else
     uint8_t unk48[0x660 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(UIIconsGeneratorSystem, 0x620);
+#else
 RED4EXT_ASSERT_SIZE(UIIconsGeneratorSystem, 0x660);
+#endif
 } // namespace game::ui
 using gameuiUIIconsGeneratorSystem = game::ui::UIIconsGeneratorSystem;
 using UIIconsGeneratorSystem = game::ui::UIIconsGeneratorSystem;

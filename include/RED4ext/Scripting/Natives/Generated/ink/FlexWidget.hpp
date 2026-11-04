@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) FlexWidget : ink::CompoundWidget
     static constexpr const char* NAME = "inkFlexWidget";
     static constexpr const char* ALIAS = "inkFlex";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(FlexWidget, 0x230);
+#else
 RED4EXT_ASSERT_SIZE(FlexWidget, 0x240);
+#endif
 } // namespace ink
 using inkFlexWidget = ink::FlexWidget;
 using inkFlex = ink::FlexWidget;

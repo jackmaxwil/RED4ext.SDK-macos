@@ -57,9 +57,15 @@ struct Widget : IScriptable
     bool isInteractive;                                           // 1FB
     bool affectsLayoutWhenHidden;                                 // 1FC
     uint8_t flags;                                                // 1FD
-    uint8_t unk1FE[0x210 - 0x1FE];                                // 1FE
+#ifndef __APPLE__
+    uint8_t unk1FE[0x210 - 0x1FE]; // 1FE - macOS inkWidget stays 0x200 (2.5.0 RTTI dump)
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Widget, 0x200);
+#else
 RED4EXT_ASSERT_SIZE(Widget, 0x210);
+#endif
 RED4EXT_ASSERT_OFFSET(Widget, tintColor, 0x1E0);
 RED4EXT_ASSERT_OFFSET(Widget, opacity, 0x1F0);
 RED4EXT_ASSERT_OFFSET(Widget, visible, 0x1F8);

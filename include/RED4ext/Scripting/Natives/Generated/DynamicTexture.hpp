@@ -23,13 +23,15 @@ struct DynamicTexture : ITexture
     uint32_t width; // 3C
     uint32_t height; // 40
     bool scaleToViewport; // 44
-    uint8_t unk45[0x50 - 0x45]; // 45
-    DynamicTextureDataFormat dataFormat; // 50
-    bool mipChain; // 51
-    uint8_t samplesCount; // 52
-    uint8_t unk53[0x80 - 0x53]; // 53
-    Handle<IDynamicTextureGenerator> generator; // 80
-    uint8_t unk90[0xA0 - 0x90]; // 90
+    uint8_t unk45[0x48 - 0x45]; // 45
+    float viewportScale; // 48
+    uint8_t unk4C[0x54 - 0x4C]; // 4C
+    DynamicTextureDataFormat dataFormat; // 54
+    bool mipChain; // 55
+    uint8_t samplesCount; // 56
+    uint8_t unk57[0x88 - 0x57]; // 57
+    Handle<IDynamicTextureGenerator> generator; // 88
+    uint8_t unk98[0xA8 - 0x98]; // 98
 #else
     uint32_t width; // 40
     uint32_t height; // 44
@@ -46,14 +48,15 @@ struct DynamicTexture : ITexture
 #endif
 };
 #ifdef __APPLE__
-RED4EXT_ASSERT_SIZE(DynamicTexture, 0xA0);
+RED4EXT_ASSERT_SIZE(DynamicTexture, 0xA8);
 RED4EXT_ASSERT_OFFSET(DynamicTexture, width, 0x3C);
 RED4EXT_ASSERT_OFFSET(DynamicTexture, height, 0x40);
 RED4EXT_ASSERT_OFFSET(DynamicTexture, scaleToViewport, 0x44);
-RED4EXT_ASSERT_OFFSET(DynamicTexture, dataFormat, 0x50);
-RED4EXT_ASSERT_OFFSET(DynamicTexture, mipChain, 0x51);
-RED4EXT_ASSERT_OFFSET(DynamicTexture, samplesCount, 0x52);
-RED4EXT_ASSERT_OFFSET(DynamicTexture, generator, 0x80);
+RED4EXT_ASSERT_OFFSET(DynamicTexture, viewportScale, 0x48);
+RED4EXT_ASSERT_OFFSET(DynamicTexture, dataFormat, 0x54);
+RED4EXT_ASSERT_OFFSET(DynamicTexture, mipChain, 0x55);
+RED4EXT_ASSERT_OFFSET(DynamicTexture, samplesCount, 0x56);
+RED4EXT_ASSERT_OFFSET(DynamicTexture, generator, 0x88);
 #else
 RED4EXT_ASSERT_SIZE(DynamicTexture, 0xA8);
 #endif

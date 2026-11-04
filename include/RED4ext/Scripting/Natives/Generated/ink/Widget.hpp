@@ -8,7 +8,11 @@
 
 namespace RED4ext
 {
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ink::Widget, 0x200);
+#else
 RED4EXT_ASSERT_SIZE(ink::Widget, 0x210);
+#endif
 using inkWidget = ink::Widget;
 } // namespace RED4ext
 

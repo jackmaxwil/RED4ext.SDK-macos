@@ -19,7 +19,11 @@ struct InputSystemWin32Base : input::IInputSystem
 
     uint8_t unk1B0[0x1E8 - 0x1B0]; // 1B0
 };
+#ifdef __APPLE__
+// inputInputSystemWin32Base is not in the macOS RTTI dump: no macOS layout to assert
+#else
 RED4EXT_ASSERT_SIZE(InputSystemWin32Base, 0x1E8);
+#endif
 } // namespace input
 using inputInputSystemWin32Base = input::InputSystemWin32Base;
 } // namespace RED4ext

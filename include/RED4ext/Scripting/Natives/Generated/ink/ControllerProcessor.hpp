@@ -8,7 +8,11 @@
 
 namespace RED4ext
 {
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ink::ControllerProcessor, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(ink::ControllerProcessor, 0x90);
+#endif
 using inkControllerProcessor = ink::ControllerProcessor;
 } // namespace RED4ext
 

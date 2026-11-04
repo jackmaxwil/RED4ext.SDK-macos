@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) HolocallCameraComponent : ent::RenderToTextureCam
     static constexpr const char* NAME = "gameuiHolocallCameraComponent";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(HolocallCameraComponent, 0xA20);
+#else
 RED4EXT_ASSERT_SIZE(HolocallCameraComponent, 0xA70);
+#endif
 } // namespace game::ui
 using gameuiHolocallCameraComponent = game::ui::HolocallCameraComponent;
 } // namespace RED4ext

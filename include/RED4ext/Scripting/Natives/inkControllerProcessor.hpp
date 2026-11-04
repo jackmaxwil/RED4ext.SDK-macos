@@ -16,8 +16,14 @@ struct ControllerProcessor : ISerializable
     DynArray<void*> unk38;                           // 38
     uint64_t unk48;                                  // 48
     DynArray<Handle<IWidgetController>> controllers; // 50
-    uint8_t unk60[0x90 - 0x60];                      // 60
+#ifndef __APPLE__
+    uint8_t unk60[0x90 - 0x60]; // 60 - macOS inkControllerProcessor stays 0x60 (2.5.0 RTTI dump)
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ControllerProcessor, 0x60);
+#else
 RED4EXT_ASSERT_SIZE(ControllerProcessor, 0x90);
+#endif
 RED4EXT_ASSERT_OFFSET(ControllerProcessor, controllers, 0x50);
 } // namespace RED4ext::ink

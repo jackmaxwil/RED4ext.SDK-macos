@@ -15,9 +15,17 @@ struct SceneCustomData_DistantShadowsCommon : ISceneStorageCustomData
     static constexpr const char* NAME = "SceneCustomData_DistantShadowsCommon";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk18[0xF00 - 0x18]; // 18
+#else
     uint8_t unk18[0x1000 - 0x18]; // 18
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SceneCustomData_DistantShadowsCommon, 0xF00);
+#else
 RED4EXT_ASSERT_SIZE(SceneCustomData_DistantShadowsCommon, 0x1000);
+#endif
 } // namespace RED4ext
 
 // clang-format on

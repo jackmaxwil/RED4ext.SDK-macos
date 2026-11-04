@@ -17,8 +17,15 @@ struct __declspec(align(0x10)) CanvasWidget : ink::CompoundWidget
     static constexpr const char* NAME = "inkCanvasWidget";
     static constexpr const char* ALIAS = "inkCanvas";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CanvasWidget, 0x230);
+#else
 RED4EXT_ASSERT_SIZE(CanvasWidget, 0x240);
+#endif
 } // namespace ink
 using inkCanvasWidget = ink::CanvasWidget;
 using inkCanvas = ink::CanvasWidget;

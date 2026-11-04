@@ -20,8 +20,9 @@ struct SetPhoneRestriction_NodeType : quest::IPhoneManagerNodeType
 
 #ifdef __APPLE__
     bool applyPhoneRestriction; // 34
-    bool forcedApply; // 35
-    uint8_t unk36[0x38 - 0x36]; // 36
+    bool blockSkipByLine; // 35
+    bool forcedApply; // 36
+    uint8_t unk37[0x38 - 0x37]; // 37
     CName forcedApplySource; // 38
 #else
     bool applyPhoneRestriction; // 38
@@ -34,7 +35,8 @@ struct SetPhoneRestriction_NodeType : quest::IPhoneManagerNodeType
 #ifdef __APPLE__
 RED4EXT_ASSERT_SIZE(SetPhoneRestriction_NodeType, 0x40);
 RED4EXT_ASSERT_OFFSET(SetPhoneRestriction_NodeType, applyPhoneRestriction, 0x34);
-RED4EXT_ASSERT_OFFSET(SetPhoneRestriction_NodeType, forcedApply, 0x35);
+RED4EXT_ASSERT_OFFSET(SetPhoneRestriction_NodeType, blockSkipByLine, 0x35);
+RED4EXT_ASSERT_OFFSET(SetPhoneRestriction_NodeType, forcedApply, 0x36);
 RED4EXT_ASSERT_OFFSET(SetPhoneRestriction_NodeType, forcedApplySource, 0x38);
 #else
 RED4EXT_ASSERT_SIZE(SetPhoneRestriction_NodeType, 0x48);

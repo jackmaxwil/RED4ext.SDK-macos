@@ -19,7 +19,11 @@ struct GameServicesWin : services::GameServices
 
     uint8_t unk7D8[0x950 - 0x7D8]; // 7D8
 };
+#ifdef __APPLE__
+// servicesGameServicesWin is not in the macOS RTTI dump: no macOS layout to assert
+#else
 RED4EXT_ASSERT_SIZE(GameServicesWin, 0x950);
+#endif
 } // namespace services
 using servicesGameServicesWin = services::GameServicesWin;
 } // namespace RED4ext

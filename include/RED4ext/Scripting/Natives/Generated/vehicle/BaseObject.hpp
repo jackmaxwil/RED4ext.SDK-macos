@@ -8,7 +8,11 @@
 
 namespace RED4ext
 {
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(vehicle::BaseObject, 0xBA0);
+#else
 RED4EXT_ASSERT_SIZE(vehicle::BaseObject, 0xBC0);
+#endif
 using vehicleBaseObject = vehicle::BaseObject;
 using VehicleObject = vehicle::BaseObject;
 } // namespace RED4ext

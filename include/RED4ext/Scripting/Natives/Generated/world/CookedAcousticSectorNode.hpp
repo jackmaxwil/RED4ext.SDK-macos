@@ -8,7 +8,11 @@
 
 namespace RED4ext
 {
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(world::CookedAcousticSectorNode, 0x58);
+#else
 RED4EXT_ASSERT_SIZE(world::CookedAcousticSectorNode, 0x60);
+#endif
 using worldCookedAcousticSectorNode = world::CookedAcousticSectorNode;
 } // namespace RED4ext
 

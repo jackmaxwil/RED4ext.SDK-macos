@@ -15,9 +15,17 @@ struct __declspec(align(0x10)) CRenderTerrainCellCollector : ISceneStorageCustom
     static constexpr const char* NAME = "CRenderTerrainCellCollector";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk18[0x1490 - 0x18]; // 18
+#else
     uint8_t unk18[0x1510 - 0x18]; // 18
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CRenderTerrainCellCollector, 0x1490);
+#else
 RED4EXT_ASSERT_SIZE(CRenderTerrainCellCollector, 0x1510);
+#endif
 } // namespace RED4ext
 
 // clang-format on

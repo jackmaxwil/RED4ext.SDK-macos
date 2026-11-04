@@ -17,9 +17,17 @@ struct SystemNotificationToken : IScriptable
     static constexpr const char* NAME = "inkSystemNotificationToken";
     static constexpr const char* ALIAS = NAME;
 
+#ifdef __APPLE__
+    uint8_t unk40[0x170 - 0x40]; // 40
+#else
     uint8_t unk40[0x130 - 0x40]; // 40
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(SystemNotificationToken, 0x170);
+#else
 RED4EXT_ASSERT_SIZE(SystemNotificationToken, 0x130);
+#endif
 } // namespace ink
 using inkSystemNotificationToken = ink::SystemNotificationToken;
 } // namespace RED4ext

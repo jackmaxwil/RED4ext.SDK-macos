@@ -17,8 +17,15 @@ struct Gadget_Record : game::data::WeaponItem_Record
     static constexpr const char* NAME = "gamedataGadget_Record";
     static constexpr const char* ALIAS = "Gadget_Record";
 
+#ifdef __APPLE__
+#else
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(Gadget_Record, 0x600);
+#else
 RED4EXT_ASSERT_SIZE(Gadget_Record, 0x608);
+#endif
 } // namespace game::data
 using gamedataGadget_Record = game::data::Gadget_Record;
 using Gadget_Record = game::data::Gadget_Record;

@@ -17,9 +17,17 @@ struct UIGlamdocCustomizationItem_Record : game::data::Item_Record
     static constexpr const char* NAME = "gamedataUIGlamdocCustomizationItem_Record";
     static constexpr const char* ALIAS = "UIGlamdocCustomizationItem_Record";
 
+#ifdef __APPLE__
+    uint8_t unk480[0x4C8 - 0x480]; // 480
+#else
     uint8_t unk488[0x4D0 - 0x488]; // 488
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(UIGlamdocCustomizationItem_Record, 0x4C8);
+#else
 RED4EXT_ASSERT_SIZE(UIGlamdocCustomizationItem_Record, 0x4D0);
+#endif
 } // namespace game::data
 using gamedataUIGlamdocCustomizationItem_Record = game::data::UIGlamdocCustomizationItem_Record;
 using UIGlamdocCustomizationItem_Record = game::data::UIGlamdocCustomizationItem_Record;

@@ -17,9 +17,17 @@ struct ContinuousEffector : game::Effector
     static constexpr const char* NAME = "gameContinuousEffector";
     static constexpr const char* ALIAS = "ContinuousEffector";
 
+#ifdef __APPLE__
+    uint8_t unkB0[0xB8 - 0xB0]; // B0
+#else
     uint8_t unkB0[0xC0 - 0xB0]; // B0
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ContinuousEffector, 0xB8);
+#else
 RED4EXT_ASSERT_SIZE(ContinuousEffector, 0xC0);
+#endif
 } // namespace game
 using gameContinuousEffector = game::ContinuousEffector;
 using ContinuousEffector = game::ContinuousEffector;

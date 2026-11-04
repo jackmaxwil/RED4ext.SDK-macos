@@ -17,9 +17,17 @@ struct ConsumableItem_Record : game::data::Item_Record
     static constexpr const char* NAME = "gamedataConsumableItem_Record";
     static constexpr const char* ALIAS = "ConsumableItem_Record";
 
+#ifdef __APPLE__
+    uint8_t unk480[0x4D8 - 0x480]; // 480
+#else
     uint8_t unk488[0x4E0 - 0x488]; // 488
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(ConsumableItem_Record, 0x4D8);
+#else
 RED4EXT_ASSERT_SIZE(ConsumableItem_Record, 0x4E0);
+#endif
 } // namespace game::data
 using gamedataConsumableItem_Record = game::data::ConsumableItem_Record;
 using ConsumableItem_Record = game::data::ConsumableItem_Record;

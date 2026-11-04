@@ -32,7 +32,7 @@ struct CallContact_NodeType : quest::IPhoneManagerNodeType
     quest::PhoneCallMode mode; // 5C
     NodeRef prefabNodeRef; // 60
     bool applyPhoneRestriction; // 68
-    bool blockSkipByLine; // 69
+    uint8_t unk69[0x6A - 0x69]; // 69
     bool isRejectable; // 6A
     bool showAvatar; // 6B
     quest::PhoneCallVisuals visuals; // 6C
@@ -57,8 +57,8 @@ RED4EXT_ASSERT_OFFSET(CallContact_NodeType, phase, 0x58);
 RED4EXT_ASSERT_OFFSET(CallContact_NodeType, mode, 0x5C);
 RED4EXT_ASSERT_OFFSET(CallContact_NodeType, prefabNodeRef, 0x60);
 RED4EXT_ASSERT_OFFSET(CallContact_NodeType, applyPhoneRestriction, 0x68);
-RED4EXT_ASSERT_OFFSET(CallContact_NodeType, isRejectable, 0x69);
-RED4EXT_ASSERT_OFFSET(CallContact_NodeType, showAvatar, 0x6A);
+RED4EXT_ASSERT_OFFSET(CallContact_NodeType, isRejectable, 0x6A);
+RED4EXT_ASSERT_OFFSET(CallContact_NodeType, showAvatar, 0x6B);
 RED4EXT_ASSERT_OFFSET(CallContact_NodeType, visuals, 0x6C);
 #else
 RED4EXT_ASSERT_SIZE(CallContact_NodeType, 0x70);

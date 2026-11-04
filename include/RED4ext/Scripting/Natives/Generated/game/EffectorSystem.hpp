@@ -17,9 +17,17 @@ struct EffectorSystem : game::IEffectorSystem
     static constexpr const char* NAME = "gameEffectorSystem";
     static constexpr const char* ALIAS = "EffectorSystem";
 
+#ifdef __APPLE__
+    uint8_t unk48[0xD0 - 0x48]; // 48
+#else
     uint8_t unk48[0xB8 - 0x48]; // 48
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(EffectorSystem, 0xD0);
+#else
 RED4EXT_ASSERT_SIZE(EffectorSystem, 0xB8);
+#endif
 } // namespace game
 using gameEffectorSystem = game::EffectorSystem;
 using EffectorSystem = game::EffectorSystem;

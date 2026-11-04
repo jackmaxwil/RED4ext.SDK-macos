@@ -19,7 +19,11 @@ struct InputSystemEditor : input::InputSystemWin32Base
 
     uint8_t unk1E8[0xEC8 - 0x1E8]; // 1E8
 };
+#ifdef __APPLE__
+// inputInputSystemEditor is not in the macOS RTTI dump: no macOS layout to assert
+#else
 RED4EXT_ASSERT_SIZE(InputSystemEditor, 0xEC8);
+#endif
 } // namespace input
 using inputInputSystemEditor = input::InputSystemEditor;
 } // namespace RED4ext

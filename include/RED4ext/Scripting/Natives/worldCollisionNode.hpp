@@ -97,10 +97,25 @@ struct __declspec(align(0x10)) CollisionNode : Node
     uint16_t numMaterialIndices;    // A0
     uint8_t lod;                    // A2
     uint8_t resourceVersion;        // A3
-    uint8_t unkA4[0xB0 - 0xA4];     // A4
-    Vector4 extents;                // B0
+#ifdef __APPLE__
+    // macOS: clang and the game start the members in worldNode's tail padding (dsize 0x32), so actorsOffset sits at
+    // 0x34 and every member up to resourceVersion is 4 or 8 bytes lower. The RTTI dump has compiledData 0x58,
+    // sectorHash 0x80, lod 0x9A, extents 0xA0 and size 0xB0.
+    uint8_t unk9C[0xA0 - 0x9C]; // 9C
+#else
+    uint8_t unkA4[0xB0 - 0xA4]; // A4
+#endif
+    Vector4 extents; // B0
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(CollisionNode, 0xB0);
+RED4EXT_ASSERT_OFFSET(CollisionNode, compiledData, 0x58);
+RED4EXT_ASSERT_OFFSET(CollisionNode, sectorHash, 0x80);
+RED4EXT_ASSERT_OFFSET(CollisionNode, lod, 0x9A);
+RED4EXT_ASSERT_OFFSET(CollisionNode, extents, 0xA0);
+#else
 RED4EXT_ASSERT_SIZE(CollisionNode, 0xC0);
+#endif
 } // namespace world
 using worldCollisionNode = world::CollisionNode;
 } // namespace RED4ext

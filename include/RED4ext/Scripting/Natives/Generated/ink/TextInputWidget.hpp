@@ -17,9 +17,17 @@ struct __declspec(align(0x10)) TextInputWidget : ink::TextWidget
     static constexpr const char* NAME = "inkTextInputWidget";
     static constexpr const char* ALIAS = "inkTextInput";
 
+#ifdef __APPLE__
+    uint8_t unk450[0x490 - 0x450]; // 450
+#else
     uint8_t unk460[0x4A0 - 0x460]; // 460
+#endif
 };
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(TextInputWidget, 0x490);
+#else
 RED4EXT_ASSERT_SIZE(TextInputWidget, 0x4A0);
+#endif
 } // namespace ink
 using inkTextInputWidget = ink::TextInputWidget;
 using inkTextInput = ink::TextInputWidget;

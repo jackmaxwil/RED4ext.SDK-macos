@@ -8,7 +8,11 @@
 
 namespace RED4ext
 {
+#ifdef __APPLE__
+RED4EXT_ASSERT_SIZE(world::CollisionNode, 0xB0);
+#else
 RED4EXT_ASSERT_SIZE(world::CollisionNode, 0xC0);
+#endif
 using worldCollisionNode = world::CollisionNode;
 } // namespace RED4ext
 
