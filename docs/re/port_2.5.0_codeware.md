@@ -125,3 +125,48 @@ Re-check helpers are in `re2/b8/`. `find.py new|old OFF=TARGET...` votes on vtab
   - Every native function declared on a dumped class is in RTTI or is registered by Codeware.
   - Enum values were not checked: the dump has no enum values.
 - **Fix.** Codeware 233fe79b removes the eight imports. `cp-dev` replaces the plugin's `Scripts/` folder wholesale, so no stale copies remain in the game.
+
+## Script validator report: making its messages visible (Codeware 06596b94)
+- **The assert persists after 233fe79b.** Run 20261104-105023-boot (crash Cyberpunk2077-2026-11-04-105029.ips) stops at `brk` 0x104D8317C. The caller is 0x104D7F690, reached by `tbz w0` at 0x104D7F12C after `bl 0x104D7A9F8`. That is the same path, called from ArchiveXL's after-hook on the engine-init function (hash 3273923080) through 0x10158B6E4.
+- **Report object.** The loaders 0x104D76544 (Load) and 0x104D766BC (LoadWithMods) build the report on their stack:
+
+  | Offset | Contents |
+  | --- | --- |
+  | +0x00 | vtable 0x107CD7C40 |
+  | +0x08 | byte `enabled` (loader arg w2, or w1 for 0x104D766BC) |
+  | +0x10 | local DynArray, destroyed on return |
+  | +0x20 | `DynArray<String>* out` (arg x3, or x2) |
+  | +0x28 | `uint32 cap` (arg w4, or w3) |
+
+  - Both call sites (0x104D7B0A0..0x104D7B108 and 0x104D7B2F4..0x104D7B340) pass `enabled = ([loader+0x56] | byte 0x109D0DEB1) & 1`, `out = loader+0xB0` and `cap = 10`.
+  - The result goes to `[loader+0x54]`, and 0x104D7AAE4 returns that byte.
+- **Vtable 0x107CD7C40** has 5 entries, then 0:
+  - +0x00 dtor 0x104D76638
+  - +0x08 deleting dtor 0x104D769DC
+  - +0x10 and +0x18 both 0x104D76A60: `x0 += 8; b 0x104D76A78`
+  - +0x20 0x104D76A68: `(x0, x1 ignored, x2 msg, x3 len)` → 0x104D76A78
+- **0x104D76A78 (`sub = report+8`, `msg`, `len`).**
+  - It returns at once unless `byte [sub] == 1` and `out->size ([out+0xC]) < cap ([sub+0x20])`.
+  - Otherwise it builds a `red::String` from `(msg, len)` (0x10002D170), grows `*out` (ptr +0, capacity +8, size +0xC; 0x20-byte elements, align 8; 0x100028674) and move-constructs the string into the new element (0x10002D558).
+  - Nothing clears the array on entry. Nothing in the load path logs it.
+- **Validate 0x1011A7E28 `bool(validator x0, bundle x1, report x2)`.**
+  - It collects the bundle's definitions (0x10111EBCC) and dispatches each by `def->vt[+0x18]` type and `def->vt[+0x38]` native flag:
+    - 0: 0x1011A803C (typeref)
+    - 3, native: 0x1011A8128 (enum)
+    - 4, native: 0x1011A8314 (bitfield)
+    - 1, native: 0x1011A84B4 (class)
+    - 5, native: 0x1011A8E58 (global function)
+  - It counts failures and reports "Validation failed for %u type(s)". It returns w19, which is 1 only when there were no failures.
+  - Tracking the report register (x2 at entry) through Validate and all five type validators gives only `ldr x8,[reg]` + `ldr x8,[x8,#0x10]` + `blr`, with `x0 = report`, `x1 = c_str` (0x100029328) and `w2 = length` (0x10002931C). No validator reads report fields or uses slots +0x18/+0x20.
+- **Codeware change (macOS only).**
+  - The Validate hook becomes a full `Hook`. It runs the existing OnValidateScripts fixups, then calls the original with a proxy report. The proxy's Itanium vtable, read back from the dylib's rebases, is: D1, D0, then Report10 at +0x10, Report18 at +0x18 and Report20 at +0x20.
+  - Each slot records the message and forwards the call to the game report's matching slot, so the game sees the same calls.
+  - After Validate returns, each message goes to `LogError` (Codeware.log) and to stderr as `[Codeware] Script validation: <msg>`, followed by `[Codeware] Script validation passed|FAILED (N messages)`.
+  - It writes no game memory and uses no new address.
+  - If stderr shows `passed` and the assert still fires, the failure is after validation (bind 0x101113E44). If no line appears, Load failed before Validate (deserialize 0x10111FF98).
+- **Further offline checks of Codeware's scripts against the 2.5.0 binary, all clean.**
+  - **Enums.** Every enum name and value name in `scripts/` occurs as a NUL-delimited string in the binary, apart from:
+    - Codeware's own script enums (worldNodeFlag, OpenWorldActivityResult, DynamicEntityEventType, CallbackRunMode, CallbackLifetime, PlayerGender, EntryType, ERTTIType);
+    - generated value names whose native name contains spaces or punctuation (`_228x128` for "228x128", `Very_dense` for "Very dense"). These are the same on Windows.
+  - **Base classes.** For every dumped native class, the declared base matches the native parent, except two that OnValidateScripts patches before Validate (gameuiBaseUIData, scnChatter → ISerializable) and structs whose parent OnValidateScripts fills in. Script-alias parents were not resolved.
+  - **Global native functions.** All are registered by Codeware (RTTI_FUNCTION, @addMethod statics).
